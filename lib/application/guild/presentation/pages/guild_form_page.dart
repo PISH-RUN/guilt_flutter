@@ -1,15 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:guilt_flutter/application/colors.dart';
-import 'package:guilt_flutter/application/guild/domain/entities/gender_enum.dart';
-import 'package:guilt_flutter/application/guild/domain/entities/marital_status%D9%8D_enum.dart';
-import 'package:guilt_flutter/commons/date_manager.dart';
 import 'package:guilt_flutter/commons/fix_rtl_flutter_bug.dart';
 import 'package:guilt_flutter/commons/text_style.dart';
 import 'package:guilt_flutter/commons/utils.dart';
-import 'package:guilt_flutter/commons/widgets/number_picker.dart';
 import 'package:guilt_flutter/commons/widgets/our_item_picker.dart';
-import 'package:guilt_flutter/commons/widgets/state_picker.dart';
-import 'package:persian_datetime_picker/persian_datetime_picker.dart';
 
 class GuildFormPage extends StatefulWidget {
   const GuildFormPage({Key? key}) : super(key: key);
@@ -19,24 +12,12 @@ class GuildFormPage extends StatefulWidget {
 }
 
 class _GuildFormPageState extends State<GuildFormPage> {
-  final toolsListNotifier = ValueNotifier<List<String>?>(null);
-  final skillListNotifier = ValueNotifier<List<String>?>(null);
-  final genderNotifier = ValueNotifier<Gender?>(null);
-  final maritalStatusNotifier = ValueNotifier<MaritalStatus?>(null);
-  TextEditingController firstNameController = TextEditingController();
-  TextEditingController lastNameController = TextEditingController();
-  TextEditingController birthDate = TextEditingController();
-  TextEditingController emailController = TextEditingController();
-  TextEditingController addressController = TextEditingController();
-  TextEditingController numberOfChildrenController = TextEditingController();
-  TextEditingController degree = TextEditingController();
-  TextEditingController province = TextEditingController();
-  TextEditingController city = TextEditingController();
-  TextEditingController skills = TextEditingController();
-  TextEditingController linkedin = TextEditingController();
-  TextEditingController twitter = TextEditingController();
-  TextEditingController instagram = TextEditingController();
-  TextEditingController otherController = TextEditingController();
+  final TextEditingController firstNameController = TextEditingController();
+  final TextEditingController lastNameController = TextEditingController();
+  final TextEditingController addressController = TextEditingController();
+  final TextEditingController province = TextEditingController();
+  final TextEditingController city = TextEditingController();
+  final TextEditingController postalCodeController = TextEditingController();
   final TextEditingController phoneController = TextEditingController();
   final TextEditingController nationalCodeController = TextEditingController();
 
@@ -164,20 +145,23 @@ class _GuildFormPageState extends State<GuildFormPage> {
                 ),
               ),
               SizedBox(height: paddingBetweenTextFiled),
-              TextFormField(
-                style: defaultTextStyle(context),
-                decoration: defaultInputDecoration().copyWith(
-                  labelText: "کد ملی",
-                  suffixIcon: const Icon(Icons.map),
+              Directionality(
+                textDirection: TextDirection.ltr,
+                child: TextFormField(
+                  style: defaultTextStyle(context),
+                  decoration: defaultInputDecoration().copyWith(
+                    labelText: "کد ملی",
+                    suffixIcon: const Icon(Icons.map),
+                  ),
+                  keyboardType: TextInputType.number,
+                  controller: nationalCodeController,
+                  validator: (value) {
+                    if (value == null) return null;
+                    if (value.isEmpty) return "وارد کردن کد ملی ضروری است";
+                    if (value.length != 10) return "کد ملی نامعتبر نیست";
+                    return null;
+                  },
                 ),
-                keyboardType: TextInputType.number,
-                controller: nationalCodeController,
-                validator: (value) {
-                  if (value == null) return null;
-                  if (value.isEmpty) return "وارد کردن کد ملی ضروری است";
-                  if (value.length != 10) return "کد ملی نامعتبر نیست";
-                  return null;
-                },
               ),
               SizedBox(height: paddingBetweenTextFiled),
               OurItemPicker(
@@ -204,12 +188,9 @@ class _GuildFormPageState extends State<GuildFormPage> {
               Directionality(
                 textDirection: TextDirection.ltr,
                 child: TextFormField(
-                  decoration: defaultInputDecoration().copyWith(
-                    labelText: "کد پستی",
-                    suffixIcon: const Icon(Icons.map),
-                  ),
+                  decoration: defaultInputDecoration().copyWith(labelText: "کد پستی", suffixIcon: const Icon(Icons.map)),
                   keyboardType: TextInputType.number,
-                  controller: nationalCodeController,
+                  controller: postalCodeController,
                   validator: (value) {
                     if (value == null) return null;
                     if (value.isEmpty) return "وارد کردن کد پستی ضروری است";
