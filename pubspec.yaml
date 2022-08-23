@@ -12,6 +12,7 @@ dependencies:
     sdk: flutter
   cupertino_icons: ^1.0.5
   get_it: ^7.2.0
+  collection: ^1.16.0
   flutter_svg: ^1.1.1+1
   flutter_bloc: ^8.0.1
   equatable: ^2.0.3
@@ -45,6 +46,9 @@ dependencies:
   sms_user_consent: ^0.1.0
   persian_utils: ^2.0.1
   flutter_staggered_animations: ^1.0.0
+  mapir_raster: ^0.0.1
+  flutter_map: ^0.14.0
+  latlong2: ^0.8.1
 
 dev_dependencies:
   flutter_test:

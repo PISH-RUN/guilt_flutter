@@ -1,30 +1,45 @@
-// This is a basic Flutter widget test.
-//
-// To perform an interaction with a widget in your test, use the WidgetTester
-// utility in the flutter_test package. For example, you can send tap and scroll
-// gestures. You can also use WidgetTester to find child widgets in the widget
-// tree, read text, and verify that the values of widget properties are correct.
-
-import 'package:flutter/material.dart';
+import 'package:equatable/equatable.dart';
 import 'package:flutter_test/flutter_test.dart';
-
-import 'package:guilt_flutter/main.dart';
 
 void main() {
   testWidgets('Counter increments smoke test', (WidgetTester tester) async {
-    // Build our app and trigger a frame.
-    await tester.pumpWidget(const MyApp());
+    List<Hello> g = [
+      Hello(text: "text", number: 1),
+      Hello(text: "text2", number: 2),
+      Hello(text: "text3", number: 3),
+      Hello(text: "text4", number: 4),
+    ];
+    print("================================  main  ${g} ");
 
-    // Verify that our counter starts at 0.
-    expect(find.text('0'), findsOneWidget);
-    expect(find.text('1'), findsNothing);
-
-    // Tap the '+' icon and trigger a frame.
-    await tester.tap(find.byIcon(Icons.add));
-    await tester.pump();
-
-    // Verify that our counter has incremented.
-    expect(find.text('0'), findsNothing);
-    expect(find.text('1'), findsOneWidget);
+    List<Hello> gPlus = [
+      Hello(text: "text11", number: 1),
+      Hello(text: "text7", number: 7),
+      Hello(text: "text33", number: 3),
+      Hello(text: "text8", number: 8),
+    ];
+    g=[...gPlus,...g];
+    print("\n\n\n");
+    print("================================  main  ${g} ");
+    print("\n\n\n");
+    g=g.toSet().toList();
+    print("================================  main  ${g} ");
   });
+}
+
+class Hello extends Equatable {
+  final String text;
+  final int number;
+
+  const Hello({
+    required this.text,
+    required this.number,
+  });
+
+  @override
+  String toString() {
+    return 'Hello{text: $text, number: $number}';
+  }
+
+  @override
+  List<Object> get props => [number];
 }

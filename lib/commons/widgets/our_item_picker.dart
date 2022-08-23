@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:guilt_flutter/application/colors.dart';
 import 'package:guilt_flutter/commons/text_style.dart';
+import 'package:logger/logger.dart';
 
 class OurItemPicker extends StatefulWidget {
   final IconData? icon;
@@ -29,8 +30,6 @@ class OurItemPicker extends StatefulWidget {
 }
 
 class _OurItemPickerState extends State<OurItemPicker> {
-  List<String> items = [];
-
   @override
   void initState() {
     super.initState();
@@ -45,93 +44,168 @@ class _OurItemPickerState extends State<OurItemPicker> {
       onTap: () async {
         focusNode.requestFocus();
         focusNode.unfocus();
-        items = widget.onFillParams == null ? widget.items ?? [] : (await widget.onFillParams!());
+        final items = widget.onFillParams == null ? widget.items ?? [] : (await widget.onFillParams!());
         showDialog(
           context: context,
-          builder: (_) => _showAlertDialogWithButtons(
-            context,
+          builder: (_) => ShowAlertDialogWithButtons(
+            controller: widget.controller,
+            hint: widget.hint,
+            items: items,
+            onChanged: widget.onChanged,
+            currentText: widget.currentText,
+            icon: widget.icon,
+            isColorBlue: widget.isColorBlue,
+            onFillParams: widget.onFillParams,
           ),
         );
       },
       child: AbsorbPointer(
         child: TextField(
-            style: defaultTextStyle(context),
-            controller: widget.controller,
-            focusNode: focusNode,
-            decoration: InputDecoration(
-              labelText: widget.hint,
-              prefixIcon: widget.icon == null ? null : Icon(widget.icon),
-              helperText: ''
-            ),
-
+          style: defaultTextStyle(context),
+          controller: widget.controller,
+          focusNode: focusNode,
+          decoration: InputDecoration(labelText: widget.hint, prefixIcon: widget.icon == null ? null : Icon(widget.icon), helperText: ''),
         ),
       ),
     );
   }
+}
 
-  Widget _showAlertDialogWithButtons(BuildContext context) {
-    return Center(
-      child: SizedBox(
-        height: items.length * 80.0,
-        child: ConstrainedBox(
-          constraints: const BoxConstraints(maxWidth: 650),
-          child: Card(
-            elevation: 0.0,
-            margin: const EdgeInsets.symmetric(horizontal: 16),
-            child: ListView.builder(
-                padding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 8.0),
-                scrollDirection: Axis.vertical,
-                physics: const BouncingScrollPhysics(),
-                itemCount: items.length,
-                itemBuilder: (BuildContext context, int index) {
-                  if (items[index] == widget.controller.text) {
-                    return Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 10),
-                      child: ElevatedButton(
-                        onPressed: () {
-                          widget.controller.text = items[index];
-                          Navigator.pop(context);
-                        },
-                        child: Padding(
-                            padding: const EdgeInsets.symmetric(vertical: 12.0),
-                            child: Text(
-                              items[index],
-                              style: defaultTextStyle(context, headline: 4).c(Colors.white),
-                            )),
-                        style: ElevatedButton.styleFrom(
-                          primary: Colors.blue, // <-- Button color
-                          onPrimary: Colors.white, // <-- Splash color
-                        ),
-                      ),
-                    );
-                  } else {
-                    return Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 10),
-                      child: OutlinedButton(
-                        style: ButtonStyle(
-                          side: MaterialStateProperty.resolveWith((states) {
-                            return const BorderSide(color: AppColor.blue, width: 2);
-                          }),
-                          shape: MaterialStateProperty.resolveWith<OutlinedBorder>((_) {
-                            return RoundedRectangleBorder(borderRadius: BorderRadius.circular(6));
-                          }),
-                        ),
-                        onPressed: () {
-                          widget.controller.text = items[index];
-                          if (widget.onChanged != null) widget.onChanged!(items[index]);
-                          Navigator.pop(context);
-                        },
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(vertical: 15.0),
-                          child: Text(
-                            items[index],
-                            style: defaultTextStyle(context, headline: 4).c(AppColor.blue),
+class ShowAlertDialogWithButtons extends StatefulWidget {
+  final IconData? icon;
+  final String hint;
+  final String currentText;
+  final TextEditingController controller;
+  final List<String> items;
+  final bool isColorBlue;
+  final void Function(String value)? onChanged;
+  final Future<List<String>> Function()? onFillParams;
+
+  const ShowAlertDialogWithButtons({
+    required this.hint,
+    this.icon,
+    this.isColorBlue = false,
+    this.onChanged,
+    this.onFillParams,
+    required this.controller,
+    this.currentText = "",
+    required this.items,
+    Key? key,
+  }) : super(key: key);
+
+  @override
+  _ShowAlertDialogWithButtonsState createState() => _ShowAlertDialogWithButtonsState();
+}
+
+class _ShowAlertDialogWithButtonsState extends State<ShowAlertDialogWithButtons> {
+  String searchText = '';
+  TextEditingController controller = TextEditingController();
+
+  @override
+  Widget build(BuildContext context) {
+    final itemsMatch = widget.items.where((element) => element.contains(searchText)).toList();
+    return SafeArea(
+      child: Center(
+        child: SizedBox(
+          height: widget.items.length * 80.0 + 30,
+          child: ConstrainedBox(
+            constraints: const BoxConstraints(maxWidth: 650),
+            child: Card(
+              elevation: 0.0,
+              margin: const EdgeInsets.symmetric(horizontal: 16),
+              child: Column(
+                children: [
+                  Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 2.0),
+                    decoration: const BoxDecoration(
+                      color: Colors.white,
+                      shape: BoxShape.rectangle,
+                      borderRadius: BorderRadius.all(Radius.circular(16)),
+                    ),
+                    child: Row(
+                      children: <Widget>[
+                        const Icon(Icons.search, color: AppColor.blue, size: 25.0),
+                        Expanded(
+                          child: TextField(
+                            controller: controller,
+                            onChanged: (value) {
+                              searchText = value;
+                              setState(() {});
+                            },
+                            style: defaultTextStyle(context).c(Colors.black87),
+                            cursorWidth: 0.2,
+                            maxLines: 1,
+                            minLines: 1,
+                            decoration: InputDecoration(
+                              enabledBorder: const OutlineInputBorder(borderSide: BorderSide(width: 0, color: Colors.transparent)),
+                              focusedBorder: const OutlineInputBorder(borderSide: BorderSide(width: 0, color: Colors.transparent)),
+                              hintText: 'جستجو ...',
+                              hintStyle: Theme.of(context).textTheme.headline4!.copyWith(color: Colors.grey),
+                            ),
                           ),
                         ),
-                      ),
-                    );
-                  }
-                }),
+                      ],
+                    ),
+                  ),
+                  Expanded(
+                    child: ListView.builder(
+                        padding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 8.0),
+                        scrollDirection: Axis.vertical,
+                        physics: const BouncingScrollPhysics(),
+                        itemCount: itemsMatch.length,
+                        itemBuilder: (BuildContext context, int index) {
+                          if (itemsMatch[index] == widget.controller.text) {
+                            return Padding(
+                              padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 10),
+                              child: ElevatedButton(
+                                onPressed: () {
+                                  widget.controller.text = itemsMatch[index];
+                                  Navigator.pop(context);
+                                },
+                                child: Padding(
+                                    padding: const EdgeInsets.symmetric(vertical: 12.0),
+                                    child: Text(
+                                      itemsMatch[index],
+                                      style: defaultTextStyle(context, headline: 4).c(Colors.white),
+                                    )),
+                                style: ElevatedButton.styleFrom(
+                                  primary: Colors.blue, // <-- Button color
+                                  onPrimary: Colors.white, // <-- Splash color
+                                ),
+                              ),
+                            );
+                          } else {
+                            return Padding(
+                              padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 10),
+                              child: OutlinedButton(
+                                style: ButtonStyle(
+                                  side: MaterialStateProperty.resolveWith((states) {
+                                    return const BorderSide(color: AppColor.blue, width: 2);
+                                  }),
+                                  shape: MaterialStateProperty.resolveWith<OutlinedBorder>((_) {
+                                    return RoundedRectangleBorder(borderRadius: BorderRadius.circular(6));
+                                  }),
+                                ),
+                                onPressed: () {
+                                  widget.controller.text = itemsMatch[index];
+                                  if (widget.onChanged != null) widget.onChanged!(itemsMatch[index]);
+                                  Navigator.pop(context);
+                                },
+                                child: Padding(
+                                  padding: const EdgeInsets.symmetric(vertical: 15.0),
+                                  child: Text(
+                                    itemsMatch[index],
+                                    style: defaultTextStyle(context, headline: 4).c(AppColor.blue),
+                                  ),
+                                ),
+                              ),
+                            );
+                          }
+                        }),
+                  ),
+                ],
+              ),
+            ),
           ),
         ),
       ),

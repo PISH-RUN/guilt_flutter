@@ -51,7 +51,7 @@ class _GuildListPageState extends State<GuildListPage> {
                     decoration: InputDecoration(
                       enabledBorder: const OutlineInputBorder(borderSide: BorderSide(width: 0, color: Colors.transparent)),
                       focusedBorder: const OutlineInputBorder(borderSide: BorderSide(width: 0, color: Colors.transparent)),
-                      hintText: 'توضیحات ...',
+                      hintText: 'جستجو ...',
                       hintStyle: Theme.of(context).textTheme.headline4!.copyWith(color: Colors.grey),
                     ),
                   ),

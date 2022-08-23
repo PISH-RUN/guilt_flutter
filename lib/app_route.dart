@@ -7,6 +7,7 @@ import 'package:guilt_flutter/authenticate_page.dart';
 import 'package:guilt_flutter/features/login/api/login_api.dart';
 import 'package:guilt_flutter/features/login/presentation/pages/login_page.dart';
 import 'package:guilt_flutter/features/login/presentation/pages/register_page.dart';
+import 'package:guilt_flutter/features/profile/presentation/pages/profile_page.dart';
 import 'package:qlevar_router/qlevar_router.dart';
 
 import 'base_page.dart';
@@ -27,7 +28,7 @@ class AppRoutes {
         ),
         QRoute(
           path: '/profile',
-          builder: () => AuthenticatedPage(child: GuildMainPanel(child: GuildListPage(), currentIndexBottomNavigation: 0)),
+          builder: () => AuthenticatedPage(child: GuildMainPanel(child: ProfilePage(), currentIndexBottomNavigation: 0)),
           middleware: [AuthGuard()],
         ),
         QRoute(

@@ -7,22 +7,22 @@ import 'package:logger/logger.dart';
 
 import '../../utils.dart';
 import '../model/server_failure.dart';
-import 'local_storage_data_source.dart';
 import 'remote_data_source.dart';
 
 class RemoteDataSourceImpl implements RemoteDataSource {
   final http.Client client;
   final Function isInternetEnable;
-  final LocalStorageDataSource localStorageDataSource;
+  final String Function(String key) readDataFromLocal;
+  final void Function(String key, String value) writeDataToLocal;
 
-  RemoteDataSourceImpl({required this.client, required this.isInternetEnable, required this.localStorageDataSource});
+  RemoteDataSourceImpl({required this.client, required this.isInternetEnable, required this.readDataFromLocal, required this.writeDataToLocal});
 
   Map<String, String> get defaultHeader {
     var output = {
       'Content-Type': 'application/json',
       'Accept': 'application/json',
     };
-    String token = localStorageDataSource.getStringWithKey(TOKEN_KEY_SAVE_IN_LOCAL);
+    String token = readDataFromLocal(TOKEN_KEY_SAVE_IN_LOCAL);
     if (token.isNotEmpty) {
       String preFix = "Bearer";
       output['Authorization'] = '$preFix $token';
@@ -164,7 +164,7 @@ class RemoteDataSourceImpl implements RemoteDataSource {
   }
 
   void _removeTokenBecauseIfExpire(http.Response response) {
-    localStorageDataSource.setStringWithKey(TOKEN_KEY_SAVE_IN_LOCAL, "");
+    writeDataToLocal(TOKEN_KEY_SAVE_IN_LOCAL, "");
   }
 
   @override

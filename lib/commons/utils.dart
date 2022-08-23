@@ -7,6 +7,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:guilt_flutter/application/guild/domain/entities/icis.dart';
 import 'package:http/http.dart';
 import 'package:persian_utils/persian_utils.dart';
 import 'package:shamsi_date/shamsi_date.dart';
@@ -263,6 +264,13 @@ int? jsonFiledParserInt(Map<String, dynamic> json, List<String> filedNames) {
 bool jsonFiledParserBool(Map<String, dynamic> json, List<String> filedNames) {
   final result = jsonFiledParserString(json, filedNames).toLowerCase();
   return result.isEmpty ? false : result == "1" || result == "true";
+}
+
+Future<List<Isic>> getListOfIsic(BuildContext context) async {
+  String data = await DefaultAssetBundle.of(context).loadString("jsons/isic.json");
+  final jsonResult = jsonDecode(data) as List;
+  final output = jsonResult.map<Isic>((e) => Isic(name: e["ISICName"].toString().trim(), code: e["isicCoding"].toString().trim())).toList();
+  return output;
 }
 
 Future<List<String>> getIranProvince(BuildContext context) async {

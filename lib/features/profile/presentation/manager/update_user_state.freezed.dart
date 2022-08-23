@@ -3,7 +3,7 @@
 // ignore_for_file: type=lint
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target
 
-part of 'login_state.dart';
+part of 'update_user_state.dart';
 
 // **************************************************************************
 // FreezedGenerator
@@ -15,187 +15,74 @@ final _privateConstructorUsedError = UnsupportedError(
     'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#custom-getters-and-methods');
 
 /// @nodoc
-mixin _$LoginState {
+mixin _$UpdateUserState {
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
-    required TResult Function() success,
     required TResult Function() loading,
-    required TResult Function() readyToInput,
     required TResult Function(Failure failure) error,
+    required TResult Function() readyToInput,
+    required TResult Function() success,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
-    TResult Function()? success,
     TResult Function()? loading,
-    TResult Function()? readyToInput,
     TResult Function(Failure failure)? error,
+    TResult Function()? readyToInput,
+    TResult Function()? success,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
-    TResult Function()? success,
     TResult Function()? loading,
-    TResult Function()? readyToInput,
     TResult Function(Failure failure)? error,
+    TResult Function()? readyToInput,
+    TResult Function()? success,
     required TResult orElse(),
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult map<TResult extends Object?>({
-    required TResult Function(Success value) success,
     required TResult Function(Loading value) loading,
-    required TResult Function(ReadyToInput value) readyToInput,
     required TResult Function(Error value) error,
+    required TResult Function(ReadyToInput value) readyToInput,
+    required TResult Function(Success value) success,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>({
-    TResult Function(Success value)? success,
     TResult Function(Loading value)? loading,
-    TResult Function(ReadyToInput value)? readyToInput,
     TResult Function(Error value)? error,
+    TResult Function(ReadyToInput value)? readyToInput,
+    TResult Function(Success value)? success,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>({
-    TResult Function(Success value)? success,
     TResult Function(Loading value)? loading,
-    TResult Function(ReadyToInput value)? readyToInput,
     TResult Function(Error value)? error,
+    TResult Function(ReadyToInput value)? readyToInput,
+    TResult Function(Success value)? success,
     required TResult orElse(),
   }) =>
       throw _privateConstructorUsedError;
 }
 
 /// @nodoc
-abstract class $LoginStateCopyWith<$Res> {
-  factory $LoginStateCopyWith(
-          LoginState value, $Res Function(LoginState) then) =
-      _$LoginStateCopyWithImpl<$Res>;
+abstract class $UpdateUserStateCopyWith<$Res> {
+  factory $UpdateUserStateCopyWith(
+          UpdateUserState value, $Res Function(UpdateUserState) then) =
+      _$UpdateUserStateCopyWithImpl<$Res>;
 }
 
 /// @nodoc
-class _$LoginStateCopyWithImpl<$Res> implements $LoginStateCopyWith<$Res> {
-  _$LoginStateCopyWithImpl(this._value, this._then);
+class _$UpdateUserStateCopyWithImpl<$Res>
+    implements $UpdateUserStateCopyWith<$Res> {
+  _$UpdateUserStateCopyWithImpl(this._value, this._then);
 
-  final LoginState _value;
+  final UpdateUserState _value;
   // ignore: unused_field
-  final $Res Function(LoginState) _then;
-}
-
-/// @nodoc
-abstract class _$$SuccessCopyWith<$Res> {
-  factory _$$SuccessCopyWith(_$Success value, $Res Function(_$Success) then) =
-      __$$SuccessCopyWithImpl<$Res>;
-}
-
-/// @nodoc
-class __$$SuccessCopyWithImpl<$Res> extends _$LoginStateCopyWithImpl<$Res>
-    implements _$$SuccessCopyWith<$Res> {
-  __$$SuccessCopyWithImpl(_$Success _value, $Res Function(_$Success) _then)
-      : super(_value, (v) => _then(v as _$Success));
-
-  @override
-  _$Success get _value => super._value as _$Success;
-}
-
-/// @nodoc
-
-class _$Success implements Success {
-  const _$Success();
-
-  @override
-  String toString() {
-    return 'LoginState.success()';
-  }
-
-  @override
-  bool operator ==(dynamic other) {
-    return identical(this, other) ||
-        (other.runtimeType == runtimeType && other is _$Success);
-  }
-
-  @override
-  int get hashCode => runtimeType.hashCode;
-
-  @override
-  @optionalTypeArgs
-  TResult when<TResult extends Object?>({
-    required TResult Function() success,
-    required TResult Function() loading,
-    required TResult Function() readyToInput,
-    required TResult Function(Failure failure) error,
-  }) {
-    return success();
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult? whenOrNull<TResult extends Object?>({
-    TResult Function()? success,
-    TResult Function()? loading,
-    TResult Function()? readyToInput,
-    TResult Function(Failure failure)? error,
-  }) {
-    return success?.call();
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult maybeWhen<TResult extends Object?>({
-    TResult Function()? success,
-    TResult Function()? loading,
-    TResult Function()? readyToInput,
-    TResult Function(Failure failure)? error,
-    required TResult orElse(),
-  }) {
-    if (success != null) {
-      return success();
-    }
-    return orElse();
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult map<TResult extends Object?>({
-    required TResult Function(Success value) success,
-    required TResult Function(Loading value) loading,
-    required TResult Function(ReadyToInput value) readyToInput,
-    required TResult Function(Error value) error,
-  }) {
-    return success(this);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult? mapOrNull<TResult extends Object?>({
-    TResult Function(Success value)? success,
-    TResult Function(Loading value)? loading,
-    TResult Function(ReadyToInput value)? readyToInput,
-    TResult Function(Error value)? error,
-  }) {
-    return success?.call(this);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult maybeMap<TResult extends Object?>({
-    TResult Function(Success value)? success,
-    TResult Function(Loading value)? loading,
-    TResult Function(ReadyToInput value)? readyToInput,
-    TResult Function(Error value)? error,
-    required TResult orElse(),
-  }) {
-    if (success != null) {
-      return success(this);
-    }
-    return orElse();
-  }
-}
-
-abstract class Success implements LoginState {
-  const factory Success() = _$Success;
+  final $Res Function(UpdateUserState) _then;
 }
 
 /// @nodoc
@@ -205,7 +92,7 @@ abstract class _$$LoadingCopyWith<$Res> {
 }
 
 /// @nodoc
-class __$$LoadingCopyWithImpl<$Res> extends _$LoginStateCopyWithImpl<$Res>
+class __$$LoadingCopyWithImpl<$Res> extends _$UpdateUserStateCopyWithImpl<$Res>
     implements _$$LoadingCopyWith<$Res> {
   __$$LoadingCopyWithImpl(_$Loading _value, $Res Function(_$Loading) _then)
       : super(_value, (v) => _then(v as _$Loading));
@@ -221,7 +108,7 @@ class _$Loading implements Loading {
 
   @override
   String toString() {
-    return 'LoginState.loading()';
+    return 'UpdateUserState.loading()';
   }
 
   @override
@@ -236,10 +123,10 @@ class _$Loading implements Loading {
   @override
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
-    required TResult Function() success,
     required TResult Function() loading,
-    required TResult Function() readyToInput,
     required TResult Function(Failure failure) error,
+    required TResult Function() readyToInput,
+    required TResult Function() success,
   }) {
     return loading();
   }
@@ -247,10 +134,10 @@ class _$Loading implements Loading {
   @override
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
-    TResult Function()? success,
     TResult Function()? loading,
-    TResult Function()? readyToInput,
     TResult Function(Failure failure)? error,
+    TResult Function()? readyToInput,
+    TResult Function()? success,
   }) {
     return loading?.call();
   }
@@ -258,10 +145,10 @@ class _$Loading implements Loading {
   @override
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
-    TResult Function()? success,
     TResult Function()? loading,
-    TResult Function()? readyToInput,
     TResult Function(Failure failure)? error,
+    TResult Function()? readyToInput,
+    TResult Function()? success,
     required TResult orElse(),
   }) {
     if (loading != null) {
@@ -273,10 +160,10 @@ class _$Loading implements Loading {
   @override
   @optionalTypeArgs
   TResult map<TResult extends Object?>({
-    required TResult Function(Success value) success,
     required TResult Function(Loading value) loading,
-    required TResult Function(ReadyToInput value) readyToInput,
     required TResult Function(Error value) error,
+    required TResult Function(ReadyToInput value) readyToInput,
+    required TResult Function(Success value) success,
   }) {
     return loading(this);
   }
@@ -284,10 +171,10 @@ class _$Loading implements Loading {
   @override
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>({
-    TResult Function(Success value)? success,
     TResult Function(Loading value)? loading,
-    TResult Function(ReadyToInput value)? readyToInput,
     TResult Function(Error value)? error,
+    TResult Function(ReadyToInput value)? readyToInput,
+    TResult Function(Success value)? success,
   }) {
     return loading?.call(this);
   }
@@ -295,10 +182,10 @@ class _$Loading implements Loading {
   @override
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>({
-    TResult Function(Success value)? success,
     TResult Function(Loading value)? loading,
-    TResult Function(ReadyToInput value)? readyToInput,
     TResult Function(Error value)? error,
+    TResult Function(ReadyToInput value)? readyToInput,
+    TResult Function(Success value)? success,
     required TResult orElse(),
   }) {
     if (loading != null) {
@@ -308,124 +195,8 @@ class _$Loading implements Loading {
   }
 }
 
-abstract class Loading implements LoginState {
+abstract class Loading implements UpdateUserState {
   const factory Loading() = _$Loading;
-}
-
-/// @nodoc
-abstract class _$$ReadyToInputCopyWith<$Res> {
-  factory _$$ReadyToInputCopyWith(
-          _$ReadyToInput value, $Res Function(_$ReadyToInput) then) =
-      __$$ReadyToInputCopyWithImpl<$Res>;
-}
-
-/// @nodoc
-class __$$ReadyToInputCopyWithImpl<$Res> extends _$LoginStateCopyWithImpl<$Res>
-    implements _$$ReadyToInputCopyWith<$Res> {
-  __$$ReadyToInputCopyWithImpl(
-      _$ReadyToInput _value, $Res Function(_$ReadyToInput) _then)
-      : super(_value, (v) => _then(v as _$ReadyToInput));
-
-  @override
-  _$ReadyToInput get _value => super._value as _$ReadyToInput;
-}
-
-/// @nodoc
-
-class _$ReadyToInput implements ReadyToInput {
-  const _$ReadyToInput();
-
-  @override
-  String toString() {
-    return 'LoginState.readyToInput()';
-  }
-
-  @override
-  bool operator ==(dynamic other) {
-    return identical(this, other) ||
-        (other.runtimeType == runtimeType && other is _$ReadyToInput);
-  }
-
-  @override
-  int get hashCode => runtimeType.hashCode;
-
-  @override
-  @optionalTypeArgs
-  TResult when<TResult extends Object?>({
-    required TResult Function() success,
-    required TResult Function() loading,
-    required TResult Function() readyToInput,
-    required TResult Function(Failure failure) error,
-  }) {
-    return readyToInput();
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult? whenOrNull<TResult extends Object?>({
-    TResult Function()? success,
-    TResult Function()? loading,
-    TResult Function()? readyToInput,
-    TResult Function(Failure failure)? error,
-  }) {
-    return readyToInput?.call();
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult maybeWhen<TResult extends Object?>({
-    TResult Function()? success,
-    TResult Function()? loading,
-    TResult Function()? readyToInput,
-    TResult Function(Failure failure)? error,
-    required TResult orElse(),
-  }) {
-    if (readyToInput != null) {
-      return readyToInput();
-    }
-    return orElse();
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult map<TResult extends Object?>({
-    required TResult Function(Success value) success,
-    required TResult Function(Loading value) loading,
-    required TResult Function(ReadyToInput value) readyToInput,
-    required TResult Function(Error value) error,
-  }) {
-    return readyToInput(this);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult? mapOrNull<TResult extends Object?>({
-    TResult Function(Success value)? success,
-    TResult Function(Loading value)? loading,
-    TResult Function(ReadyToInput value)? readyToInput,
-    TResult Function(Error value)? error,
-  }) {
-    return readyToInput?.call(this);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult maybeMap<TResult extends Object?>({
-    TResult Function(Success value)? success,
-    TResult Function(Loading value)? loading,
-    TResult Function(ReadyToInput value)? readyToInput,
-    TResult Function(Error value)? error,
-    required TResult orElse(),
-  }) {
-    if (readyToInput != null) {
-      return readyToInput(this);
-    }
-    return orElse();
-  }
-}
-
-abstract class ReadyToInput implements LoginState {
-  const factory ReadyToInput() = _$ReadyToInput;
 }
 
 /// @nodoc
@@ -436,7 +207,7 @@ abstract class _$$ErrorCopyWith<$Res> {
 }
 
 /// @nodoc
-class __$$ErrorCopyWithImpl<$Res> extends _$LoginStateCopyWithImpl<$Res>
+class __$$ErrorCopyWithImpl<$Res> extends _$UpdateUserStateCopyWithImpl<$Res>
     implements _$$ErrorCopyWith<$Res> {
   __$$ErrorCopyWithImpl(_$Error _value, $Res Function(_$Error) _then)
       : super(_value, (v) => _then(v as _$Error));
@@ -467,7 +238,7 @@ class _$Error implements Error {
 
   @override
   String toString() {
-    return 'LoginState.error(failure: $failure)';
+    return 'UpdateUserState.error(failure: $failure)';
   }
 
   @override
@@ -490,10 +261,10 @@ class _$Error implements Error {
   @override
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
-    required TResult Function() success,
     required TResult Function() loading,
-    required TResult Function() readyToInput,
     required TResult Function(Failure failure) error,
+    required TResult Function() readyToInput,
+    required TResult Function() success,
   }) {
     return error(failure);
   }
@@ -501,10 +272,10 @@ class _$Error implements Error {
   @override
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
-    TResult Function()? success,
     TResult Function()? loading,
-    TResult Function()? readyToInput,
     TResult Function(Failure failure)? error,
+    TResult Function()? readyToInput,
+    TResult Function()? success,
   }) {
     return error?.call(failure);
   }
@@ -512,10 +283,10 @@ class _$Error implements Error {
   @override
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
-    TResult Function()? success,
     TResult Function()? loading,
-    TResult Function()? readyToInput,
     TResult Function(Failure failure)? error,
+    TResult Function()? readyToInput,
+    TResult Function()? success,
     required TResult orElse(),
   }) {
     if (error != null) {
@@ -527,10 +298,10 @@ class _$Error implements Error {
   @override
   @optionalTypeArgs
   TResult map<TResult extends Object?>({
-    required TResult Function(Success value) success,
     required TResult Function(Loading value) loading,
-    required TResult Function(ReadyToInput value) readyToInput,
     required TResult Function(Error value) error,
+    required TResult Function(ReadyToInput value) readyToInput,
+    required TResult Function(Success value) success,
   }) {
     return error(this);
   }
@@ -538,10 +309,10 @@ class _$Error implements Error {
   @override
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>({
-    TResult Function(Success value)? success,
     TResult Function(Loading value)? loading,
-    TResult Function(ReadyToInput value)? readyToInput,
     TResult Function(Error value)? error,
+    TResult Function(ReadyToInput value)? readyToInput,
+    TResult Function(Success value)? success,
   }) {
     return error?.call(this);
   }
@@ -549,10 +320,10 @@ class _$Error implements Error {
   @override
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>({
-    TResult Function(Success value)? success,
     TResult Function(Loading value)? loading,
-    TResult Function(ReadyToInput value)? readyToInput,
     TResult Function(Error value)? error,
+    TResult Function(ReadyToInput value)? readyToInput,
+    TResult Function(Success value)? success,
     required TResult orElse(),
   }) {
     if (error != null) {
@@ -562,10 +333,241 @@ class _$Error implements Error {
   }
 }
 
-abstract class Error implements LoginState {
+abstract class Error implements UpdateUserState {
   const factory Error({required final Failure failure}) = _$Error;
 
   Failure get failure;
   @JsonKey(ignore: true)
   _$$ErrorCopyWith<_$Error> get copyWith => throw _privateConstructorUsedError;
+}
+
+/// @nodoc
+abstract class _$$ReadyToInputCopyWith<$Res> {
+  factory _$$ReadyToInputCopyWith(
+          _$ReadyToInput value, $Res Function(_$ReadyToInput) then) =
+      __$$ReadyToInputCopyWithImpl<$Res>;
+}
+
+/// @nodoc
+class __$$ReadyToInputCopyWithImpl<$Res>
+    extends _$UpdateUserStateCopyWithImpl<$Res>
+    implements _$$ReadyToInputCopyWith<$Res> {
+  __$$ReadyToInputCopyWithImpl(
+      _$ReadyToInput _value, $Res Function(_$ReadyToInput) _then)
+      : super(_value, (v) => _then(v as _$ReadyToInput));
+
+  @override
+  _$ReadyToInput get _value => super._value as _$ReadyToInput;
+}
+
+/// @nodoc
+
+class _$ReadyToInput implements ReadyToInput {
+  const _$ReadyToInput();
+
+  @override
+  String toString() {
+    return 'UpdateUserState.readyToInput()';
+  }
+
+  @override
+  bool operator ==(dynamic other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType && other is _$ReadyToInput);
+  }
+
+  @override
+  int get hashCode => runtimeType.hashCode;
+
+  @override
+  @optionalTypeArgs
+  TResult when<TResult extends Object?>({
+    required TResult Function() loading,
+    required TResult Function(Failure failure) error,
+    required TResult Function() readyToInput,
+    required TResult Function() success,
+  }) {
+    return readyToInput();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? whenOrNull<TResult extends Object?>({
+    TResult Function()? loading,
+    TResult Function(Failure failure)? error,
+    TResult Function()? readyToInput,
+    TResult Function()? success,
+  }) {
+    return readyToInput?.call();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeWhen<TResult extends Object?>({
+    TResult Function()? loading,
+    TResult Function(Failure failure)? error,
+    TResult Function()? readyToInput,
+    TResult Function()? success,
+    required TResult orElse(),
+  }) {
+    if (readyToInput != null) {
+      return readyToInput();
+    }
+    return orElse();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult map<TResult extends Object?>({
+    required TResult Function(Loading value) loading,
+    required TResult Function(Error value) error,
+    required TResult Function(ReadyToInput value) readyToInput,
+    required TResult Function(Success value) success,
+  }) {
+    return readyToInput(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? mapOrNull<TResult extends Object?>({
+    TResult Function(Loading value)? loading,
+    TResult Function(Error value)? error,
+    TResult Function(ReadyToInput value)? readyToInput,
+    TResult Function(Success value)? success,
+  }) {
+    return readyToInput?.call(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeMap<TResult extends Object?>({
+    TResult Function(Loading value)? loading,
+    TResult Function(Error value)? error,
+    TResult Function(ReadyToInput value)? readyToInput,
+    TResult Function(Success value)? success,
+    required TResult orElse(),
+  }) {
+    if (readyToInput != null) {
+      return readyToInput(this);
+    }
+    return orElse();
+  }
+}
+
+abstract class ReadyToInput implements UpdateUserState {
+  const factory ReadyToInput() = _$ReadyToInput;
+}
+
+/// @nodoc
+abstract class _$$SuccessCopyWith<$Res> {
+  factory _$$SuccessCopyWith(_$Success value, $Res Function(_$Success) then) =
+      __$$SuccessCopyWithImpl<$Res>;
+}
+
+/// @nodoc
+class __$$SuccessCopyWithImpl<$Res> extends _$UpdateUserStateCopyWithImpl<$Res>
+    implements _$$SuccessCopyWith<$Res> {
+  __$$SuccessCopyWithImpl(_$Success _value, $Res Function(_$Success) _then)
+      : super(_value, (v) => _then(v as _$Success));
+
+  @override
+  _$Success get _value => super._value as _$Success;
+}
+
+/// @nodoc
+
+class _$Success implements Success {
+  const _$Success();
+
+  @override
+  String toString() {
+    return 'UpdateUserState.success()';
+  }
+
+  @override
+  bool operator ==(dynamic other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType && other is _$Success);
+  }
+
+  @override
+  int get hashCode => runtimeType.hashCode;
+
+  @override
+  @optionalTypeArgs
+  TResult when<TResult extends Object?>({
+    required TResult Function() loading,
+    required TResult Function(Failure failure) error,
+    required TResult Function() readyToInput,
+    required TResult Function() success,
+  }) {
+    return success();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? whenOrNull<TResult extends Object?>({
+    TResult Function()? loading,
+    TResult Function(Failure failure)? error,
+    TResult Function()? readyToInput,
+    TResult Function()? success,
+  }) {
+    return success?.call();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeWhen<TResult extends Object?>({
+    TResult Function()? loading,
+    TResult Function(Failure failure)? error,
+    TResult Function()? readyToInput,
+    TResult Function()? success,
+    required TResult orElse(),
+  }) {
+    if (success != null) {
+      return success();
+    }
+    return orElse();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult map<TResult extends Object?>({
+    required TResult Function(Loading value) loading,
+    required TResult Function(Error value) error,
+    required TResult Function(ReadyToInput value) readyToInput,
+    required TResult Function(Success value) success,
+  }) {
+    return success(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? mapOrNull<TResult extends Object?>({
+    TResult Function(Loading value)? loading,
+    TResult Function(Error value)? error,
+    TResult Function(ReadyToInput value)? readyToInput,
+    TResult Function(Success value)? success,
+  }) {
+    return success?.call(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeMap<TResult extends Object?>({
+    TResult Function(Loading value)? loading,
+    TResult Function(Error value)? error,
+    TResult Function(ReadyToInput value)? readyToInput,
+    TResult Function(Success value)? success,
+    required TResult orElse(),
+  }) {
+    if (success != null) {
+      return success(this);
+    }
+    return orElse();
+  }
+}
+
+abstract class Success implements UpdateUserState {
+  const factory Success() = _$Success;
 }
