@@ -26,6 +26,9 @@ class GuildLocalRepositoryImpl implements GuildLocalRepository {
 
   @override
   List<Guild>? getListOfMyGuilds(String userId) {
+    if (!hasData('$_key $userId')) {
+      return null;
+    }
     return (jsonDecode(readData('$_key $userId')) as List).mapIndexed((index, json) => GuildModel.fromJson(json, index)).toList();
   }
 

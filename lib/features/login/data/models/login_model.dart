@@ -8,7 +8,7 @@ class LoginModel extends Login {
 
   factory LoginModel.fromJson(Map<String, dynamic> json) {
     return LoginModel(
-      token: json['jwt'],
+      token: json['access_token'],
     );
   }
 }

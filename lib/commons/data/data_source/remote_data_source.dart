@@ -24,9 +24,6 @@ abstract class RemoteDataSource {
     required T Function(Map<String, dynamic> success) mapSuccess,
   });
 
-  Future<Either<ServerFailure, List<T>>> getListFromServer<T>({
-    required String url,
-    required Map<String, dynamic> params,
-    required T Function(Map<String, dynamic> success) mapSuccess,
-  });
+  Future<Either<ServerFailure, List<T>>> getListFromServer<T>(
+      {required String url, required Map<String, dynamic> params, required List<T> Function(List<dynamic> success) mapSuccess});
 }

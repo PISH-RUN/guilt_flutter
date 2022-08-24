@@ -32,7 +32,7 @@ class RemoteDataSourceImpl implements RemoteDataSource {
 
   @override
   Future<Either<ServerFailure, List<T>>> getListFromServer<T>(
-      {required String url, required Map<String, dynamic> params, required T Function(Map<String, dynamic> success) mapSuccess}) async {
+      {required String url, required Map<String, dynamic> params, required List<T> Function(List<dynamic> success) mapSuccess}) async {
     String methodName = "getList";
     try {
       Logger().v("$methodName===> url ===> $url \n\nbodyParameters ===> $params\n\ndefaultHeader ===> $defaultHeader");
@@ -41,7 +41,7 @@ class RemoteDataSourceImpl implements RemoteDataSource {
       Logger().d("$methodName===> response.statusCode==> ${finalResponse.statusCode}  for  $url");
       if (isSuccessfulHttp(finalResponse)) {
         Logger().i("$methodName===>$url response is===>${finalResponse.body}");
-        return Right((jsonDecode(finalResponse.body) as List).map((e) => mapSuccess(e)).toList());
+        return Right(mapSuccess((jsonDecode(finalResponse.body) as List)));
       } else {
         Logger().e("$methodName===> response.error ===> ${finalResponse.body}");
         handleGlobalErrorInServer(finalResponse);

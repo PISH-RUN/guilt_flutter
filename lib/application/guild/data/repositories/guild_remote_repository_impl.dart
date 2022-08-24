@@ -31,11 +31,11 @@ class GuildRemoteRepositoryImpl implements GuildRemoteRepository {
 
   @override
   Future<Either<Failure, List<Guild>>> getListOfMyGuilds(String nationalCode) {
-    return remoteDataSource.getFromServer(
-      url: '$BASE_URL_API/api/v1/record/$nationalCode',
+    return remoteDataSource.getListFromServer<Guild>(
+      url: '$BASE_URL_API/api/v1/users/record/$nationalCode',
       params: {},
-      mapSuccess: (date) {
-        guildList = JsonParser.listParser(date, ['data']).mapIndexed((index, json) => GuildModel.fromJson(json, index)).toList();
+      mapSuccess: (data) {
+        guildList = data.mapIndexed((index, json) => GuildModel.fromJson(json, index)).toList();
         return guildList!;
       },
     );
@@ -46,7 +46,7 @@ class GuildRemoteRepositoryImpl implements GuildRemoteRepository {
     guildList = (guildList ?? []).map((e) => e.id == guild.id ? guild : e).toList();
     guildList!.sort((a, b) => a.id.compareTo(b.id));
     final response = await remoteDataSource.postToServer(
-      url: '$BASE_URL_API/api/v1/record/$nationalCode/upsert',
+      url: '$BASE_URL_API/api/v1/users/record/$nationalCode/upsert',
       params: jsonDecode(jsonEncode(guildList!.map((guild) => GuildModel.fromSuper(guild)))),
       mapSuccess: (date) => (date as List).mapIndexed((index, json) => GuildModel.fromJson(json, index)).toList(),
     );
@@ -59,7 +59,7 @@ class GuildRemoteRepositoryImpl implements GuildRemoteRepository {
     (guildList ?? []).add(guild);
     guildList!.sort((a, b) => a.id.compareTo(b.id));
     return remoteDataSource.postToServer(
-      url: '$BASE_URL_API/api/v1/record/$nationalCode',
+      url: '$BASE_URL_API/api/v1/users/record/$nationalCode',
       params: GuildModel.fromSuper(guild).toJson(),
       mapSuccess: (date) => guild,
     );

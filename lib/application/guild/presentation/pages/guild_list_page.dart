@@ -8,20 +8,20 @@ import 'package:guilt_flutter/application/guild/presentation/manager/guild_list_
 import 'package:guilt_flutter/application/guild/presentation/manager/guild_list_state.dart';
 import 'package:guilt_flutter/commons/text_style.dart';
 import 'package:guilt_flutter/commons/widgets/loading_widget.dart';
-import 'package:guilt_flutter/features/login/api/login_api.dart';
+import 'package:logger/logger.dart';
 import 'package:qlevar_router/qlevar_router.dart';
-
-import 'package:flutter/cupertino.dart';
 
 class GuildPage extends StatelessWidget {
   const GuildPage({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    GetIt.instance<GuildListCubit>().initialPage();
     return Scaffold(
       body: SafeArea(
         child: BlocBuilder<GuildListCubit, GuildListState>(
           builder: (context, state) {
+            Logger().e("info=> ${state.toString()}");
             return state.when(
               loading: () => LoadingWidget(),
               error: (failure) => Center(child: Text(failure.message)),
@@ -54,7 +54,6 @@ class _GuildListPageState extends State<GuildListPage> {
   @override
   void initState() {
     guildList = widget.guildList;
-    BlocProvider.of<GuildListCubit>(context).initialPage(GetIt.instance<LoginApi>().getUserId());
     super.initState();
   }
 

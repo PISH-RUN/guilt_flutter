@@ -1,4 +1,6 @@
+import 'package:get_it/get_it.dart';
 import 'package:guilt_flutter/commons/data/model/json_parser.dart';
+import 'package:guilt_flutter/features/login/api/login_api.dart';
 import '../../domain/entities/guild.dart';
 import 'package:latlong2/latlong.dart' as latLng;
 
@@ -40,20 +42,20 @@ class GuildModel extends Guild {
   factory GuildModel.fromJson(Map<String, dynamic> json, int index) {
     return GuildModel(
       id: index,
-      nationalCode: JsonParser.stringParser(json, ['nationalCode']),
-      phoneNumber: JsonParser.stringParser(json, ['phoneNumber']),
-      firstName: JsonParser.stringParser(json, ['firstName']),
-      lastName: JsonParser.stringParser(json, ['lastName']),
-      isicCoding: JsonParser.stringParser(json, ['isicCoding']),
-      organName: JsonParser.stringParser(json, ['organName']),
+      nationalCode: JsonParser.stringParser(json, ['NationalCode']),
+      phoneNumber: JsonParser.stringParser(json, ['MobileNo']),
+      firstName: JsonParser.stringParser(json, ['FirstName']),
+      lastName: JsonParser.stringParser(json, ['LastName']),
+      isicCoding: JsonParser.stringParser(json, ['IsicCoding']),
+      organName: JsonParser.stringParser(json, ['OrganName']),
       isicName: JsonParser.stringParser(json, ['isicName']),
-      guildName: JsonParser.stringParser(json, ['guildName']),
-      province: JsonParser.stringParser(json, ['province']),
-      city: JsonParser.stringParser(json, ['city']),
-      homeTelephone: JsonParser.stringParser(json, ['homeTelephone']),
-      address: JsonParser.stringParser(json, ['address']),
-      postalCode: JsonParser.stringParser(json, ['postalCode']),
-      location: latLng.LatLng(324.0, 324.0), //todo fix this
+      guildName: JsonParser.stringParser(json, ['GuildName']),
+      province: JsonParser.stringParser(json, ['OstanName']),
+      city: JsonParser.stringParser(json, ['ShahrestanName']),
+      homeTelephone: JsonParser.stringParser(json, ['PhoneNo']),
+      address: JsonParser.stringParser(json, ['Address']),
+      postalCode: JsonParser.stringParser(json, ['PostalCode']),
+      location: null,
     );
   }
 

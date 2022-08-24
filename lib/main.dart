@@ -16,6 +16,8 @@ import 'package:mapir_raster/mapir_raster.dart';
 import 'package:qlevar_router/qlevar_router.dart';
 
 import 'features/login/login_injection_container.dart' as di_login;
+import 'features/profile/profile_injection_container.dart' as di_profile;
+import 'application/guild/guild_injection_container.dart' as di_guild;
 
 void main() async {
   await GetStorage.init();
@@ -33,6 +35,8 @@ void prepareGetIt() {
     writeDataToLocal: GetStorage().write,
   ));
   di_login.init();
+  di_profile.init();
+  di_guild.init();
 }
 
 const String initPath = 'guild/dashboard';
