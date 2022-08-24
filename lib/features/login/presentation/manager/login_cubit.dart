@@ -18,7 +18,7 @@ class LoginCubit extends Cubit<LoginState> {
 
   Future<void> loginWithOneTimePassword(String verifyCode) async {
     emit(const LoginState.loading());
-    final response = await _loginMain.loginWithOtp(phoneNumber: LoginCubit.phoneNumber, password: replaceFarsiNumber(verifyCode));
+    final response = await _loginMain.loginWithOtp(nationalCode: LoginCubit.nationalCode, password: replaceFarsiNumber(verifyCode));
     response.fold(
       (failure) => emit(LoginState.error(failure: failure)),
       (_) => emit(const LoginState.success()),

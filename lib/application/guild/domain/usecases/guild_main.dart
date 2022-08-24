@@ -11,28 +11,37 @@ class GuildMain {
 
   GuildMain(this.guildLocalRepository, this.guildRemoteRepository);
 
-  Future<RequestResult> updateGuild({required int userId, required Guild guild}) async {
-    guildLocalRepository.upsertGuildInLocal(userId, [guild]);
-    return guildRemoteRepository.updateData(guild);
+  Future<RequestResult> updateGuild({required String nationalCode, required Guild guild}) async {
+    guildLocalRepository.upsertGuildInLocal(nationalCode, [guild]);
+    return guildRemoteRepository.updateData(nationalCode, guild);
   }
 
-  Future<Either<Failure, List<Guild>>> getListOfMyGuilds({required int userId, bool isForceFromServer = false}) async {
+  Future<RequestResult> addGuild({required String nationalCode, required Guild guild}) async {
+    final response = await guildRemoteRepository.addData(nationalCode, guild);
+    if (response.isLeft()) {
+      return RequestResult.fromEither(response);
+    }
+    guildLocalRepository.upsertGuildInLocal(nationalCode, [response.getOrElse(() => throw UnimplementedError())]);
+    return RequestResult.fromEither(response);
+  }
+
+  Future<Either<Failure, List<Guild>>> getListOfMyGuilds({required String nationalCode, bool isForceFromServer = false}) async {
     if (!isForceFromServer) {
-      final guildList = guildLocalRepository.getListOfMyGuilds(userId);
+      final guildList = guildLocalRepository.getListOfMyGuilds(nationalCode);
       if (guildList != null) {
         return Right(guildList);
       }
     }
-    return guildRemoteRepository.getListOfMyGuilds(userId);
+    return guildRemoteRepository.getListOfMyGuilds(nationalCode);
   }
 
-  Future<Either<Failure, Guild>> getFullDetailOfOneGuild({required int userId, required int guildId, bool isForceFromServer = false}) async {
+  Future<Either<Failure, Guild>> getFullDetailOfOneGuild({required String nationalCode, required int guildId, bool isForceFromServer = false}) async {
     if (!isForceFromServer) {
-      final guild = guildLocalRepository.getFullDetailOfOneGuild(userId, guildId);
+      final guild = guildLocalRepository.getFullDetailOfOneGuild(nationalCode, guildId);
       if (guild != null) {
         return Right(guild);
       }
     }
-    return guildRemoteRepository.getFullDetailOfOneGuild(guildId);
+    return guildRemoteRepository.getFullDetailOfOneGuild(nationalCode, guildId);
   }
 }

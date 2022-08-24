@@ -8,8 +8,8 @@ class LoginMain {
 
   LoginMain(this.repository);
 
-  Future<Either<Failure, bool>> loginWithOtp({required String phoneNumber, required String password}) {
-    return repository.loginWithOtp(phoneNumber, password);
+  Future<Either<Failure, bool>> loginWithOtp({required String nationalCode, required String password}) {
+    return repository.loginWithOtp(nationalCode, password);
   }
 
   Future<Either<Failure, bool>> registerWithPhoneNumber({required String phoneNumber, required String nationalCode}) {

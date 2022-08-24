@@ -1,29 +1,60 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:get_it/get_it.dart';
 import 'package:guilt_flutter/application/colors.dart';
+import 'package:guilt_flutter/application/guild/domain/entities/guild.dart';
+import 'package:guilt_flutter/application/guild/presentation/manager/guild_list_cubit.dart';
+import 'package:guilt_flutter/application/guild/presentation/manager/guild_list_state.dart';
 import 'package:guilt_flutter/commons/text_style.dart';
+import 'package:guilt_flutter/commons/widgets/loading_widget.dart';
+import 'package:guilt_flutter/features/login/api/login_api.dart';
 import 'package:qlevar_router/qlevar_router.dart';
 
+import 'package:flutter/cupertino.dart';
+
+class GuildPage extends StatelessWidget {
+  const GuildPage({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: SafeArea(
+        child: BlocBuilder<GuildListCubit, GuildListState>(
+          builder: (context, state) {
+            return state.when(
+              loading: () => LoadingWidget(),
+              error: (failure) => Center(child: Text(failure.message)),
+              empty: () => const Center(child: Text("خالی است")),
+              loaded: (guildList) => GuildListPage(guildList: guildList),
+            );
+          },
+        ),
+      ),
+    );
+  }
+
+  static Widget wrappedRoute() {
+    return BlocProvider(create: (ctx) => GetIt.instance<GuildListCubit>(), child: const GuildPage());
+  }
+}
+
 class GuildListPage extends StatefulWidget {
-  GuildListPage({Key? key}) : super(key: key);
+  final List<Guild> guildList;
+
+  GuildListPage({required this.guildList, Key? key}) : super(key: key);
 
   @override
   _GuildListPageState createState() => _GuildListPageState();
-
-  final List<String> guildNames = [
-    "خرده فروشی مرغ ، ماهی و تخم مرغ",
-    "خرده فروشی ابزارآلات ساختمانی",
-    "خرده فروشی کود،سم و داروهای شیمیایی برای محصولات کشاورزی",
-    "تراشکاری وفلزکاری",
-  ];
 }
 
 class _GuildListPageState extends State<GuildListPage> {
-  List<String> guildNames = [];
+  late List<Guild> guildList;
 
   @override
   void initState() {
-    guildNames = widget.guildNames;
+    guildList = widget.guildList;
+    BlocProvider.of<GuildListCubit>(context).initialPage(GetIt.instance<LoginApi>().getUserId());
     super.initState();
   }
 
@@ -63,15 +94,15 @@ class _GuildListPageState extends State<GuildListPage> {
           Expanded(
             child: SingleChildScrollView(
               child: Column(
-                children: guildNames
+                children: guildList
                     .map(
-                      (guildName) => Card(
+                      (guild) => Card(
                         elevation: 6,
                         margin: const EdgeInsets.symmetric(horizontal: 14.0, vertical: 10),
                         child: ListTile(
-                          title: AutoSizeText(guildName, style: defaultTextStyle(context, headline: 3), maxLines: 1, minFontSize: 2),
-                          subtitle: Text("شهرکرد", style: defaultTextStyle(context, headline: 5).c(Colors.grey)),
-                          onTap: () => QR.to('guild/1'),
+                          title: AutoSizeText(guild.name, style: defaultTextStyle(context, headline: 3), maxLines: 1, minFontSize: 2),
+                          subtitle: Text(guild.city, style: defaultTextStyle(context, headline: 5).c(Colors.grey)),
+                          onTap: () => QR.to('guild/${guild.id}'),
                         ),
                       ),
                     )
@@ -91,7 +122,7 @@ class _GuildListPageState extends State<GuildListPage> {
   }
 
   void search() {
-    guildNames = widget.guildNames.where((element) => element.contains(controller.text)).toList();
+    guildList = widget.guildList.where((element) => element.name.contains(controller.text)).toList();
     setState(() {});
   }
 }

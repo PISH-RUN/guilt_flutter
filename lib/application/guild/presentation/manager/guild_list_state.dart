@@ -10,4 +10,5 @@ class GuildListState with _$GuildListState {
   const factory GuildListState.loaded({required List<Guild> guildList}) = Loaded;
   const factory GuildListState.loading() = Loading;
   const factory GuildListState.error({required Failure failure}) = Error;
+  const factory GuildListState.empty() = Empty;
 }

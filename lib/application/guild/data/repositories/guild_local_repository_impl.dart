@@ -19,18 +19,18 @@ class GuildLocalRepositoryImpl implements GuildLocalRepository {
   });
 
   @override
-  Guild? getFullDetailOfOneGuild(int userId, int guildId) {
+  Guild? getFullDetailOfOneGuild(String userId, int guildId) {
     List<Guild> localGuildList = getListOfMyGuilds(userId) ?? [];
     return localGuildList.firstWhereOrNull((element) => element.id == guildId);
   }
 
   @override
-  List<Guild>? getListOfMyGuilds(int userId) {
-    return (jsonDecode(readData('$_key $userId')) as List).map((json) => GuildModel.fromJson(json)).toList();
+  List<Guild>? getListOfMyGuilds(String userId) {
+    return (jsonDecode(readData('$_key $userId')) as List).mapIndexed((index, json) => GuildModel.fromJson(json, index)).toList();
   }
 
   @override
-  void upsertGuildInLocal(int userId, List<Guild> guildList) {
+  void upsertGuildInLocal(String userId, List<Guild> guildList) {
     List<Guild> localGuildList = getListOfMyGuilds(userId) ?? [];
     localGuildList = [...guildList, ...localGuildList];
     writeData('$_key $userId', jsonEncode(localGuildList.toSet().toList()));

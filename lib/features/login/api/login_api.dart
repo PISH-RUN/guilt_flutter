@@ -3,7 +3,9 @@ import '../domain/repositories/login_repository.dart';
 abstract class LoginApi {
   bool isUserRegistered();
 
-  void removeToken();
+  void signOut();
+
+  String getUserId();
 }
 
 class LoginApiImpl extends LoginApi {
@@ -15,5 +17,8 @@ class LoginApiImpl extends LoginApi {
   bool isUserRegistered() => loginRepository.getToken().isNotEmpty;
 
   @override
-  void removeToken() async => loginRepository.saveTokenInStorage("");
+  String getUserId() => loginRepository.getUserId();
+
+  @override
+  void signOut() async => loginRepository.saveTokenInStorage("");
 }

@@ -5,9 +5,10 @@ import 'package:guilt_flutter/commons/request_result.dart';
 abstract class LoginRepository {
   Future<Either<Failure, bool>> registerWithPhoneNumber({required String phoneNumber,required String nationalCode});
 
-  Future<Either<Failure, bool>> loginWithOtp(String phoneNumber, String otp);
+  Future<Either<Failure, bool>> loginWithOtp(String nationalCode, String otp);
 
   String getToken();
+  String getUserId();
 
   void saveTokenInStorage(String token);
 }

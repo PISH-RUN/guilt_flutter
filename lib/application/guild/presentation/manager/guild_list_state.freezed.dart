@@ -21,6 +21,7 @@ mixin _$GuildListState {
     required TResult Function(List<Guild> guildList) loaded,
     required TResult Function() loading,
     required TResult Function(Failure failure) error,
+    required TResult Function() empty,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
@@ -28,6 +29,7 @@ mixin _$GuildListState {
     TResult Function(List<Guild> guildList)? loaded,
     TResult Function()? loading,
     TResult Function(Failure failure)? error,
+    TResult Function()? empty,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
@@ -35,6 +37,7 @@ mixin _$GuildListState {
     TResult Function(List<Guild> guildList)? loaded,
     TResult Function()? loading,
     TResult Function(Failure failure)? error,
+    TResult Function()? empty,
     required TResult orElse(),
   }) =>
       throw _privateConstructorUsedError;
@@ -43,6 +46,7 @@ mixin _$GuildListState {
     required TResult Function(Loaded value) loaded,
     required TResult Function(Loading value) loading,
     required TResult Function(Error value) error,
+    required TResult Function(Empty value) empty,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
@@ -50,6 +54,7 @@ mixin _$GuildListState {
     TResult Function(Loaded value)? loaded,
     TResult Function(Loading value)? loading,
     TResult Function(Error value)? error,
+    TResult Function(Empty value)? empty,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
@@ -57,6 +62,7 @@ mixin _$GuildListState {
     TResult Function(Loaded value)? loaded,
     TResult Function(Loading value)? loading,
     TResult Function(Error value)? error,
+    TResult Function(Empty value)? empty,
     required TResult orElse(),
   }) =>
       throw _privateConstructorUsedError;
@@ -150,6 +156,7 @@ class _$Loaded implements Loaded {
     required TResult Function(List<Guild> guildList) loaded,
     required TResult Function() loading,
     required TResult Function(Failure failure) error,
+    required TResult Function() empty,
   }) {
     return loaded(guildList);
   }
@@ -160,6 +167,7 @@ class _$Loaded implements Loaded {
     TResult Function(List<Guild> guildList)? loaded,
     TResult Function()? loading,
     TResult Function(Failure failure)? error,
+    TResult Function()? empty,
   }) {
     return loaded?.call(guildList);
   }
@@ -170,6 +178,7 @@ class _$Loaded implements Loaded {
     TResult Function(List<Guild> guildList)? loaded,
     TResult Function()? loading,
     TResult Function(Failure failure)? error,
+    TResult Function()? empty,
     required TResult orElse(),
   }) {
     if (loaded != null) {
@@ -184,6 +193,7 @@ class _$Loaded implements Loaded {
     required TResult Function(Loaded value) loaded,
     required TResult Function(Loading value) loading,
     required TResult Function(Error value) error,
+    required TResult Function(Empty value) empty,
   }) {
     return loaded(this);
   }
@@ -194,6 +204,7 @@ class _$Loaded implements Loaded {
     TResult Function(Loaded value)? loaded,
     TResult Function(Loading value)? loading,
     TResult Function(Error value)? error,
+    TResult Function(Empty value)? empty,
   }) {
     return loaded?.call(this);
   }
@@ -204,6 +215,7 @@ class _$Loaded implements Loaded {
     TResult Function(Loaded value)? loaded,
     TResult Function(Loading value)? loading,
     TResult Function(Error value)? error,
+    TResult Function(Empty value)? empty,
     required TResult orElse(),
   }) {
     if (loaded != null) {
@@ -263,6 +275,7 @@ class _$Loading implements Loading {
     required TResult Function(List<Guild> guildList) loaded,
     required TResult Function() loading,
     required TResult Function(Failure failure) error,
+    required TResult Function() empty,
   }) {
     return loading();
   }
@@ -273,6 +286,7 @@ class _$Loading implements Loading {
     TResult Function(List<Guild> guildList)? loaded,
     TResult Function()? loading,
     TResult Function(Failure failure)? error,
+    TResult Function()? empty,
   }) {
     return loading?.call();
   }
@@ -283,6 +297,7 @@ class _$Loading implements Loading {
     TResult Function(List<Guild> guildList)? loaded,
     TResult Function()? loading,
     TResult Function(Failure failure)? error,
+    TResult Function()? empty,
     required TResult orElse(),
   }) {
     if (loading != null) {
@@ -297,6 +312,7 @@ class _$Loading implements Loading {
     required TResult Function(Loaded value) loaded,
     required TResult Function(Loading value) loading,
     required TResult Function(Error value) error,
+    required TResult Function(Empty value) empty,
   }) {
     return loading(this);
   }
@@ -307,6 +323,7 @@ class _$Loading implements Loading {
     TResult Function(Loaded value)? loaded,
     TResult Function(Loading value)? loading,
     TResult Function(Error value)? error,
+    TResult Function(Empty value)? empty,
   }) {
     return loading?.call(this);
   }
@@ -317,6 +334,7 @@ class _$Loading implements Loading {
     TResult Function(Loaded value)? loaded,
     TResult Function(Loading value)? loading,
     TResult Function(Error value)? error,
+    TResult Function(Empty value)? empty,
     required TResult orElse(),
   }) {
     if (loading != null) {
@@ -395,6 +413,7 @@ class _$Error implements Error {
     required TResult Function(List<Guild> guildList) loaded,
     required TResult Function() loading,
     required TResult Function(Failure failure) error,
+    required TResult Function() empty,
   }) {
     return error(failure);
   }
@@ -405,6 +424,7 @@ class _$Error implements Error {
     TResult Function(List<Guild> guildList)? loaded,
     TResult Function()? loading,
     TResult Function(Failure failure)? error,
+    TResult Function()? empty,
   }) {
     return error?.call(failure);
   }
@@ -415,6 +435,7 @@ class _$Error implements Error {
     TResult Function(List<Guild> guildList)? loaded,
     TResult Function()? loading,
     TResult Function(Failure failure)? error,
+    TResult Function()? empty,
     required TResult orElse(),
   }) {
     if (error != null) {
@@ -429,6 +450,7 @@ class _$Error implements Error {
     required TResult Function(Loaded value) loaded,
     required TResult Function(Loading value) loading,
     required TResult Function(Error value) error,
+    required TResult Function(Empty value) empty,
   }) {
     return error(this);
   }
@@ -439,6 +461,7 @@ class _$Error implements Error {
     TResult Function(Loaded value)? loaded,
     TResult Function(Loading value)? loading,
     TResult Function(Error value)? error,
+    TResult Function(Empty value)? empty,
   }) {
     return error?.call(this);
   }
@@ -449,6 +472,7 @@ class _$Error implements Error {
     TResult Function(Loaded value)? loaded,
     TResult Function(Loading value)? loading,
     TResult Function(Error value)? error,
+    TResult Function(Empty value)? empty,
     required TResult orElse(),
   }) {
     if (error != null) {
@@ -464,4 +488,118 @@ abstract class Error implements GuildListState {
   Failure get failure;
   @JsonKey(ignore: true)
   _$$ErrorCopyWith<_$Error> get copyWith => throw _privateConstructorUsedError;
+}
+
+/// @nodoc
+abstract class _$$EmptyCopyWith<$Res> {
+  factory _$$EmptyCopyWith(_$Empty value, $Res Function(_$Empty) then) =
+      __$$EmptyCopyWithImpl<$Res>;
+}
+
+/// @nodoc
+class __$$EmptyCopyWithImpl<$Res> extends _$GuildListStateCopyWithImpl<$Res>
+    implements _$$EmptyCopyWith<$Res> {
+  __$$EmptyCopyWithImpl(_$Empty _value, $Res Function(_$Empty) _then)
+      : super(_value, (v) => _then(v as _$Empty));
+
+  @override
+  _$Empty get _value => super._value as _$Empty;
+}
+
+/// @nodoc
+
+class _$Empty implements Empty {
+  const _$Empty();
+
+  @override
+  String toString() {
+    return 'GuildListState.empty()';
+  }
+
+  @override
+  bool operator ==(dynamic other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType && other is _$Empty);
+  }
+
+  @override
+  int get hashCode => runtimeType.hashCode;
+
+  @override
+  @optionalTypeArgs
+  TResult when<TResult extends Object?>({
+    required TResult Function(List<Guild> guildList) loaded,
+    required TResult Function() loading,
+    required TResult Function(Failure failure) error,
+    required TResult Function() empty,
+  }) {
+    return empty();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? whenOrNull<TResult extends Object?>({
+    TResult Function(List<Guild> guildList)? loaded,
+    TResult Function()? loading,
+    TResult Function(Failure failure)? error,
+    TResult Function()? empty,
+  }) {
+    return empty?.call();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeWhen<TResult extends Object?>({
+    TResult Function(List<Guild> guildList)? loaded,
+    TResult Function()? loading,
+    TResult Function(Failure failure)? error,
+    TResult Function()? empty,
+    required TResult orElse(),
+  }) {
+    if (empty != null) {
+      return empty();
+    }
+    return orElse();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult map<TResult extends Object?>({
+    required TResult Function(Loaded value) loaded,
+    required TResult Function(Loading value) loading,
+    required TResult Function(Error value) error,
+    required TResult Function(Empty value) empty,
+  }) {
+    return empty(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? mapOrNull<TResult extends Object?>({
+    TResult Function(Loaded value)? loaded,
+    TResult Function(Loading value)? loading,
+    TResult Function(Error value)? error,
+    TResult Function(Empty value)? empty,
+  }) {
+    return empty?.call(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeMap<TResult extends Object?>({
+    TResult Function(Loaded value)? loaded,
+    TResult Function(Loading value)? loading,
+    TResult Function(Error value)? error,
+    TResult Function(Empty value)? empty,
+    required TResult orElse(),
+  }) {
+    if (empty != null) {
+      return empty(this);
+    }
+    return orElse();
+  }
+}
+
+abstract class Empty implements GuildListState {
+  const factory Empty() = _$Empty;
 }

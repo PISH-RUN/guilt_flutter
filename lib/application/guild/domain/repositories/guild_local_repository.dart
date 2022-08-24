@@ -3,9 +3,9 @@ import 'package:guilt_flutter/application/guild/domain/entities/guild.dart';
 import 'package:guilt_flutter/commons/failures.dart';
 
 abstract class GuildLocalRepository {
-  Guild? getFullDetailOfOneGuild(int userId, int guildId);
+  Guild? getFullDetailOfOneGuild(String userId, int guildId);
 
-  List<Guild>? getListOfMyGuilds(int userId);
+  List<Guild>? getListOfMyGuilds(String userId);
 
-  void upsertGuildInLocal(int userId, List<Guild> guildList);
+  void upsertGuildInLocal(String userId, List<Guild> guildList);
 }

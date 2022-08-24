@@ -24,10 +24,11 @@ class LoginRepositoryImpl implements LoginRepository {
 
   @override
   Future<Either<Failure, bool>> registerWithPhoneNumber({required String phoneNumber, required String nationalCode}) async {
+    setUserId(nationalCode);
     String appNumber = (await PackageInfo.fromPlatform()).buildNumber;
     Either<ServerFailure, bool> result = await dataSource.postToServer<bool>(
-      url: "${BASE_URL_API}auth/otp",
-      params: {'mobile': "+98$phoneNumber", 'app_version': appNumber},
+      url: "$BASE_URL_API/api/v1/otp",
+      params: {'mobile': "0$phoneNumber", 'nationalcode': nationalCode},
       mapSuccess: (Map<String, dynamic> data) => true,
     );
     return result.fold(
@@ -35,12 +36,14 @@ class LoginRepositoryImpl implements LoginRepository {
   }
 
   @override
-  Future<Either<Failure, bool>> loginWithOtp(String phoneNumber, String otp) async {
+  Future<Either<Failure, bool>> loginWithOtp(String nationalCode, String otp) async {
+    setUserId(nationalCode);
     String appNumber = (await PackageInfo.fromPlatform()).buildNumber;
     Either<ServerFailure, Login> result = await dataSource.postToServer<Login>(
-        url: '${BASE_URL_API}auth/login',
-        params: {'mobile': "+98$phoneNumber", 'token': otp, 'app_version': appNumber},
-        mapSuccess: (Map<String, dynamic> data) => LoginModel.fromJson(data));
+      url: '${BASE_URL_API}/api/v1/otp/verify',
+      params: {'nationalcode': nationalCode, 'otp': otp},
+      mapSuccess: (Map<String, dynamic> data) => LoginModel.fromJson(data),
+    );
 
     saveTokenInStorage(result.getOrElse(() => LoginModel(token: "")).token);
     return result.fold(
@@ -56,5 +59,14 @@ class LoginRepositoryImpl implements LoginRepository {
   @override
   void saveTokenInStorage(String token) {
     writeDataToLocal(TOKEN_KEY_SAVE_IN_LOCAL, token);
+  }
+
+  @override
+  String getUserId() {
+    return readDataFromLocal(USER_ID);
+  }
+
+  void setUserId(String userId) {
+    writeDataToLocal(USER_ID, userId);
   }
 }

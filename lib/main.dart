@@ -35,6 +35,8 @@ void prepareGetIt() {
   di_login.init();
 }
 
+const String initPath = 'guild/dashboard';
+
 class MyApp extends StatelessWidget {
   MyApp({Key? key}) : super(key: key);
 
@@ -46,7 +48,7 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       routeInformationParser: const QRouteInformationParser(),
       builder: (context, child) => child == null ? const SizedBox() : Directionality(textDirection: TextDirection.rtl, child: child),
-      routerDelegate: QRouterDelegate(AppRoutes().routes, withWebBar: false, initPath: 'guild/dashboard'),
+      routerDelegate: QRouterDelegate(AppRoutes().routes, withWebBar: false, initPath: initPath),
     );
   }
 }

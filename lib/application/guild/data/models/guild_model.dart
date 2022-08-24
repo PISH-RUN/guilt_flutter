@@ -1,5 +1,6 @@
 import 'package:guilt_flutter/commons/data/model/json_parser.dart';
 import '../../domain/entities/guild.dart';
+import 'package:latlong2/latlong.dart' as latLng;
 
 class GuildModel extends Guild {
   const GuildModel({
@@ -17,6 +18,7 @@ class GuildModel extends Guild {
     required String homeTelephone,
     required String address,
     required String postalCode,
+    required latLng.LatLng? location,
   }) : super(
           id: id,
           nationalCode: nationalCode,
@@ -26,17 +28,18 @@ class GuildModel extends Guild {
           isicCoding: isicCoding,
           organName: organName,
           isicName: isicName,
-          guildName: guildName,
+          name: guildName,
           province: province,
           city: city,
           homeTelephone: homeTelephone,
           address: address,
           postalCode: postalCode,
+          location: location,
         );
 
-  factory GuildModel.fromJson(Map<String, dynamic> json) {
+  factory GuildModel.fromJson(Map<String, dynamic> json, int index) {
     return GuildModel(
-      id: JsonParser.intParser(json, ['id']),
+      id: index,
       nationalCode: JsonParser.stringParser(json, ['nationalCode']),
       phoneNumber: JsonParser.stringParser(json, ['phoneNumber']),
       firstName: JsonParser.stringParser(json, ['firstName']),
@@ -50,6 +53,7 @@ class GuildModel extends Guild {
       homeTelephone: JsonParser.stringParser(json, ['homeTelephone']),
       address: JsonParser.stringParser(json, ['address']),
       postalCode: JsonParser.stringParser(json, ['postalCode']),
+      location: latLng.LatLng(324.0, 324.0), //todo fix this
     );
   }
 
@@ -63,30 +67,30 @@ class GuildModel extends Guild {
       isicCoding: guild.isicCoding,
       organName: guild.organName,
       isicName: guild.isicName,
-      guildName: guild.guildName,
+      guildName: guild.name,
       province: guild.province,
       city: guild.city,
       homeTelephone: guild.homeTelephone,
       address: guild.address,
       postalCode: guild.postalCode,
+      location: guild.location,
     );
   }
 
   Map<String, dynamic> toJson() {
     return {
-      "nationalCode": nationalCode,
-      "phoneNumber": phoneNumber,
-      "firstName": firstName,
-      "lastName": lastName,
-      "isicCoding": isicCoding,
-      "organName": organName,
-      "isicName": isicName,
-      "guildName": guildName,
-      "province": province,
-      "city": city,
-      "homeTelephone": homeTelephone,
-      "address": address,
-      "postalCode": postalCode,
+      "MobileNo": phoneNumber,
+      "FirstName": firstName,
+      "LastName": lastName,
+      "IsicCoding": isicCoding,
+      "OrganName": organName,
+      "GuildName": name,
+      "OstanName": province,
+      "ShahrestanName": city,
+      "PhoneNo": homeTelephone,
+      "Address": address,
+      "PostalCode": postalCode,
+      "location": {"lat": location!.latitude, "lan": location!.longitude},
     };
   }
 }

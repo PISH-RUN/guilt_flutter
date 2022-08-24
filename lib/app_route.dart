@@ -23,22 +23,22 @@ class AppRoutes {
       children: [
         QRoute(
           path: '/dashboard',
-          builder: () => AuthenticatedPage(child: GuildMainPanel(child: GuildListPage(), currentIndexBottomNavigation: 1)),
+          builder: () => AuthenticatedPage(child: GuildMainPanel(currentIndexBottomNavigation: 1, child: GuildPage.wrappedRoute())),
           middleware: [AuthGuard()],
         ),
         QRoute(
           path: '/profile',
-          builder: () => AuthenticatedPage(child: GuildMainPanel(child: ProfilePage(), currentIndexBottomNavigation: 0)),
+          builder: () => const AuthenticatedPage(child: GuildMainPanel(currentIndexBottomNavigation: 0, child: ProfilePage())),
           middleware: [AuthGuard()],
         ),
         QRoute(
-          path: '/settings',
-          builder: () => AuthenticatedPage(child: GuildMainPanel(child: GuildListPage(), currentIndexBottomNavigation: 2)),
+          path: '/add',
+          builder: () => const AuthenticatedPage(child: GuildMainPanel(currentIndexBottomNavigation: 1, child: GuildFormPage(isAddNew: true))),
           middleware: [AuthGuard()],
         ),
         QRoute(
           path: '/:guildId((^[0-9]*\$))',
-          builder: () => const AuthenticatedPage(child: GuildMainPanel(child: GuildFormPage(), currentIndexBottomNavigation: 1)),
+          builder: () => const AuthenticatedPage(child: GuildMainPanel(currentIndexBottomNavigation: 1, child: GuildFormPage(isAddNew: false))),
           middleware: [AuthGuard()],
         ),
       ],
@@ -53,10 +53,10 @@ String redirectPath = '';
 class AuthGuard extends QMiddleware {
   @override
   Future<String?> redirectGuard(String path) async {
-    // if (!GetIt.instance<LoginApi>().isUserRegistered()) {
-    //   redirectPath = path;
-    //   return '/register';
-    // }
+    if (!GetIt.instance<LoginApi>().isUserRegistered()) {
+      redirectPath = path;
+      return '/register';
+    }
     return null;
   }
 }
