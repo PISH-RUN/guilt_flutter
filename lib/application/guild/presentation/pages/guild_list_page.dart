@@ -16,12 +16,11 @@ class GuildPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    GetIt.instance<GuildListCubit>().initialPage();
+    BlocProvider.of<GuildListCubit>(context).initialPage(context);
     return Scaffold(
       body: SafeArea(
         child: BlocBuilder<GuildListCubit, GuildListState>(
           builder: (context, state) {
-            Logger().e("info=> ${state.toString()}");
             return state.when(
               loading: () => LoadingWidget(),
               error: (failure) => Center(child: Text(failure.message)),
@@ -112,7 +111,7 @@ class _GuildListPageState extends State<GuildListPage> {
         ],
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () {},
+        onPressed: () => QR.to('/guild/add'),
         backgroundColor: Theme.of(context).primaryColor,
         foregroundColor: Colors.white,
         child: const Icon(Icons.add),

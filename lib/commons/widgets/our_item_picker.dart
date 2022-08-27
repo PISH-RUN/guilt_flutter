@@ -47,7 +47,7 @@ class _OurItemPickerState extends State<OurItemPicker> {
         final items = widget.onFillParams == null ? widget.items ?? [] : (await widget.onFillParams!());
         showDialog(
           context: context,
-          builder: (_) => ShowAlertDialogWithButtons(
+          builder: (context) => ShowAlertDialogWithButtons(
             controller: widget.controller,
             hint: widget.hint,
             items: items,

@@ -26,22 +26,24 @@ class GuildMain {
   }
 
   Future<Either<Failure, List<Guild>>> getListOfMyGuilds({required String nationalCode, bool isForceFromServer = false}) async {
-    if (!isForceFromServer) {
-      final guildList = guildLocalRepository.getListOfMyGuilds(nationalCode);
-      if (guildList != null) {
-        return Right(guildList);
-      }
-    }
+    //todo
+    // if (!isForceFromServer) {
+    //   final guildList = guildLocalRepository.getListOfMyGuilds(nationalCode);
+    //   if (guildList != null) {
+    //     return Right(guildList);
+    //   }
+    // }
     return guildRemoteRepository.getListOfMyGuilds(nationalCode);
   }
 
   Future<Either<Failure, Guild>> getFullDetailOfOneGuild({required String nationalCode, required int guildId, bool isForceFromServer = false}) async {
-    if (!isForceFromServer) {
-      final guild = guildLocalRepository.getFullDetailOfOneGuild(nationalCode, guildId);
-      if (guild != null) {
-        return Right(guild);
-      }
-    }
+    //todo
+    // if (!isForceFromServer) {
+    //   final guild = guildLocalRepository.getFullDetailOfOneGuild(nationalCode, guildId);
+    //   if (guild != null) {
+    //     return Right(guild);
+    //   }
+    // }
     return guildRemoteRepository.getFullDetailOfOneGuild(nationalCode, guildId);
   }
 }

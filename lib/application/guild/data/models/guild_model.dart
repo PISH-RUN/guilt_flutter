@@ -1,8 +1,10 @@
-import 'package:get_it/get_it.dart';
+import 'package:guilt_flutter/application/guild/domain/entities/icis.dart';
 import 'package:guilt_flutter/commons/data/model/json_parser.dart';
-import 'package:guilt_flutter/features/login/api/login_api.dart';
-import '../../domain/entities/guild.dart';
+import 'package:guilt_flutter/commons/utils.dart';
 import 'package:latlong2/latlong.dart' as latLng;
+import 'package:logger/logger.dart';
+
+import '../../domain/entities/guild.dart';
 
 class GuildModel extends Guild {
   const GuildModel({
@@ -11,9 +13,8 @@ class GuildModel extends Guild {
     required String phoneNumber,
     required String firstName,
     required String lastName,
-    required String isicCoding,
+    required Isic isic,
     required String organName,
-    required String isicName,
     required String guildName,
     required String province,
     required String city,
@@ -27,9 +28,8 @@ class GuildModel extends Guild {
           phoneNumber: phoneNumber,
           firstName: firstName,
           lastName: lastName,
-          isicCoding: isicCoding,
+          isic: isic,
           organName: organName,
-          isicName: isicName,
           name: guildName,
           province: province,
           city: city,
@@ -40,21 +40,22 @@ class GuildModel extends Guild {
         );
 
   factory GuildModel.fromJson(Map<String, dynamic> json, int index) {
+    Logger().i("info=> ${json} ");
+    Logger().i("info=> $isicList ");
     return GuildModel(
       id: index,
-      nationalCode: JsonParser.stringParser(json, ['NationalCode']),
       phoneNumber: JsonParser.stringParser(json, ['MobileNo']),
       firstName: JsonParser.stringParser(json, ['FirstName']),
       lastName: JsonParser.stringParser(json, ['LastName']),
-      isicCoding: JsonParser.stringParser(json, ['IsicCoding']),
+      isic: getIsicWithCode(JsonParser.stringParser(json, ['IsicCoding'])),
       organName: JsonParser.stringParser(json, ['OrganName']),
-      isicName: JsonParser.stringParser(json, ['isicName']),
       guildName: JsonParser.stringParser(json, ['GuildName']),
       province: JsonParser.stringParser(json, ['OstanName']),
       city: JsonParser.stringParser(json, ['ShahrestanName']),
       homeTelephone: JsonParser.stringParser(json, ['PhoneNo']),
       address: JsonParser.stringParser(json, ['Address']),
       postalCode: JsonParser.stringParser(json, ['PostalCode']),
+      nationalCode: JsonParser.stringParser(json, ['NationalCode']),
       location: null,
     );
   }
@@ -66,9 +67,8 @@ class GuildModel extends Guild {
       phoneNumber: guild.phoneNumber,
       firstName: guild.firstName,
       lastName: guild.lastName,
-      isicCoding: guild.isicCoding,
+      isic: guild.isic,
       organName: guild.organName,
-      isicName: guild.isicName,
       guildName: guild.name,
       province: guild.province,
       city: guild.city,
@@ -84,7 +84,7 @@ class GuildModel extends Guild {
       "MobileNo": phoneNumber,
       "FirstName": firstName,
       "LastName": lastName,
-      "IsicCoding": isicCoding,
+      "IsicCoding": isic.code,
       "OrganName": organName,
       "GuildName": name,
       "OstanName": province,
@@ -92,7 +92,6 @@ class GuildModel extends Guild {
       "PhoneNo": homeTelephone,
       "Address": address,
       "PostalCode": postalCode,
-      "location": {"lat": location!.latitude, "lan": location!.longitude},
     };
   }
 }

@@ -33,12 +33,12 @@ class AppRoutes {
         ),
         QRoute(
           path: '/add',
-          builder: () => const AuthenticatedPage(child: GuildMainPanel(currentIndexBottomNavigation: 1, child: GuildFormPage(isAddNew: true))),
+          builder: () => AuthenticatedPage(child: GuildMainPanel(currentIndexBottomNavigation: 1, child: GuildFormPage.wrappedRoute(isAddNew: true))),
           middleware: [AuthGuard()],
         ),
         QRoute(
           path: '/:guildId((^[0-9]*\$))',
-          builder: () => const AuthenticatedPage(child: GuildMainPanel(currentIndexBottomNavigation: 1, child: GuildFormPage(isAddNew: false))),
+          builder: () => AuthenticatedPage(child: GuildMainPanel(currentIndexBottomNavigation: 1, child: GuildFormPage.wrappedRoute(isAddNew: false))),
           middleware: [AuthGuard()],
         ),
       ],

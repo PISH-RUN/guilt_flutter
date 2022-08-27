@@ -266,11 +266,21 @@ bool jsonFiledParserBool(Map<String, dynamic> json, List<String> filedNames) {
   return result.isEmpty ? false : result == "1" || result == "true";
 }
 
-Future<List<Isic>> getListOfIsic(BuildContext context) async {
+List<Isic> isicList = [];
+
+Future<void> initialListOfIsic(BuildContext context) async {
   String data = await DefaultAssetBundle.of(context).loadString("jsons/isic.json");
   final jsonResult = jsonDecode(data) as List;
   final output = jsonResult.map<Isic>((e) => Isic(name: e["ISICName"].toString().trim(), code: e["isicCoding"].toString().trim())).toList();
-  return output;
+  isicList = output;
+}
+
+Isic getIsicWithCode(String code) {
+  return isicList.firstWhere((element) => element.code == code);
+}
+
+Isic getIsicWithName(String name) {
+  return isicList.firstWhere((element) => element.name == name);
 }
 
 Future<List<String>> getIranProvince(BuildContext context) async {

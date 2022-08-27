@@ -1,5 +1,6 @@
 import 'package:equatable/equatable.dart';
 import 'package:get_it/get_it.dart';
+import 'package:guilt_flutter/application/guild/domain/entities/icis.dart';
 import 'package:guilt_flutter/features/login/api/login_api.dart';
 import 'package:latlong2/latlong.dart' as latLng;
 
@@ -9,9 +10,8 @@ class Guild extends Equatable {
   final String phoneNumber;
   final String firstName;
   final String lastName;
-  final String isicCoding;
   final String organName;
-  final String isicName;
+  final Isic isic;
   final String name;
   final String province;
   final String city;
@@ -26,9 +26,8 @@ class Guild extends Equatable {
     required this.phoneNumber,
     required this.firstName,
     required this.lastName,
-    required this.isicCoding,
     required this.organName,
-    required this.isicName,
+    required this.isic,
     required this.name,
     required this.province,
     required this.city,
@@ -38,10 +37,9 @@ class Guild extends Equatable {
     required this.location,
   });
 
-
   @override
   String toString() {
-    return 'Guild{nationalCode: $nationalCode, phoneNumber: $phoneNumber, firstName: $firstName, isicCoding: $isicCoding, province: $province, city: $city, address: $address, location: $location}';
+    return 'Guild{nationalCode: $nationalCode, phoneNumber: $phoneNumber, firstName: $firstName, isicCoding: ${isic.code}, province: $province, city: $city, address: $address, location: $location}';
   }
 
   Guild copyWith({
@@ -50,9 +48,8 @@ class Guild extends Equatable {
     String? phoneNumber,
     String? firstName,
     String? lastName,
-    String? isicCoding,
     String? organName,
-    String? isicName,
+    Isic? isic,
     String? guildName,
     String? province,
     String? city,
@@ -67,9 +64,8 @@ class Guild extends Equatable {
       phoneNumber: phoneNumber ?? this.phoneNumber,
       firstName: firstName ?? this.firstName,
       lastName: lastName ?? this.lastName,
-      isicCoding: isicCoding ?? this.isicCoding,
       organName: organName ?? this.organName,
-      isicName: isicName ?? this.isicName,
+      isic: isic ?? this.isic,
       name: guildName ?? this.name,
       province: province ?? this.province,
       city: city ?? this.city,
@@ -91,8 +87,7 @@ class Guild extends Equatable {
       name: '',
       address: '',
       homeTelephone: '',
-      isicCoding: '',
-      isicName: '',
+      isic: const Isic(code: "", name: ""),
       location: null,
       organName: '',
       postalCode: '',

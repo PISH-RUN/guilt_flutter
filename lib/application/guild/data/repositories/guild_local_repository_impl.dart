@@ -4,6 +4,7 @@ import 'package:guilt_flutter/application/guild/data/models/guild_model.dart';
 import 'package:guilt_flutter/application/guild/domain/entities/guild.dart';
 import 'package:guilt_flutter/application/guild/domain/repositories/guild_local_repository.dart';
 import 'package:collection/collection.dart';
+import 'package:logger/logger.dart';
 
 class GuildLocalRepositoryImpl implements GuildLocalRepository {
   final String Function(String key) readData;
@@ -36,6 +37,7 @@ class GuildLocalRepositoryImpl implements GuildLocalRepository {
   void upsertGuildInLocal(String userId, List<Guild> guildList) {
     List<Guild> localGuildList = getListOfMyGuilds(userId) ?? [];
     localGuildList = [...guildList, ...localGuildList];
-    writeData('$_key $userId', jsonEncode(localGuildList.toSet().toList()));
+    Logger().i("info=> ${localGuildList} ");
+    writeData('$_key $userId', jsonEncode(localGuildList.toSet().map((e) => GuildModel.fromSuper(e).toJson()).toList()));
   }
 }
