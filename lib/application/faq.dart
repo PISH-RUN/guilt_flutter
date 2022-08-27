@@ -32,23 +32,28 @@ class Faq extends StatelessWidget {
             physics: const BouncingScrollPhysics(),
             itemCount: questionList.length,
             itemBuilder: (BuildContext context, int index) {
-              return Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  Text(
-                    questionList[index].question,
-                    textAlign: TextAlign.center,
-                    style: defaultTextStyle(context, headline: 4),
+              return Card(
+                margin: const EdgeInsets.all(12.0),
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      Text(
+                        questionList[index].question,
+                        textAlign: TextAlign.center,
+                        style: defaultTextStyle(context, headline: 4),
+                      ),
+                      const SizedBox(height: 5.0),
+                      Text(
+                        questionList[index].answer,
+                        textAlign: TextAlign.center,
+                        style: defaultTextStyle(context, headline: 5).c(Colors.black54),
+                      ),
+                    ],
                   ),
-                  const SizedBox(height: 5.0),
-                  Text(
-                    questionList[index].answer,
-                    textAlign: TextAlign.center,
-                    style: defaultTextStyle(context, headline: 5).c(Colors.black54),
-                  ),
-                  const SizedBox(height: 20.0),
-                ],
+                ),
               );
             },
           );
