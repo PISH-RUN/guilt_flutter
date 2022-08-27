@@ -3,13 +3,11 @@ import '../../domain/entities/user_info.dart';
 
 class UserInfoModel extends UserInfo {
   const UserInfoModel({
-    required int id,
     required String firstName,
     required String lastName,
     required String phoneNumber,
     required String nationalCode,
   }) : super(
-          id: id,
           firstName: firstName,
           lastName: lastName,
           phoneNumber: phoneNumber,
@@ -18,7 +16,6 @@ class UserInfoModel extends UserInfo {
 
   factory UserInfoModel.fromJson(Map<String, dynamic> json) {
     return UserInfoModel(
-      id: JsonParser.intParser(json, ['id']) ?? 0,
       firstName: JsonParser.stringParser(json, ['firstName']),
       lastName: JsonParser.stringParser(json, ['lastName']),
       phoneNumber: JsonParser.stringParser(json, ['phoneNumber']),
@@ -28,7 +25,6 @@ class UserInfoModel extends UserInfo {
 
   Map<String, dynamic> toJson() {
     return {
-      "id": id,
       "firstName": firstName,
       "lastName": lastName,
       "phoneNumber": phoneNumber,

@@ -11,6 +11,7 @@ import 'package:guilt_flutter/commons/utils.dart';
 import 'package:guilt_flutter/commons/widgets/loading_widget.dart';
 import 'package:guilt_flutter/commons/widgets/our_item_picker.dart';
 import 'package:latlong2/latlong.dart' as lat_lng;
+import 'package:logger/logger.dart';
 import 'package:qlevar_router/qlevar_router.dart';
 
 class GuildFormPage extends StatelessWidget {
@@ -21,19 +22,31 @@ class GuildFormPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if (!isAddNew) BlocProvider.of<GuildCubit>(context).initialPage(int.parse(QR.params['guildId'].toString()));
-    return Scaffold(
-      body: SafeArea(
-        child: isAddNew
-            ? GuildFormWidget(isAddNew: true, guild: Guild.fromEmpty())
-            : BlocBuilder<GuildCubit, GuildState>(
-                builder: (context, state) {
-                  return state.when(
-                    loading: () => LoadingWidget(),
-                    error: (failure) => Center(child: Text(failure.message)),
-                    loaded: (guild) => GuildFormWidget(isAddNew: false, guild: guild),
-                  );
-                },
-              ),
+    return WillPopScope(
+      onWillPop: () async {
+        return false;
+      },
+      child: Scaffold(
+        body: SafeArea(
+          child: isAddNew
+              ? BlocListener<GuildCubit, GuildState>(
+                  listener: (context, state) {
+                    if (state is Loaded) {
+                      QR.back();
+                    }
+                  },
+                  child: GuildFormWidget(isAddNew: true, guild: Guild.fromEmpty()),
+                )
+              : BlocBuilder<GuildCubit, GuildState>(
+                  builder: (context, state) {
+                    return state.when(
+                      loading: () => LoadingWidget(),
+                      error: (failure) => Center(child: Text(failure.message)),
+                      loaded: (guild) => GuildFormWidget(isAddNew: false, guild: guild),
+                    );
+                  },
+                ),
+        ),
       ),
     );
   }
@@ -86,7 +99,6 @@ class _GuildFormWidgetState extends State<GuildFormWidget> {
     isicController = TextEditingController(text: guild.isic.name);
     isic = guild.isic.name;
     cityController = TextEditingController(text: guild.city);
-    cityController = TextEditingController(text: guild.city);
     postalCodeController = TextEditingController(text: guild.postalCode);
     phoneController = TextEditingController(text: guild.phoneNumber);
     homeTelephoneController = TextEditingController(text: guild.homeTelephone);
@@ -97,45 +109,51 @@ class _GuildFormWidgetState extends State<GuildFormWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Stack(
-        children: [
-          Form(
-            key: formKey,
-            child: Column(
-              children: [
-                Expanded(
-                  child: SingleChildScrollView(
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        const SizedBox(height: 40.0),
-                        baseInformationWidget(context),
-                      ],
+    return WillPopScope(
+      onWillPop: () async {
+        Logger().wtf("info=>  ");
+        return false;
+      },
+      child: Scaffold(
+        body: Stack(
+          children: [
+            Form(
+              key: formKey,
+              child: Column(
+                children: [
+                  Expanded(
+                    child: SingleChildScrollView(
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          const SizedBox(height: 40.0),
+                          baseInformationWidget(context),
+                        ],
+                      ),
                     ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
+        floatingActionButton: isEditable || widget.isAddNew
+            ? FloatingActionButton(
+                onPressed: () {
+                  if (!formKey.currentState!.validate()) {
+                    return;
+                  }
+                  formKey.currentState!.save();
+                  widget.isAddNew ? BlocProvider.of<GuildCubit>(context).addGuild(guild) : BlocProvider.of<GuildCubit>(context).saveGuild(guild);
+                  isEditable = false;
+                  setState(() {});
+                },
+                backgroundColor: Theme.of(context).primaryColor,
+                foregroundColor: Colors.white,
+                child: const Icon(Icons.save),
+              )
+            : null,
       ),
-      floatingActionButton: isEditable
-          ? FloatingActionButton(
-              onPressed: () {
-                if (!formKey.currentState!.validate()) {
-                  return;
-                }
-                formKey.currentState!.save();
-                widget.isAddNew ? BlocProvider.of<GuildCubit>(context).addGuild(guild) : BlocProvider.of<GuildCubit>(context).saveGuild(guild);
-                isEditable = false;
-                setState(() {});
-              },
-              backgroundColor: Theme.of(context).primaryColor,
-              foregroundColor: Colors.white,
-              child: const Icon(Icons.save),
-            )
-          : null,
     );
   }
 
@@ -215,7 +233,7 @@ class _GuildFormWidgetState extends State<GuildFormWidget> {
                   Column(
                     mainAxisSize: MainAxisSize.min,
                     children: <Widget>[
-                      isEditable
+                      isEditable || widget.isAddNew
                           ? TextFormField(
                               style: defaultTextStyle(context),
                               controller: firstNameController,
@@ -249,7 +267,6 @@ class _GuildFormWidgetState extends State<GuildFormWidget> {
                             )
                           : labelWidget(Icons.person_outline, "نام خانوادگی", lastNameController.text),
                       SizedBox(height: paddingBetweenTextFiled),
-
                       isEditable || widget.isAddNew
                           ? TextFormField(
                               style: defaultTextStyle(context),
@@ -282,7 +299,6 @@ class _GuildFormWidgetState extends State<GuildFormWidget> {
                             )
                           : labelWidget(Icons.store, "نام ارگان", organController.text),
                       SizedBox(height: paddingBetweenTextFiled),
-
                       isEditable || widget.isAddNew
                           ? TextFormField(
                               style: defaultTextStyle(context),
@@ -354,7 +370,9 @@ class _GuildFormWidgetState extends State<GuildFormWidget> {
                               items: null,
                               onFillParams: () => getIranProvince(context),
                               onChanged: (value) {
-                                guild = guild.copyWith(province: value);
+                                guild = guild.copyWith(province: value, city: '');
+                                cityController.text = '';
+                                setState(() {});
                               },
                               currentText: provinceController.text,
                               controller: provinceController,
@@ -374,7 +392,7 @@ class _GuildFormWidgetState extends State<GuildFormWidget> {
                               currentText: cityController.text,
                               controller: cityController,
                             )
-                          : labelWidget(Icons.pin_drop_outlined, "شهر محل سکونت", provinceController.text),
+                          : labelWidget(Icons.pin_drop_outlined, "شهر محل سکونت", cityController.text),
                       SizedBox(height: paddingBetweenTextFiled),
                       isEditable || widget.isAddNew
                           ? TextFormField(
@@ -408,44 +426,49 @@ class _GuildFormWidgetState extends State<GuildFormWidget> {
                               maxLines: 4,
                             )
                           : labelWidget(Icons.pin_drop_outlined, "نشانی کامل", addressController.text),
-                      // if (isEditable || pinLocation != null)
-                      //   GestureDetector(
-                      //     onTap: () => showDialog(
-                      //       context: context,
-                      //       builder: (_) => AlertDialog(
-                      //         contentPadding: EdgeInsets.zero,
-                      //         shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(16.0))),
-                      //         content: MapWidget(
-                      //           key: UniqueKey(),
-                      //           defaultPinLocation: pinLocation,
-                      //           onChangePinLocation: (location) {
-                      //             pinLocation = location;
-                      //             setState(() {});
-                      //           },
-                      //         ),
-                      //       ),
-                      //     ),
-                      //     child: AbsorbPointer(
-                      //       child: Container(
-                      //         width: double.infinity,
-                      //         height: 180,
-                      //         decoration: BoxDecoration(
-                      //           color: Colors.blueGrey.withOpacity(0.4),
-                      //           shape: BoxShape.rectangle,
-                      //           borderRadius: const BorderRadius.all(Radius.circular(16)),
-                      //         ),
-                      //         child: pinLocation == null
-                      //             ? Center(
-                      //                 child: Text(
-                      //                   "موقعیت صنف را روی نقشه پیدا کنید",
-                      //                   style: defaultTextStyle(context, headline: 4).c(Colors.white),
-                      //                 ),
-                      //               )
-                      //             : MapScreenShotWidget(pinLocation: pinLocation!),
-                      //       ),
-                      //     ),
-                      //   ),
-                      // SizedBox(height: paddingBetweenTextFiled),
+                      if (isEditable || pinLocation != null)
+                        GestureDetector(
+                          onTap: () {
+                            if (!isEditable && !widget.isAddNew) {
+                              return;
+                            }
+                            showDialog(
+                              context: context,
+                              builder: (_) => AlertDialog(
+                                contentPadding: EdgeInsets.zero,
+                                shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(16.0))),
+                                content: MapWidget(
+                                  key: UniqueKey(),
+                                  defaultPinLocation: pinLocation,
+                                  onChangePinLocation: (location) {
+                                    pinLocation = location;
+                                    setState(() {});
+                                  },
+                                ),
+                              ),
+                            );
+                          },
+                          child: AbsorbPointer(
+                            child: Container(
+                              width: double.infinity,
+                              height: 180,
+                              decoration: BoxDecoration(
+                                color: Colors.blueGrey.withOpacity(0.4),
+                                shape: BoxShape.rectangle,
+                                borderRadius: const BorderRadius.all(Radius.circular(16)),
+                              ),
+                              child: pinLocation == null
+                                  ? Center(
+                                      child: Text(
+                                        "موقعیت صنف را روی نقشه پیدا کنید",
+                                        style: defaultTextStyle(context, headline: 4).c(Colors.white),
+                                      ),
+                                    )
+                                  : MapScreenShotWidget(pinLocation: pinLocation!),
+                            ),
+                          ),
+                        ),
+                      SizedBox(height: paddingBetweenTextFiled),
                       const SizedBox(height: 26.0),
                     ],
                   ),
@@ -462,9 +485,9 @@ class _GuildFormWidgetState extends State<GuildFormWidget> {
     return const InputDecoration().copyWith(
       helperText: '',
       helperMaxLines: 1,
-      enabledBorder: OutlineInputBorder(
-        borderRadius: const BorderRadius.all(Radius.circular(4)),
-        borderSide: BorderSide(width: 1.2, color: isEditable ? const Color(0xd9848484) : Colors.transparent),
+      enabledBorder: const OutlineInputBorder(
+        borderRadius: BorderRadius.all(Radius.circular(4)),
+        borderSide: BorderSide(width: 1.2, color: Color(0xd9848484)),
       ),
     );
   }

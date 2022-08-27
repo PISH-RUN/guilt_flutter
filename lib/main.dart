@@ -13,6 +13,7 @@ import 'package:qlevar_router/qlevar_router.dart';
 
 import 'application/guild/guild_injection_container.dart' as di_guild;
 import 'features/login/login_injection_container.dart' as di_login;
+import 'features/profile/profile_injection_container.dart' as di_profile;
 
 void main() async {
   await GetStorage.init();
@@ -30,8 +31,8 @@ void prepareGetIt() {
     writeDataToLocal: GetStorage().write,
   ));
   di_login.init();
-  // di_profile.init();
   di_guild.init();
+  di_profile.init();
 }
 
 const String initPath = 'guild/dashboard';

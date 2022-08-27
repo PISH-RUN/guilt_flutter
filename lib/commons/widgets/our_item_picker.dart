@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:guilt_flutter/application/colors.dart';
 import 'package:guilt_flutter/commons/text_style.dart';
-import 'package:logger/logger.dart';
 
 class OurItemPicker extends StatefulWidget {
   final IconData? icon;

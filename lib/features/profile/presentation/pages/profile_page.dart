@@ -15,6 +15,10 @@ class ProfilePage extends StatefulWidget {
 
   @override
   _ProfilePageState createState() => _ProfilePageState();
+
+  static Widget wrappedRoute() {
+    return BlocProvider(create: (ctx) => GetIt.instance<UpdateUserCubit>(), child: const ProfilePage());
+  }
 }
 
 class _ProfilePageState extends State<ProfilePage> {
@@ -27,14 +31,12 @@ class _ProfilePageState extends State<ProfilePage> {
 
   bool isEditable = false;
 
-  UserInfo user = const UserInfo(id: 1, firstName: 'محمد', lastName: 'مقصودی', phoneNumber: "0938498324", nationalCode: "8974983248");
-
   @override
   void initState() {
-    firstNameController = TextEditingController(text: user.firstName);
-    lastNameController = TextEditingController(text: user.lastName);
-    phoneController = TextEditingController(text: user.phoneNumber);
-    nationalCodeController = TextEditingController(text: user.nationalCode);
+    firstNameController = TextEditingController(text: userInfo.firstName);
+    lastNameController = TextEditingController(text: userInfo.lastName);
+    phoneController = TextEditingController(text: userInfo.phoneNumber);
+    nationalCodeController = TextEditingController(text: userInfo.nationalCode);
     super.initState();
   }
 
@@ -70,7 +72,9 @@ class _ProfilePageState extends State<ProfilePage> {
                   return;
                 }
                 formKey.currentState!.save();
-                BlocProvider.of<UpdateUserCubit>(context).updateUserInfo(user);
+                BlocProvider.of<UpdateUserCubit>(context).updateUserInfo(userInfo);
+                isEditable=false;
+                setState(() {});
               },
               backgroundColor: Theme.of(context).primaryColor,
               foregroundColor: Colors.white,
@@ -167,6 +171,7 @@ class _ProfilePageState extends State<ProfilePage> {
                                   if (value.length < 2) return "نام کوتاه است";
                                   return null;
                                 },
+                                onSaved: (value) => userInfo = userInfo.copyWith(firstName: value),
                               )
                             : labelWidget(Icons.person_outline, "نام", firstNameController.text),
                         SizedBox(height: paddingBetweenTextFiled),
@@ -184,6 +189,7 @@ class _ProfilePageState extends State<ProfilePage> {
                                   if (value.length < 2) return "نام خانوادگی کوتاه است";
                                   return null;
                                 },
+                                onSaved: (value) => userInfo = userInfo.copyWith(lastName: value),
                               )
                             : labelWidget(Icons.person_outline, "نام خانوادگی", lastNameController.text),
                         SizedBox(height: paddingBetweenTextFiled),
@@ -203,6 +209,7 @@ class _ProfilePageState extends State<ProfilePage> {
                                   if (!validatePhoneNumber(value)) return "شماره تلفن معتبر نیست";
                                   return null;
                                 },
+                                onSaved: (value) => userInfo = userInfo.copyWith(phoneNumber: value),
                               )
                             : labelWidget(Icons.phone, "شماره تلفن", phoneController.text),
                         SizedBox(height: paddingBetweenTextFiled),
@@ -222,6 +229,7 @@ class _ProfilePageState extends State<ProfilePage> {
                                   if (value.length != 10) return "کد ملی باید ده رقم باشد";
                                   return null;
                                 },
+                                onSaved: (value) => userInfo = userInfo.copyWith(nationalCode: value),
                               )
                             : labelWidget(Icons.map, "کد ملی", nationalCodeController.text),
                         SizedBox(height: paddingBetweenTextFiled),

@@ -45,6 +45,12 @@ class BottomNavigation extends StatelessWidget {
             label: 'لیست اصناف',
             backgroundColor: Colors.white,
           ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.question_answer_outlined, color: AppColor.blue),
+            activeIcon: Icon(Icons.question_answer, color: AppColor.blue),
+            label: 'سوالات متداول',
+            backgroundColor: Colors.white,
+          ),
         ],
         onTap: (index) {
           if (index == currentIndexBottomNavigation) return;
@@ -54,6 +60,9 @@ class BottomNavigation extends StatelessWidget {
               return;
             case 1:
               QR.to('/guild/dashboard');
+              return;
+            case 2:
+              QR.to('/guild/faq');
               return;
             default:
               return;

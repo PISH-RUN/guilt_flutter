@@ -24,7 +24,19 @@ class GuildPage extends StatelessWidget {
             return state.when(
               loading: () => LoadingWidget(),
               error: (failure) => Center(child: Text(failure.message)),
-              empty: () => const Center(child: Text("خالی است")),
+              empty: () => Column(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Text(
+                      "سامانه صنفینو، با هدف تکمیل و ویرایش اطلاعات اصناف محترم جمهوری اسلامی ایران طراحی و پیاده سازی گردیده است. متقاضیان ثبت نام کالابرگ، می توانند با مراجعه به سایت یا اپلیکشین صنفینو، اقدام به ثبت درخواست خود نمایند. ثبت نام و ویرایش اطلاعات در این سامانه از طریق وارد کردن شماره صنفی و کد ملی است و برای پیگیری درخواست،می توانید از قسمت پیگیری سایت، اقدام نمایید.",
+                      textAlign: TextAlign.center,
+                      style: defaultTextStyle(context, headline: 5).h(1.9),
+                    ),
+                  ),
+                  const Center(child: Text("خالی است")),
+                ],
+              ),
               loaded: (guildList) => GuildListPage(guildList: guildList),
             );
           },
@@ -63,8 +75,22 @@ class _GuildListPageState extends State<GuildListPage> {
     return Scaffold(
       body: Column(
         children: [
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Text(
+              "سامانه صنفینو، با هدف تکمیل و ویرایش اطلاعات اصناف محترم جمهوری اسلامی ایران طراحی و پیاده سازی گردیده است. متقاضیان ثبت نام کالابرگ، می توانند با مراجعه به سایت یا اپلیکشین صنفینو، اقدام به ثبت درخواست خود نمایند. ثبت نام و ویرایش اطلاعات در این سامانه از طریق وارد کردن شماره صنفی و کد ملی است و برای پیگیری درخواست،می توانید از قسمت پیگیری سایت، اقدام نمایید.",
+              textAlign: TextAlign.center,
+              style: defaultTextStyle(context, headline: 5).h(1.9),
+            ),
+          ),
+          const SizedBox(height: 8.0),
           Container(
-            color: Colors.white,
+            margin: EdgeInsets.all(8.0),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              shape: BoxShape.rectangle,
+              borderRadius: BorderRadius.all(Radius.circular(9)),
+            ),
             padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 2.0),
             child: Row(
               children: <Widget>[
@@ -100,7 +126,9 @@ class _GuildListPageState extends State<GuildListPage> {
                         child: ListTile(
                           title: AutoSizeText(guild.name, style: defaultTextStyle(context, headline: 3), maxLines: 1, minFontSize: 2),
                           subtitle: Text(guild.city, style: defaultTextStyle(context, headline: 5).c(Colors.grey)),
-                          onTap: () => QR.to('guild/${guild.id}'),
+                          onTap: () {
+                            QR.to('guild/${guild.id}').then((v) => BlocProvider.of<GuildListCubit>(context).initialPage(context));
+                          },
                         ),
                       ),
                     )

@@ -36,9 +36,7 @@ class _LoginPageState extends State<LoginPage> {
         phoneNumberListener: () => setState(() {}),
         smsListener: () {
           verifyController.text = extractNumberInLargeText(smsUserConsent.receivedSms ?? "", ONE_TIME_PASSWORD_LENGTH);
-          if (verifyController.text
-              .trim()
-              .length == 4) {
+          if (verifyController.text.trim().length == ONE_TIME_PASSWORD_LENGTH) {
             onSubmitButton();
           }
           smsUserConsent.dispose();
@@ -78,10 +76,7 @@ class _LoginPageState extends State<LoginPage> {
                             child: Column(
                               children: <Widget>[
                                 const SizedBox(height: 25.0),
-                                Text("لطفا کد تایید را وارد کنید", style: Theme
-                                    .of(context)
-                                    .textTheme
-                                    .headline4),
+                                Text("لطفا کد تایید را وارد کنید", style: Theme.of(context).textTheme.headline4),
                                 const SizedBox(height: 30.0),
                                 Directionality(
                                   textDirection: TextDirection.ltr,
@@ -134,11 +129,7 @@ class _LoginPageState extends State<LoginPage> {
                                 GestureDetector(
                                   onTap: () => QR.back(),
                                   child: Text("ارسال مجدد کد تایید",
-                                      style: Theme
-                                          .of(context)
-                                          .textTheme
-                                          .headline4!
-                                          .copyWith(color: Colors.black.withOpacity(0.45))),
+                                      style: Theme.of(context).textTheme.headline4!.copyWith(color: Colors.black.withOpacity(0.45))),
                                 ),
                               ],
                             ),

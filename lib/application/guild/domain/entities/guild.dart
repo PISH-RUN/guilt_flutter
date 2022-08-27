@@ -37,11 +37,6 @@ class Guild extends Equatable {
     required this.location,
   });
 
-  @override
-  String toString() {
-    return 'Guild{nationalCode: $nationalCode, phoneNumber: $phoneNumber, firstName: $firstName, isicCoding: ${isic.code}, province: $province, city: $city, address: $address, location: $location}';
-  }
-
   Guild copyWith({
     int? id,
     String? nationalCode,

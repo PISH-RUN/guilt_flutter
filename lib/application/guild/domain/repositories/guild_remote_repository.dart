@@ -4,11 +4,10 @@ import 'package:guilt_flutter/commons/failures.dart';
 import 'package:guilt_flutter/commons/request_result.dart';
 
 abstract class GuildRemoteRepository {
-  Future<Either<Failure, Guild>> getFullDetailOfOneGuild(String nationalCode, int guildId);
 
   Future<Either<Failure, List<Guild>>> getListOfMyGuilds(String userId);
 
-  Future<RequestResult> updateData(String nationalCode, Guild guild);
+  Future<RequestResult> updateAllData(String nationalCode, List<Guild> guildList);
 
   Future<Either<Failure, Guild>> addData(String nationalCode, Guild guild);
 }

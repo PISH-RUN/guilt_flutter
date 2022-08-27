@@ -40,8 +40,6 @@ class GuildModel extends Guild {
         );
 
   factory GuildModel.fromJson(Map<String, dynamic> json, int index) {
-    Logger().i("info=> ${json} ");
-    Logger().i("info=> $isicList ");
     return GuildModel(
       id: index,
       phoneNumber: JsonParser.stringParser(json, ['MobileNo']),
@@ -92,6 +90,8 @@ class GuildModel extends Guild {
       "PhoneNo": homeTelephone,
       "Address": address,
       "PostalCode": postalCode,
+      "NationalCode": nationalCode,
+      //todo send location
     };
   }
 }

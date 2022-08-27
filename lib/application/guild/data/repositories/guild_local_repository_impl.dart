@@ -35,9 +35,11 @@ class GuildLocalRepositoryImpl implements GuildLocalRepository {
 
   @override
   void upsertGuildInLocal(String userId, List<Guild> guildList) {
-    List<Guild> localGuildList = getListOfMyGuilds(userId) ?? [];
-    localGuildList = [...guildList, ...localGuildList];
-    Logger().i("info=> ${localGuildList} ");
-    writeData('$_key $userId', jsonEncode(localGuildList.toSet().map((e) => GuildModel.fromSuper(e).toJson()).toList()));
+    writeData('$_key $userId', jsonEncode(guildList.map((e) => GuildModel.fromSuper(e).toJson()).toList()));
+  }
+
+  @override
+  void replaceData(String userId, List<Guild> guildList) {
+    writeData('$_key $userId', jsonEncode(guildList.toSet().map((e) => GuildModel.fromSuper(e).toJson()).toList()));
   }
 }

@@ -13,7 +13,7 @@ class IconNameWidget extends StatelessWidget {
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const Image(image: AssetImage('images/pishrun_logo.png')),
+            const Image(image: AssetImage('images/logo.png'),height: 60,width: 60),
             const SizedBox(width: 10.0),
             Text(
               "مدیریت اصناف",

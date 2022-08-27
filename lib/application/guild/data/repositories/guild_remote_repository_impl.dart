@@ -22,28 +22,12 @@ class GuildRemoteRepositoryImpl implements GuildRemoteRepository {
 
   GuildRemoteRepositoryImpl({required this.remoteDataSource});
 
-  List<Guild>? guildList;
-
-  @override
-  Future<Either<Failure, Guild>> getFullDetailOfOneGuild(String nationalCode, int guildId) async {
-    if (guildList == null) {
-      final response = await getListOfMyGuilds(nationalCode);
-      if (response.isLeft()) {
-        return Left(response.swap().getOrElse(() => throw UnimplementedError()));
-      }
-    }
-    return Right(guildList!.firstWhere((element) => element.id == guildId));
-  }
-
   @override
   Future<Either<Failure, List<Guild>>> getListOfMyGuilds(String nationalCode) {
     return remoteDataSource.getListFromServer<Guild>(
       url: '$BASE_URL_API/api/v1/users/record/$nationalCode',
       params: {},
-      mapSuccess: (data) {
-        guildList = data.mapIndexed((index, json) => GuildModel.fromJson(json, index)).toList();
-        return guildList!;
-      },
+      mapSuccess: (data) => data.mapIndexed((index, json) => GuildModel.fromJson(json, index)).toList(),
     );
   }
 
@@ -60,11 +44,11 @@ class GuildRemoteRepositoryImpl implements GuildRemoteRepository {
     return output;
   }
 
+
   @override
-  Future<RequestResult> updateData(String nationalCode, Guild guild) async {
-    guildList = (guildList ?? []).map((e) => e.id == guild.id ? guild : e).toList();
-    guildList!.sort((a, b) => a.id.compareTo(b.id));
-    final json = guildList!.map((guild) => GuildModel.fromSuper(guild).toJson()).toList();
+  Future<RequestResult> updateAllData(String nationalCode, List<Guild> guildList) async {
+    Logger().i("info=>4 ${guildList} ");
+    final json = guildList.map((guild) => GuildModel.fromSuper(guild).toJson()).toList();
     try {
       http.Response finalResponse = await http.Client().post(
         Uri.parse('$BASE_URL_API/api/v1/users/record/$nationalCode/upsert'),
@@ -94,13 +78,11 @@ class GuildRemoteRepositoryImpl implements GuildRemoteRepository {
 
   @override
   Future<Either<Failure, Guild>> addData(String nationalCode, Guild guild) async {
-    guild = guild.copyWith(id: (guildList ?? []).length);
-    (guildList ?? []).add(guild);
-    guildList!.sort((a, b) => a.id.compareTo(b.id));
-    return remoteDataSource.postToServer(
+    final output = await remoteDataSource.postToServer(
       url: '$BASE_URL_API/api/v1/users/record/$nationalCode',
       params: GuildModel.fromSuper(guild).toJson(),
       mapSuccess: (date) => guild,
     );
+    return output;
   }
 }

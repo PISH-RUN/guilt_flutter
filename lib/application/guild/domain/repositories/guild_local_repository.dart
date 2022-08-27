@@ -8,4 +8,6 @@ abstract class GuildLocalRepository {
   List<Guild>? getListOfMyGuilds(String userId);
 
   void upsertGuildInLocal(String userId, List<Guild> guildList);
+
+  void replaceData(String userId, List<Guild> guildList);
 }
