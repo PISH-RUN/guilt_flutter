@@ -4,7 +4,7 @@ import 'package:guilt_flutter/application/colors.dart';
 ThemeData lightThemeData() {
   return ThemeData(
     primaryColor: AppColor.blue,
-    fontFamily: 'vazir',
+    fontFamily: 'iranSans',
     elevatedButtonTheme: ElevatedButtonThemeData(style: getElevatedButtonStyle(AppColor.blue)),
     outlinedButtonTheme: OutlinedButtonThemeData(style: getOutlinedButtonStyle(AppColor.blue)),
     scaffoldBackgroundColor: AppColor.blueGrey,

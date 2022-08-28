@@ -53,7 +53,7 @@ class RemoteDataSourceImpl implements RemoteDataSource {
       }
     } on Exception catch (e) {
       Logger().wtf("$methodName===> crash ===> ${e.toString()}  for  $url");
-      return Left(ServerFailure.somethingWentWrong());
+      return Left(ServerFailure.fromMessage(e.toString()));
     }
   }
 
@@ -155,7 +155,7 @@ class RemoteDataSourceImpl implements RemoteDataSource {
       }
     } on Exception catch (e) {
       Logger().wtf("$methodName===> crash ===> ${e.toString()}  for  $url");
-      return Left(ServerFailure.somethingWentWrong());
+      return Left(ServerFailure.fromMessage(e.toString()));
     }
   }
 

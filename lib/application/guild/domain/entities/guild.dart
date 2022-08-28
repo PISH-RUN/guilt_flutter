@@ -12,6 +12,7 @@ class Guild extends Equatable {
   final String lastName;
   final String organName;
   final Isic isic;
+  final bool isCouponRequested;
   final String name;
   final String province;
   final String city;
@@ -28,6 +29,7 @@ class Guild extends Equatable {
     required this.lastName,
     required this.organName,
     required this.isic,
+    required this.isCouponRequested,
     required this.name,
     required this.province,
     required this.city,
@@ -49,6 +51,7 @@ class Guild extends Equatable {
     String? province,
     String? city,
     String? homeTelephone,
+    bool? isCouponRequested,
     String? address,
     String? postalCode,
     latLng.LatLng? location,
@@ -59,6 +62,7 @@ class Guild extends Equatable {
       phoneNumber: phoneNumber ?? this.phoneNumber,
       firstName: firstName ?? this.firstName,
       lastName: lastName ?? this.lastName,
+      isCouponRequested: isCouponRequested ?? this.isCouponRequested,
       organName: organName ?? this.organName,
       isic: isic ?? this.isic,
       name: guildName ?? this.name,
@@ -80,6 +84,7 @@ class Guild extends Equatable {
       city: '',
       province: '',
       name: '',
+      isCouponRequested: false,
       address: '',
       homeTelephone: '',
       isic: const Isic(code: "", name: ""),

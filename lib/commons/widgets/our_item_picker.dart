@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:guilt_flutter/application/colors.dart';
+import 'package:guilt_flutter/application/guild/presentation/pages/guild_form_page.dart';
 import 'package:guilt_flutter/commons/text_style.dart';
+import 'package:logger/logger.dart';
 
 class OurItemPicker extends StatefulWidget {
   final IconData? icon;
@@ -44,18 +46,29 @@ class _OurItemPickerState extends State<OurItemPicker> {
         focusNode.requestFocus();
         focusNode.unfocus();
         final items = widget.onFillParams == null ? widget.items ?? [] : (await widget.onFillParams!());
+        isDialogOpen = true;
         showDialog(
           context: context,
-          builder: (context) => ShowAlertDialogWithButtons(
-            controller: widget.controller,
-            hint: widget.hint,
-            items: items,
-            onChanged: widget.onChanged,
-            currentText: widget.currentText,
-            icon: widget.icon,
-            isColorBlue: widget.isColorBlue,
-            onFillParams: widget.onFillParams,
-          ),
+          barrierDismissible: true,
+          builder: (context) {
+            return WillPopScope(
+              onWillPop: () async {
+                isDialogOpen = false;
+                return true;
+              },
+              child: ShowAlertDialogWithButtons(
+                context: context,
+                controller: widget.controller,
+                hint: widget.hint,
+                items: items,
+                onChanged: widget.onChanged,
+                currentText: widget.currentText,
+                icon: widget.icon,
+                isColorBlue: widget.isColorBlue,
+                onFillParams: widget.onFillParams,
+              ),
+            );
+          },
         );
       },
       child: AbsorbPointer(
@@ -71,6 +84,7 @@ class _OurItemPickerState extends State<OurItemPicker> {
 }
 
 class ShowAlertDialogWithButtons extends StatefulWidget {
+  final BuildContext context;
   final IconData? icon;
   final String hint;
   final String currentText;
@@ -81,6 +95,7 @@ class ShowAlertDialogWithButtons extends StatefulWidget {
   final Future<List<String>> Function()? onFillParams;
 
   const ShowAlertDialogWithButtons({
+    required this.context,
     required this.hint,
     this.icon,
     this.isColorBlue = false,
@@ -106,6 +121,7 @@ class _ShowAlertDialogWithButtonsState extends State<ShowAlertDialogWithButtons>
     return SafeArea(
       child: Center(
         child: SizedBox(
+          width: 320,
           height: widget.items.length * 80.0 + 30,
           child: ConstrainedBox(
             constraints: const BoxConstraints(maxWidth: 650),
@@ -159,6 +175,7 @@ class _ShowAlertDialogWithButtonsState extends State<ShowAlertDialogWithButtons>
                               child: ElevatedButton(
                                 onPressed: () {
                                   widget.controller.text = itemsMatch[index];
+                                  isDialogOpen = false;
                                   Navigator.pop(context);
                                 },
                                 child: Padding(
@@ -188,6 +205,7 @@ class _ShowAlertDialogWithButtonsState extends State<ShowAlertDialogWithButtons>
                                 onPressed: () {
                                   widget.controller.text = itemsMatch[index];
                                   if (widget.onChanged != null) widget.onChanged!(itemsMatch[index]);
+                                  isDialogOpen = false;
                                   Navigator.pop(context);
                                 },
                                 child: Padding(

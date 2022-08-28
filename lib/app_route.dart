@@ -1,6 +1,5 @@
 import 'package:get_it/get_it.dart';
 import 'package:guilt_flutter/application/faq.dart';
-import 'package:guilt_flutter/application/guild/presentation/manager/guild_list_cubit.dart';
 import 'package:guilt_flutter/application/guild/presentation/pages/guild_form_page.dart';
 import 'package:guilt_flutter/application/guild/presentation/pages/guild_list_page.dart';
 import 'package:guilt_flutter/application/guild/presentation/pages/guild_main_panel.dart';
@@ -19,7 +18,7 @@ class AppRoutes {
     QRoute.withChild(
       path: '/guild',
       builderChild: (p0) => p0,
-      middleware: [AuthGuard()],
+      middleware: [AuthGuard(), QMiddlewareBuilder(canPopFunc: () async => !isDialogOpen)],
       children: [
         QRoute(
           path: '/dashboard',
@@ -39,13 +38,13 @@ class AppRoutes {
         QRoute(
           path: '/add',
           builder: () => AuthenticatedPage(child: GuildMainPanel(currentIndexBottomNavigation: 1, child: GuildFormPage.wrappedRoute(isAddNew: true))),
-          middleware: [AuthGuard()],
+          middleware: [AuthGuard(), QMiddlewareBuilder(canPopFunc: () async => !isDialogOpen)],
         ),
         QRoute(
           path: '/:guildId((^[0-9]*\$))',
           builder: () =>
               AuthenticatedPage(child: GuildMainPanel(currentIndexBottomNavigation: 1, child: GuildFormPage.wrappedRoute(isAddNew: false))),
-          middleware: [AuthGuard()],
+          middleware: [AuthGuard(), QMiddlewareBuilder(canPopFunc: () async => !isDialogOpen)],
         ),
       ],
     ),

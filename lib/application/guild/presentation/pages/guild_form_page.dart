@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
 import 'package:guilt_flutter/application/guild/domain/entities/guild.dart';
 import 'package:guilt_flutter/application/guild/presentation/manager/guild_cubit.dart';
+import 'package:guilt_flutter/application/guild/presentation/manager/guild_list_cubit.dart';
 import 'package:guilt_flutter/application/guild/presentation/manager/guild_state.dart';
 import 'package:guilt_flutter/application/guild/presentation/widgets/map_widget.dart';
 import 'package:guilt_flutter/commons/fix_rtl_flutter_bug.dart';
@@ -10,9 +11,12 @@ import 'package:guilt_flutter/commons/text_style.dart';
 import 'package:guilt_flutter/commons/utils.dart';
 import 'package:guilt_flutter/commons/widgets/loading_widget.dart';
 import 'package:guilt_flutter/commons/widgets/our_item_picker.dart';
+import 'package:guilt_flutter/main.dart';
 import 'package:latlong2/latlong.dart' as lat_lng;
-import 'package:logger/logger.dart';
 import 'package:qlevar_router/qlevar_router.dart';
+
+bool isLoading = false;
+bool isDialogOpen = false;
 
 class GuildFormPage extends StatelessWidget {
   final bool isAddNew;
@@ -32,7 +36,8 @@ class GuildFormPage extends StatelessWidget {
               ? BlocListener<GuildCubit, GuildState>(
                   listener: (context, state) {
                     if (state is Loaded) {
-                      QR.back();
+                      isLoading=false;
+                      QR.navigator.replaceAll(initPath);
                     }
                   },
                   child: GuildFormWidget(isAddNew: true, guild: Guild.fromEmpty()),
@@ -42,7 +47,9 @@ class GuildFormPage extends StatelessWidget {
                     return state.when(
                       loading: () => LoadingWidget(),
                       error: (failure) => Center(child: Text(failure.message)),
-                      loaded: (guild) => GuildFormWidget(isAddNew: false, guild: guild),
+                      loaded: (guild) {
+                        return GuildFormWidget(isAddNew: false, guild: guild);
+                      },
                     );
                   },
                 ),
@@ -111,7 +118,6 @@ class _GuildFormWidgetState extends State<GuildFormWidget> {
   Widget build(BuildContext context) {
     return WillPopScope(
       onWillPop: () async {
-        Logger().wtf("info=>  ");
         return false;
       },
       child: Scaffold(
@@ -139,18 +145,24 @@ class _GuildFormWidgetState extends State<GuildFormWidget> {
         ),
         floatingActionButton: isEditable || widget.isAddNew
             ? FloatingActionButton(
-                onPressed: () {
+                onPressed: () async {
                   if (!formKey.currentState!.validate()) {
                     return;
                   }
-                  formKey.currentState!.save();
-                  widget.isAddNew ? BlocProvider.of<GuildCubit>(context).addGuild(guild) : BlocProvider.of<GuildCubit>(context).saveGuild(guild);
-                  isEditable = false;
+                  isLoading = true;
                   setState(() {});
+                  formKey.currentState!.save();
+                  widget.isAddNew
+                      ? BlocProvider.of<GuildCubit>(context).addGuild(guild)
+                      : await BlocProvider.of<GuildCubit>(context).saveGuild(guild);
+                  if (isEditable) {
+                    isLoading=false;
+                    QR.navigator.replaceAll(initPath);
+                  }
                 },
                 backgroundColor: Theme.of(context).primaryColor,
                 foregroundColor: Colors.white,
-                child: const Icon(Icons.save),
+                child: isLoading ? LoadingWidget(size: 16, color: Colors.white) : const Icon(Icons.save),
               )
             : null,
       ),
@@ -185,6 +197,7 @@ class _GuildFormWidgetState extends State<GuildFormWidget> {
                           ? const SizedBox(width: 56.0)
                           : GestureDetector(
                               onTap: () async {
+                                isDialogOpen = true;
                                 final isOK = await showDialog(
                                   context: context,
                                   builder: (dialogContext) => AlertDialog(
@@ -197,12 +210,14 @@ class _GuildFormWidgetState extends State<GuildFormWidget> {
                                       TextButton(
                                         child: Text("لغو", style: defaultTextStyle(context, headline: 5).c(Colors.grey)),
                                         onPressed: () {
+                                          isDialogOpen = false;
                                           Navigator.pop(dialogContext, false);
                                         },
                                       ),
                                       TextButton(
                                         child: Text("ثبت", style: defaultTextStyle(context, headline: 5).c(Theme.of(context).primaryColor)),
                                         onPressed: () async {
+                                          isDialogOpen = false;
                                           Navigator.pop(dialogContext, true);
                                         },
                                       ),
@@ -386,7 +401,9 @@ class _GuildFormWidgetState extends State<GuildFormWidget> {
                               icon: Icons.pin_drop_outlined,
                               items: null,
                               onChanged: (value) async {
-                                guild = guild.copyWith(city: value);
+                                final province = await getProvinceOfOneCity(context, value);
+                                provinceController.text = province;
+                                guild = guild.copyWith(city: value, province: province);
                               },
                               onFillParams: () => getCitiesOfOneProvince(context, provinceController.text.trim()),
                               currentText: cityController.text,
@@ -426,24 +443,32 @@ class _GuildFormWidgetState extends State<GuildFormWidget> {
                               maxLines: 4,
                             )
                           : labelWidget(Icons.pin_drop_outlined, "نشانی کامل", addressController.text),
-                      if (isEditable || pinLocation != null)
+                      if (widget.isAddNew || isEditable || pinLocation != null)
                         GestureDetector(
                           onTap: () {
                             if (!isEditable && !widget.isAddNew) {
                               return;
                             }
+                            isDialogOpen = true;
                             showDialog(
                               context: context,
-                              builder: (_) => AlertDialog(
-                                contentPadding: EdgeInsets.zero,
-                                shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(16.0))),
-                                content: MapWidget(
-                                  key: UniqueKey(),
-                                  defaultPinLocation: pinLocation,
-                                  onChangePinLocation: (location) {
-                                    pinLocation = location;
-                                    setState(() {});
-                                  },
+                              builder: (_) => WillPopScope(
+                                onWillPop: () async {
+                                  isDialogOpen = false;
+                                  return true;
+                                },
+                                child: AlertDialog(
+                                  contentPadding: EdgeInsets.zero,
+                                  shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(16.0))),
+                                  content: MapWidget(
+                                    key: UniqueKey(),
+                                    defaultPinLocation: pinLocation,
+                                    onChangePinLocation: (location) {
+                                      pinLocation = location;
+                                      guild = guild.copyWith(location: pinLocation);
+                                      setState(() => isDialogOpen = false);
+                                    },
+                                  ),
                                 ),
                               ),
                             );

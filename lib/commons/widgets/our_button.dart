@@ -7,8 +7,9 @@ class OurButton extends StatelessWidget {
   final void Function() onTap;
   final bool isLoading;
   final String title;
+  final Color? color;
 
-  const OurButton({required this.onTap, required this.title, required this.isLoading, Key? key}) : super(key: key);
+  const OurButton({required this.onTap, required this.title, required this.isLoading, this.color, Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -24,10 +25,10 @@ class OurButton extends StatelessWidget {
         height: 45,
         alignment: Alignment.center,
         decoration: BoxDecoration(
-            color: Colors.blue,
+            color: color ?? Colors.blue,
             shape: BoxShape.rectangle,
             borderRadius: const BorderRadius.all(Radius.circular(5)),
-            boxShadow: simpleShadow(color: Colors.blue)),
+            boxShadow: simpleShadow(color: color ?? Colors.blue)),
         child: isLoading ? LoadingWidget(color: Colors.white, size: 20) : Text(title, style: defaultTextStyle(context, headline: 4).c(Colors.white)),
       ),
     );

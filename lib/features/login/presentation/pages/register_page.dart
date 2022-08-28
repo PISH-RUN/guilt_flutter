@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
 import 'package:guilt_flutter/application/colors.dart';
+import 'package:guilt_flutter/commons/failures.dart';
 import 'package:guilt_flutter/commons/text_style.dart';
 import 'package:guilt_flutter/commons/utils.dart';
 import 'package:guilt_flutter/commons/widgets/icon_name_widget.dart';
@@ -80,7 +81,7 @@ class _RegisterPageState extends State<RegisterPage> {
                                     decoration: const InputDecoration(
                                       labelText: "کد ملی",
                                       helperText: "",
-                                      prefixIcon: Icon(Icons.map, color: AppColor.blue, size: 22.0),
+                                      prefixIcon: Icon(Icons.pin, color: AppColor.blue, size: 22.0),
                                     ),
                                     onFieldSubmitted: (value) => onSubmitButton(),
                                     keyboardType: TextInputType.number,
@@ -101,7 +102,7 @@ class _RegisterPageState extends State<RegisterPage> {
                                 ),
                                 const SizedBox(height: 6.0),
                                 Text(
-                                  state.maybeWhen(error: (failure) => failure.message, orElse: () => ""),
+                                  state.maybeWhen(error: (failure) =>failure.failureType == FailureType.authentication ? "اطلاعات شما نادرست است" : failure.message, orElse: () => ""),
                                   textAlign: TextAlign.center,
                                   style: defaultTextStyle(context, headline: 4).c(Colors.red),
                                 ),

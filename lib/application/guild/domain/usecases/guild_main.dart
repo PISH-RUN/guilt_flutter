@@ -31,7 +31,8 @@ class GuildMain {
     List<GuildModel> localGuildList = guildList.map((e) => GuildModel.fromSuper(e)).toList();
     localGuildList = [GuildModel.fromSuper(guild), ...(guildList.map((e) => GuildModel.fromSuper(e)).toList())].toSet().toList();
     guildLocalRepository.upsertGuildInLocal(nationalCode, localGuildList);
-    return guildRemoteRepository.updateAllData(nationalCode, localGuildList);
+    guildRemoteRepository.updateAllData(nationalCode, localGuildList);
+    return RequestResult.success();
   }
 
   Future<RequestResult> addGuild({required String nationalCode, required Guild guild}) async {

@@ -18,7 +18,7 @@ import 'features/profile/profile_injection_container.dart' as di_profile;
 void main() async {
   await GetStorage.init();
   prepareGetIt();
-  // HttpOverrides.global = MyHttpOverrides();
+  HttpOverrides.global = MyHttpOverrides();
   // await checkSomethingBeforeOpenApp();
   runApp(MyApp());
 }

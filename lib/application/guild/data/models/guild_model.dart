@@ -18,6 +18,7 @@ class GuildModel extends Guild {
     required String guildName,
     required String province,
     required String city,
+    required bool isCouponRequested,
     required String homeTelephone,
     required String address,
     required String postalCode,
@@ -26,6 +27,7 @@ class GuildModel extends Guild {
           id: id,
           nationalCode: nationalCode,
           phoneNumber: phoneNumber,
+          isCouponRequested: isCouponRequested,
           firstName: firstName,
           lastName: lastName,
           isic: isic,
@@ -50,11 +52,14 @@ class GuildModel extends Guild {
       guildName: JsonParser.stringParser(json, ['GuildName']),
       province: JsonParser.stringParser(json, ['OstanName']),
       city: JsonParser.stringParser(json, ['ShahrestanName']),
+      isCouponRequested: JsonParser.boolParser(json, ['isCouponRequested']),
       homeTelephone: JsonParser.stringParser(json, ['PhoneNo']),
       address: JsonParser.stringParser(json, ['Address']),
       postalCode: JsonParser.stringParser(json, ['PostalCode']),
       nationalCode: JsonParser.stringParser(json, ['NationalCode']),
-      location: null,
+      location: JsonParser.stringParser(json, ['location']).isEmpty
+          ? null
+          : latLng.LatLng(JsonParser.doubleParser(json, ['location', 'lat']), JsonParser.doubleParser(json, ['location', 'lon'])),
     );
   }
 
@@ -66,6 +71,7 @@ class GuildModel extends Guild {
       firstName: guild.firstName,
       lastName: guild.lastName,
       isic: guild.isic,
+      isCouponRequested: guild.isCouponRequested,
       organName: guild.organName,
       guildName: guild.name,
       province: guild.province,
@@ -86,12 +92,18 @@ class GuildModel extends Guild {
       "OrganName": organName,
       "GuildName": name,
       "OstanName": province,
+      "isCouponRequested": isCouponRequested,
       "ShahrestanName": city,
       "PhoneNo": homeTelephone,
       "Address": address,
       "PostalCode": postalCode,
       "NationalCode": nationalCode,
-      //todo send location
+      "location": location == null
+          ? null
+          : {
+              'lat': location!.latitude,
+              'lon': location!.longitude,
+            },
     };
   }
 }

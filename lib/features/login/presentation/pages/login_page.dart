@@ -4,6 +4,7 @@ import 'package:get_it/get_it.dart';
 import 'package:guilt_flutter/app_route.dart';
 import 'package:guilt_flutter/application/colors.dart';
 import 'package:guilt_flutter/application/constants.dart';
+import 'package:guilt_flutter/commons/failures.dart';
 import 'package:guilt_flutter/commons/text_style.dart';
 import 'package:guilt_flutter/commons/utils.dart';
 import 'package:guilt_flutter/commons/widgets/icon_name_widget.dart';
@@ -29,9 +30,12 @@ class _LoginPageState extends State<LoginPage> {
   final TextEditingController verifyController = TextEditingController();
   final GlobalKey<FormState> formKey = GlobalKey();
 
+  int expireAt = 120;
+
   @override
   void initState() {
     super.initState();
+    startTimer();
     smsUserConsent = SmsUserConsent(
         phoneNumberListener: () => setState(() {}),
         smsListener: () {
@@ -48,6 +52,14 @@ class _LoginPageState extends State<LoginPage> {
   void dispose() {
     smsUserConsent.dispose();
     super.dispose();
+  }
+
+  startTimer() async {
+    expireAt = 120;
+    while (expireAt > 0) {
+      await Future.delayed(const Duration(seconds: 1), () => "1");
+      setState(() => expireAt--);
+    }
   }
 
   @override
@@ -75,9 +87,15 @@ class _LoginPageState extends State<LoginPage> {
                             padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 14.0),
                             child: Column(
                               children: <Widget>[
-                                const SizedBox(height: 25.0),
+                                const SizedBox(height: 10.0),
                                 Text("لطفا کد تایید را وارد کنید", style: Theme.of(context).textTheme.headline4),
-                                const SizedBox(height: 30.0),
+                                const SizedBox(height: 16.0),
+                                GestureDetector(
+                                  onTap: () => QR.back(),
+                                  child: Text("تغییر شماره تلفن",
+                                      style: Theme.of(context).textTheme.headline4!.copyWith(color: Colors.black.withOpacity(0.45))),
+                                ),
+                                const SizedBox(height: 26.0),
                                 Directionality(
                                   textDirection: TextDirection.ltr,
                                   child: TextFormField(
@@ -113,24 +131,36 @@ class _LoginPageState extends State<LoginPage> {
                                     },
                                   ),
                                 ),
-                                const SizedBox(height: 30.0),
-                                OurButton(
-                                  onTap: () => onSubmitButton(),
-                                  isLoading: state is Loading,
-                                  title: "تایید",
-                                ),
                                 const SizedBox(height: 6.0),
                                 Text(
-                                  state.maybeWhen(error: (failure) => failure.message, orElse: () => ""),
+                                  state.maybeWhen(
+                                    error: (failure) => failure.failureType == FailureType.authentication ? "کد تایید نادرست است" : failure.message,
+                                    orElse: () => "",
+                                  ),
                                   textAlign: TextAlign.center,
                                   style: defaultTextStyle(context, headline: 4).c(Colors.red),
                                 ),
-                                const SizedBox(height: 20.0),
-                                GestureDetector(
-                                  onTap: () => QR.back(),
-                                  child: Text("ارسال مجدد کد تایید",
-                                      style: Theme.of(context).textTheme.headline4!.copyWith(color: Colors.black.withOpacity(0.45))),
+                                const SizedBox(height: 8.0),
+                                OurButton(
+                                  onTap: () {
+                                    if (expireAt > 0) {
+                                      onSubmitButton();
+                                    } else {
+                                      BlocProvider.of<LoginCubit>(context).resendVerifyCode();
+                                      startTimer();
+                                    }
+                                  },
+                                  isLoading: state is Loading,
+                                  color: expireAt > 0 ? null : Colors.green,
+                                  title: expireAt > 0 ? "تایید" : "ارسال مجدد کد تایید",
                                 ),
+                                const SizedBox(height: 16.0),
+                                expireAt > 0
+                                    ? Text(
+                                        "${(expireAt ~/ 60).toString().padLeft(2, '0')}:${(expireAt % 60).toString().padLeft(2, '0')}",
+                                        style: Theme.of(context).textTheme.headline4!.copyWith(color: Colors.black.withOpacity(0.45)),
+                                      )
+                                    : const SizedBox(height: 8.0),
                               ],
                             ),
                           ),
