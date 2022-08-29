@@ -3,6 +3,7 @@ import 'package:guilt_flutter/application/guild/domain/usecases/guild_main.dart'
 import 'package:guilt_flutter/commons/failures.dart';
 import 'package:guilt_flutter/commons/request_result.dart';
 import 'package:guilt_flutter/features/profile/domain/entities/user_info.dart';
+import 'package:image_picker/image_picker.dart';
 
 class ProfileMain {
   final GuildMain guild;
@@ -14,6 +15,10 @@ class ProfileMain {
   }
 
   Future<RequestResult> updateUserInfo(UserInfo user) {
+    return guild.updateProfileInAllGuildList(profile: user);
+  }
+
+  Future<RequestResult> changeAvatar(UserInfo user, XFile file) {
     return guild.updateProfileInAllGuildList(profile: user);
   }
 }

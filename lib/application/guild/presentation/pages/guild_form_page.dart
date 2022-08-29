@@ -3,7 +3,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
 import 'package:guilt_flutter/application/guild/domain/entities/guild.dart';
 import 'package:guilt_flutter/application/guild/presentation/manager/guild_cubit.dart';
-import 'package:guilt_flutter/application/guild/presentation/manager/guild_list_cubit.dart';
 import 'package:guilt_flutter/application/guild/presentation/manager/guild_state.dart';
 import 'package:guilt_flutter/application/guild/presentation/widgets/map_widget.dart';
 import 'package:guilt_flutter/commons/fix_rtl_flutter_bug.dart';
@@ -11,8 +10,11 @@ import 'package:guilt_flutter/commons/text_style.dart';
 import 'package:guilt_flutter/commons/utils.dart';
 import 'package:guilt_flutter/commons/widgets/loading_widget.dart';
 import 'package:guilt_flutter/commons/widgets/our_item_picker.dart';
+import 'package:guilt_flutter/commons/widgets/warning_dialog.dart';
+import 'package:guilt_flutter/features/profile/domain/entities/user_info.dart';
 import 'package:guilt_flutter/main.dart';
 import 'package:latlong2/latlong.dart' as lat_lng;
+import 'package:logger/logger.dart';
 import 'package:qlevar_router/qlevar_router.dart';
 
 bool isLoading = false;
@@ -36,7 +38,7 @@ class GuildFormPage extends StatelessWidget {
               ? BlocListener<GuildCubit, GuildState>(
                   listener: (context, state) {
                     if (state is Loaded) {
-                      isLoading=false;
+                      isLoading = false;
                       QR.navigator.replaceAll(initPath);
                     }
                   },
@@ -149,6 +151,7 @@ class _GuildFormWidgetState extends State<GuildFormWidget> {
                   if (!formKey.currentState!.validate()) {
                     return;
                   }
+                  guild = guild.copyWith(nationalCode: userInfo.nationalCode);
                   isLoading = true;
                   setState(() {});
                   formKey.currentState!.save();
@@ -156,7 +159,7 @@ class _GuildFormWidgetState extends State<GuildFormWidget> {
                       ? BlocProvider.of<GuildCubit>(context).addGuild(guild)
                       : await BlocProvider.of<GuildCubit>(context).saveGuild(guild);
                   if (isEditable) {
-                    isLoading=false;
+                    isLoading = false;
                     QR.navigator.replaceAll(initPath);
                   }
                 },
@@ -197,36 +200,14 @@ class _GuildFormWidgetState extends State<GuildFormWidget> {
                           ? const SizedBox(width: 56.0)
                           : GestureDetector(
                               onTap: () async {
-                                isDialogOpen = true;
-                                final isOK = await showDialog(
+                                await showDialog(
                                   context: context,
-                                  builder: (dialogContext) => AlertDialog(
-                                    shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(12.0))),
-                                    title: Text("ویرایش", style: defaultTextStyle(context, headline: 3)),
-                                    contentPadding: const EdgeInsets.symmetric(horizontal: 24, vertical: 8),
-                                    content: Text("آیا مایل به ویرایش اطلاعات این صنف می باشید؟",
-                                        style: defaultTextStyle(context, headline: 5).c(Colors.black.withOpacity(0.7))),
-                                    actions: <Widget>[
-                                      TextButton(
-                                        child: Text("لغو", style: defaultTextStyle(context, headline: 5).c(Colors.grey)),
-                                        onPressed: () {
-                                          isDialogOpen = false;
-                                          Navigator.pop(dialogContext, false);
-                                        },
-                                      ),
-                                      TextButton(
-                                        child: Text("ثبت", style: defaultTextStyle(context, headline: 5).c(Theme.of(context).primaryColor)),
-                                        onPressed: () async {
-                                          isDialogOpen = false;
-                                          Navigator.pop(dialogContext, true);
-                                        },
-                                      ),
-                                    ],
-                                  ),
-                                ) as bool;
-                                if (isOK) {
-                                  setState(() => isEditable = true);
-                                }
+                                  builder: (dialogContext) => WarningDialog(onResult: (isAccess) {
+                                    if (isAccess) {
+                                      setState(() => isEditable = true);
+                                    }
+                                  }),
+                                );
                               },
                               child: AbsorbPointer(
                                 child: Padding(
@@ -347,26 +328,11 @@ class _GuildFormWidgetState extends State<GuildFormWidget> {
                             )
                           : labelWidget(Icons.phone, "شماره تلفن", homeTelephoneController.text),
                       SizedBox(height: paddingBetweenTextFiled),
-                      isEditable || widget.isAddNew
-                          ? TextFormField(
-                              style: defaultTextStyle(context),
-                              decoration: defaultInputDecoration().copyWith(labelText: "کد ملی", prefixIcon: const Icon(Icons.pin)),
-                              keyboardType: TextInputType.number,
-                              textAlign: TextAlign.end,
-                              controller: nationalCodeController,
-                              validator: (value) {
-                                if (value == null) return null;
-                                if (value.isEmpty) return "وارد کردن کد ملی ضروری است";
-                                if (value.length != 10) return "کد ملی باید ده رقم باشد";
-                                return null;
-                              },
-                              onSaved: (value) => guild = guild.copyWith(nationalCode: value),
-                            )
-                          : labelWidget(Icons.pin, "کد ملی", nationalCodeController.text),
+                      isEditable || widget.isAddNew ? const SizedBox() : labelWidget(Icons.pin, "کد ملی", nationalCodeController.text),
                       SizedBox(height: paddingBetweenTextFiled),
                       isEditable || widget.isAddNew
                           ? OurItemPicker(
-                              hint: "isic",
+                              hint: "رسته صنفی",
                               icon: Icons.pin,
                               items: isicList.map((e) => e.name).toList(),
                               onChanged: (value) {
@@ -376,7 +342,7 @@ class _GuildFormWidgetState extends State<GuildFormWidget> {
                               currentText: isic,
                               controller: isicController,
                             )
-                          : labelWidget(Icons.pin, "isic", isic),
+                          : labelWidget(Icons.pin, "رسته صنفی", isic),
                       SizedBox(height: paddingBetweenTextFiled),
                       isEditable || widget.isAddNew
                           ? OurItemPicker(

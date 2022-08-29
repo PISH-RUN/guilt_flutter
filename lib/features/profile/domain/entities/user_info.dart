@@ -19,13 +19,12 @@ class UserInfo extends Equatable {
     String? firstName,
     String? lastName,
     String? phoneNumber,
-    String? nationalCode,
   }) {
     return UserInfo(
       firstName: firstName ?? this.firstName,
       lastName: lastName ?? this.lastName,
       phoneNumber: phoneNumber ?? this.phoneNumber,
-      nationalCode: nationalCode ?? this.nationalCode,
+      nationalCode: nationalCode,
     );
   }
 

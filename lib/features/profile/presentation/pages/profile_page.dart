@@ -4,6 +4,7 @@ import 'package:get_it/get_it.dart';
 import 'package:guilt_flutter/commons/fix_rtl_flutter_bug.dart';
 import 'package:guilt_flutter/commons/text_style.dart';
 import 'package:guilt_flutter/commons/utils.dart';
+import 'package:guilt_flutter/commons/widgets/warning_dialog.dart';
 import 'package:guilt_flutter/features/login/api/login_api.dart';
 import 'package:guilt_flutter/features/profile/domain/entities/user_info.dart';
 import 'package:guilt_flutter/features/profile/presentation/manager/update_user_cubit.dart';
@@ -73,7 +74,7 @@ class _ProfilePageState extends State<ProfilePage> {
                 }
                 formKey.currentState!.save();
                 BlocProvider.of<UpdateUserCubit>(context).updateUserInfo(userInfo);
-                isEditable=false;
+                isEditable = false;
                 setState(() {});
               },
               backgroundColor: Theme.of(context).primaryColor,
@@ -125,7 +126,7 @@ class _ProfilePageState extends State<ProfilePage> {
         mainAxisSize: MainAxisSize.min,
         children: [
           Card(
-            margin: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 20.0),
+            margin: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 0.0),
               child: Column(
@@ -140,7 +141,16 @@ class _ProfilePageState extends State<ProfilePage> {
                       isEditable
                           ? const SizedBox(width: 56.0)
                           : GestureDetector(
-                              onTap: () => setState(() => isEditable = true),
+                              onTap: () async {
+                                await showDialog(
+                                  context: context,
+                                  builder: (dialogContext) => WarningDialog(onResult: (isAccess) {
+                                    if (isAccess) {
+                                      setState(() => isEditable = true);
+                                    }
+                                  }),
+                                );
+                              },
                               child: Row(
                                 mainAxisSize: MainAxisSize.min,
                                 children: <Widget>[
@@ -198,7 +208,7 @@ class _ProfilePageState extends State<ProfilePage> {
                                 style: defaultTextStyle(context),
                                 decoration: defaultInputDecoration().copyWith(
                                   labelText: "شماره تلفن",
-                                  suffixIcon: const Icon(Icons.phone),
+                                  prefixIcon: const Icon(Icons.phone),
                                 ),
                                 textAlign: TextAlign.end,
                                 keyboardType: TextInputType.number,
@@ -213,25 +223,7 @@ class _ProfilePageState extends State<ProfilePage> {
                               )
                             : labelWidget(Icons.phone, "شماره تلفن", phoneController.text),
                         SizedBox(height: paddingBetweenTextFiled),
-                        isEditable
-                            ? TextFormField(
-                                style: defaultTextStyle(context),
-                                decoration: defaultInputDecoration().copyWith(
-                                  labelText: "کد ملی",
-                                  suffixIcon: const Icon(Icons.map),
-                                ),
-                                keyboardType: TextInputType.number,
-                                textAlign: TextAlign.end,
-                                controller: nationalCodeController,
-                                validator: (value) {
-                                  if (value == null) return null;
-                                  if (value.isEmpty) return "وارد کردن کد ملی ضروری است";
-                                  if (value.length != 10) return "کد ملی باید ده رقم باشد";
-                                  return null;
-                                },
-                                onSaved: (value) => userInfo = userInfo.copyWith(nationalCode: value),
-                              )
-                            : labelWidget(Icons.map, "کد ملی", nationalCodeController.text),
+                        isEditable ? const SizedBox() : labelWidget(Icons.pin, "کد ملی", nationalCodeController.text),
                         SizedBox(height: paddingBetweenTextFiled),
                         const SizedBox(height: 16.0),
                       ],

@@ -1,5 +1,6 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:guilt_flutter/features/profile/domain/entities/user_info.dart';
+import 'package:image_picker/image_picker.dart';
 import '../../domain/use_cases/profile_main.dart';
 import 'update_user_state.dart';
 
