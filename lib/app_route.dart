@@ -13,7 +13,6 @@ import 'package:qlevar_router/qlevar_router.dart';
 import 'base_page.dart';
 
 class AppRoutes {
-  //todo implement FAQ
   final routes = [
     QRoute.withChild(
       path: '/guild',

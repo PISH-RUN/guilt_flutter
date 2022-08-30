@@ -42,11 +42,11 @@ class GuildPage extends StatelessWidget {
                         width: 150,
                       ),
                       const SizedBox(height: 10.0),
-                      Text("شما صنفی ثبت نکرده اید", style: defaultTextStyle(context)),
+                      Text("شما هنوز کسب و کاری ثبت نکرده اید", style: defaultTextStyle(context)),
                       const SizedBox(height: 30.0),
                       SizedBox(
                         width: 140,
-                        child: OurButton(onTap: () => QR.to('/guild/add'), title: 'افزودن صنف', isLoading: false),
+                        child: OurButton(onTap: () => QR.to('/guild/add'), title: 'افزودن کسب و کار', isLoading: false),
                       )
                     ],
                   )),

@@ -6,10 +6,12 @@ import 'package:guilt_flutter/commons/text_style.dart';
 import 'package:guilt_flutter/commons/utils.dart';
 import 'package:guilt_flutter/commons/widgets/warning_dialog.dart';
 import 'package:guilt_flutter/features/login/api/login_api.dart';
+import 'package:guilt_flutter/features/profile/domain/entities/gender_type.dart';
 import 'package:guilt_flutter/features/profile/domain/entities/user_info.dart';
 import 'package:guilt_flutter/features/profile/presentation/manager/update_user_cubit.dart';
 import 'package:guilt_flutter/main.dart';
 import 'package:qlevar_router/qlevar_router.dart';
+import 'package:toggle_switch/toggle_switch.dart';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({Key? key}) : super(key: key);
@@ -27,6 +29,7 @@ class _ProfilePageState extends State<ProfilePage> {
   late TextEditingController lastNameController;
   late TextEditingController phoneController;
   late TextEditingController nationalCodeController;
+  late Gender gender;
 
   final GlobalKey<FormState> formKey = GlobalKey();
 
@@ -38,6 +41,7 @@ class _ProfilePageState extends State<ProfilePage> {
     lastNameController = TextEditingController(text: userInfo.lastName);
     phoneController = TextEditingController(text: userInfo.phoneNumber);
     nationalCodeController = TextEditingController(text: userInfo.nationalCode);
+    gender = userInfo.gender;
     super.initState();
   }
 
@@ -224,6 +228,25 @@ class _ProfilePageState extends State<ProfilePage> {
                             : labelWidget(Icons.phone, "شماره تلفن", phoneController.text),
                         SizedBox(height: paddingBetweenTextFiled),
                         isEditable ? const SizedBox() : labelWidget(Icons.pin, "کد ملی", nationalCodeController.text),
+                        SizedBox(height: paddingBetweenTextFiled),
+                        isEditable
+                            ? ToggleSwitch(
+                                minWidth: 120,
+                                minHeight: 55.0,
+                                fontSize: 16.0,
+                                initialLabelIndex: Gender.values.indexWhere((element) => element == gender),
+                                activeBgColor: [Theme.of(context).primaryColor],
+                                activeFgColor: Colors.white,
+                                inactiveBgColor: Colors.grey[300],
+                                inactiveFgColor: Colors.grey[0],
+                                totalSwitches: Gender.values.length,
+                                labels: Gender.values.map((e) => e.persianName).toList(),
+                                onToggle: (index) {
+                                  gender = Gender.values[index!];
+                                  userInfo = userInfo.copyWith(gender: gender);
+                                },
+                              )
+                            : labelWidget(Icons.male, "جنسیت", userInfo.gender.persianName),
                         SizedBox(height: paddingBetweenTextFiled),
                         const SizedBox(height: 16.0),
                       ],

@@ -5,6 +5,7 @@ import 'package:guilt_flutter/application/guild/domain/repositories/guild_local_
 import 'package:guilt_flutter/application/guild/domain/repositories/guild_remote_repository.dart';
 import 'package:guilt_flutter/commons/failures.dart';
 import 'package:guilt_flutter/commons/request_result.dart';
+import 'package:guilt_flutter/features/profile/domain/entities/gender_type.dart';
 import 'package:guilt_flutter/features/profile/domain/entities/user_info.dart';
 
 class GuildMain {
@@ -69,7 +70,8 @@ class GuildMain {
   void updateProfile(List<Guild> list) {
     if (list.isNotEmpty) {
       final guild = list[0];
-      userInfo = UserInfo(firstName: guild.firstName, lastName: guild.lastName, phoneNumber: guild.phoneNumber, nationalCode: guild.nationalCode);
+      //todo Gender.boy is hardcode
+      userInfo = UserInfo(firstName: guild.firstName, lastName: guild.lastName,gender: Gender.boy, phoneNumber: guild.phoneNumber, nationalCode: guild.nationalCode);
     }
   }
 

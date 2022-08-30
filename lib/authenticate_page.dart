@@ -8,7 +8,6 @@ class AuthenticatedPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    //todo set listener for check login and if not redirect to login page
     return BasePage(child: child);
   }
 }

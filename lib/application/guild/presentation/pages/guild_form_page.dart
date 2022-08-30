@@ -14,7 +14,6 @@ import 'package:guilt_flutter/commons/widgets/warning_dialog.dart';
 import 'package:guilt_flutter/features/profile/domain/entities/user_info.dart';
 import 'package:guilt_flutter/main.dart';
 import 'package:latlong2/latlong.dart' as lat_lng;
-import 'package:logger/logger.dart';
 import 'package:qlevar_router/qlevar_router.dart';
 
 bool isLoading = false;
@@ -78,17 +77,13 @@ class GuildFormWidget extends StatefulWidget {
 class _GuildFormWidgetState extends State<GuildFormWidget> {
   late Guild guild;
 
-  late TextEditingController firstNameController;
-  late TextEditingController lastNameController;
   late TextEditingController addressController;
   late TextEditingController provinceController;
   late TextEditingController isicController;
   late String isic;
   late TextEditingController cityController;
   late TextEditingController postalCodeController;
-  late TextEditingController phoneController;
   late TextEditingController homeTelephoneController;
-  late TextEditingController nationalCodeController;
   late TextEditingController organController;
   late TextEditingController guildNameController;
   late lat_lng.LatLng? pinLocation;
@@ -99,8 +94,6 @@ class _GuildFormWidgetState extends State<GuildFormWidget> {
   @override
   void initState() {
     guild = widget.guild;
-    firstNameController = TextEditingController(text: guild.firstName);
-    lastNameController = TextEditingController(text: guild.lastName);
     organController = TextEditingController(text: guild.organName);
     guildNameController = TextEditingController(text: guild.name);
     addressController = TextEditingController(text: guild.address);
@@ -109,9 +102,7 @@ class _GuildFormWidgetState extends State<GuildFormWidget> {
     isic = guild.isic.name;
     cityController = TextEditingController(text: guild.city);
     postalCodeController = TextEditingController(text: guild.postalCode);
-    phoneController = TextEditingController(text: guild.phoneNumber);
     homeTelephoneController = TextEditingController(text: guild.homeTelephone);
-    nationalCodeController = TextEditingController(text: guild.nationalCode);
     pinLocation = guild.location;
     super.initState();
   }
@@ -183,7 +174,7 @@ class _GuildFormWidgetState extends State<GuildFormWidget> {
           Card(
             margin: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 20.0),
             child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 0.0),
+              padding: const EdgeInsets.symmetric(horizontal: 16.0),
               child: Column(
                 children: <Widget>[
                   const SizedBox(height: 10.0),
@@ -193,7 +184,7 @@ class _GuildFormWidgetState extends State<GuildFormWidget> {
                       const Spacer(),
                       Padding(
                         padding: const EdgeInsets.symmetric(vertical: 10.0),
-                        child: Text("اطلاعات صنف", style: defaultTextStyle(context, headline: 3)),
+                        child: Text("اطلاعات کسب و کار", style: defaultTextStyle(context, headline: 3)),
                       ),
                       const Spacer(),
                       isEditable || widget.isAddNew
@@ -229,55 +220,29 @@ class _GuildFormWidgetState extends State<GuildFormWidget> {
                   Column(
                     mainAxisSize: MainAxisSize.min,
                     children: <Widget>[
-                      isEditable || widget.isAddNew
-                          ? TextFormField(
-                              style: defaultTextStyle(context),
-                              controller: firstNameController,
-                              keyboardType: TextInputType.name,
-                              onTap: () => setState(() => fixRtlFlutterBug(firstNameController)),
-                              decoration: defaultInputDecoration().copyWith(labelText: "نام", prefixIcon: const Icon(Icons.person_outline)),
-                              validator: (value) {
-                                if (value == null) return null;
-                                if (value.isEmpty) return "این فیلد الزامی است";
-                                if (value.length < 2) return "نام کوتاه است";
-                                return null;
-                              },
-                              onSaved: (value) => guild = guild.copyWith(firstName: value),
-                            )
-                          : labelWidget(Icons.person_outline, "نام", firstNameController.text),
+                      isEditable || widget.isAddNew ? const SizedBox() : labelWidget(Icons.person_outline, "نام", guild.firstName),
                       SizedBox(height: paddingBetweenTextFiled),
-                      isEditable || widget.isAddNew
-                          ? TextFormField(
-                              style: defaultTextStyle(context),
-                              controller: lastNameController,
-                              keyboardType: TextInputType.name,
-                              onTap: () => setState(() => fixRtlFlutterBug(lastNameController)),
-                              decoration: defaultInputDecoration().copyWith(labelText: "نام خانوادگی", prefixIcon: const Icon(Icons.person_outline)),
-                              validator: (value) {
-                                if (value == null) return null;
-                                if (value.isEmpty) return "این فیلد الزامی است";
-                                if (value.length < 2) return "نام خانوادگی کوتاه است";
-                                return null;
-                              },
-                              onSaved: (value) => guild = guild.copyWith(lastName: value),
-                            )
-                          : labelWidget(Icons.person_outline, "نام خانوادگی", lastNameController.text),
+                      isEditable || widget.isAddNew ? const SizedBox() : labelWidget(Icons.person_outline, "نام خانوادگی", guild.lastName),
                       SizedBox(height: paddingBetweenTextFiled),
-                      isEditable || widget.isAddNew
-                          ? TextFormField(
-                              style: defaultTextStyle(context),
-                              controller: guildNameController,
-                              keyboardType: TextInputType.name,
-                              onTap: () => setState(() => fixRtlFlutterBug(guildNameController)),
-                              decoration: defaultInputDecoration().copyWith(labelText: "نام صنف", prefixIcon: const Icon(Icons.person_outline)),
-                              validator: (value) {
-                                if (value == null) return null;
-                                if (value.isEmpty) return "این فیلد الزامی است";
-                                return null;
-                              },
-                              onSaved: (value) => guild = guild.copyWith(guildName: value),
-                            )
-                          : labelWidget(Icons.store, "نام صنف", guildNameController.text),
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: isEditable || widget.isAddNew
+                            ? TextFormField(
+                                style: defaultTextStyle(context),
+                                controller: guildNameController,
+                                keyboardType: TextInputType.name,
+                                onTap: () => setState(() => fixRtlFlutterBug(guildNameController)),
+                                decoration:
+                                    defaultInputDecoration().copyWith(labelText: "نام کسب و کار", prefixIcon: const Icon(Icons.person_outline)),
+                                validator: (value) {
+                                  if (value == null) return null;
+                                  if (value.isEmpty) return "این فیلد الزامی است";
+                                  return null;
+                                },
+                                onSaved: (value) => guild = guild.copyWith(guildName: value),
+                              )
+                            : labelWidget(Icons.store, "نام کسب و کار", guildNameController.text),
+                      ),
                       SizedBox(height: paddingBetweenTextFiled),
                       isEditable || widget.isAddNew
                           ? TextFormField(
@@ -295,22 +260,7 @@ class _GuildFormWidgetState extends State<GuildFormWidget> {
                             )
                           : labelWidget(Icons.store, "نام ارگان", organController.text),
                       SizedBox(height: paddingBetweenTextFiled),
-                      isEditable || widget.isAddNew
-                          ? TextFormField(
-                              style: defaultTextStyle(context),
-                              decoration: defaultInputDecoration().copyWith(labelText: "شماره موبایل", prefixIcon: const Icon(Icons.phone)),
-                              textAlign: TextAlign.end,
-                              keyboardType: TextInputType.number,
-                              controller: phoneController,
-                              validator: (value) {
-                                if (value == null) return null;
-                                if (value.isEmpty) return "وارد کردن شماره موبایل ضروری است";
-                                if (!validatePhoneNumber(value)) return "شماره موبایل معتبر نیست";
-                                return null;
-                              },
-                              onSaved: (value) => guild = guild.copyWith(phoneNumber: value),
-                            )
-                          : labelWidget(Icons.phone, "شماره موبایل", phoneController.text),
+                      isEditable || widget.isAddNew ? const SizedBox() : labelWidget(Icons.phone, "شماره موبایل", guild.phoneNumber),
                       SizedBox(height: paddingBetweenTextFiled),
                       isEditable || widget.isAddNew
                           ? TextFormField(
@@ -328,7 +278,7 @@ class _GuildFormWidgetState extends State<GuildFormWidget> {
                             )
                           : labelWidget(Icons.phone, "شماره تلفن", homeTelephoneController.text),
                       SizedBox(height: paddingBetweenTextFiled),
-                      isEditable || widget.isAddNew ? const SizedBox() : labelWidget(Icons.pin, "کد ملی", nationalCodeController.text),
+                      isEditable || widget.isAddNew ? const SizedBox() : labelWidget(Icons.pin, "کد ملی", guild.nationalCode),
                       SizedBox(height: paddingBetweenTextFiled),
                       isEditable || widget.isAddNew
                           ? OurItemPicker(
@@ -451,7 +401,7 @@ class _GuildFormWidgetState extends State<GuildFormWidget> {
                               child: pinLocation == null
                                   ? Center(
                                       child: Text(
-                                        "موقعیت صنف را روی نقشه پیدا کنید",
+                                        "موقعیت کسب و کار خود را روی نقشه پیدا کنید",
                                         style: defaultTextStyle(context, headline: 4).c(Colors.white),
                                       ),
                                     )

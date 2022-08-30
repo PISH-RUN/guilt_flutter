@@ -40,6 +40,7 @@ dependencies:
   flutter_markdown: ^0.6.10+2
   expandable: ^5.0.1
   image_picker: ^0.8.5+3
+  toggle_switch: ^2.0.1
   flutter_spinkit: ^5.1.0
   persian_datetime_picker: ^2.5.0
   dio: ^4.0.6
