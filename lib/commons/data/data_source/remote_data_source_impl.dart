@@ -2,7 +2,11 @@ import 'dart:convert';
 import 'package:dartz/dartz.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:guilt_flutter/application/constants.dart';
+import 'package:guilt_flutter/commons/failures.dart';
+import 'package:guilt_flutter/commons/request_result.dart';
 import 'package:http/http.dart' as http;
+import 'package:dio/dio.dart' as dio;
+import 'package:image_picker/image_picker.dart';
 import 'package:logger/logger.dart';
 
 import '../../utils.dart';
@@ -31,8 +35,11 @@ class RemoteDataSourceImpl implements RemoteDataSource {
   }
 
   @override
-  Future<Either<ServerFailure, List<T>>> getListFromServer<T>(
-      {required String url, required Map<String, dynamic> params, required List<T> Function(List<dynamic> success) mapSuccess}) async {
+  Future<Either<ServerFailure, List<T>>> getListFromServer<T>({
+    required String url,
+    required Map<String, dynamic> params,
+    required List<T> Function(List<dynamic> success) mapSuccess,
+  }) async {
     String methodName = "getList";
     try {
       Logger().v("$methodName===> url ===> $url \n\nbodyParameters ===> $params\n\ndefaultHeader ===> $defaultHeader");
@@ -59,81 +66,86 @@ class RemoteDataSourceImpl implements RemoteDataSource {
 
   @override
   Future<Either<ServerFailure, T>> getFromServer<T>(
-      {required String url, required Map<String, dynamic> params, required T Function(Map<String, dynamic> success) mapSuccess}) async {
+      {required String url,
+      required Map<String, dynamic> params,
+      required T Function(Map<String, dynamic> success) mapSuccess,
+      String? localKey}) async {
+    if (localKey != null && GetStorage().hasData(localKey)) {
+      return Right(convertStringToSuccessData(GetStorage().read<String>(localKey)!, (success) => mapSuccess(success)));
+    }
     if (!await isInternetEnable()) return Left(ServerFailure.noInternet());
     String paramsString = params.entries.map((entry) => "${entry.key}=${entry.value}").toList().join('&');
     if (paramsString.isNotEmpty) {
       paramsString = "?$paramsString";
     }
     final finalUri = Uri.parse('$url$paramsString');
-    return _callFunctionOfServer(
+    final response = await _callFunctionOfServer(
       response: client.get(finalUri, headers: url.contains("dapi") ? {'Accept': 'application/json'} : defaultHeader),
-      mapSuccess: mapSuccess,
       params: params,
       url: url,
       methodName: "get",
     );
-  }
-
-  @override
-  Stream<Either<ServerFailure, T>> getFromServerWithOfflineFirst<T>(
-      {required String url, required Map<String, dynamic> params, required T Function(Map<String, dynamic> success) mapSuccess}) async* {
-    final finalUri = Uri.parse(url).replace(queryParameters: params);
-    if (GetStorage().hasData(finalUri.toString())) {
-      yield Right(mapSuccess(GetStorage().read<Map<String, dynamic>>(finalUri.toString())!));
-    }
-    if (!await isInternetEnable()) {
-      yield Left(ServerFailure.noInternet());
-    } else {
-      final output = await _callFunctionOfServer<Map<String, dynamic>>(
-        response: client.get(finalUri, headers: defaultHeader),
-        mapSuccess: (data) => data,
-        params: params,
-        url: url,
-        methodName: "get",
-      );
-      yield output.fold(
-        (l) => Left(l),
-        (r) {
-          GetStorage().write(finalUri.toString(), r);
-          return Right(mapSuccess(r));
-        },
-      );
-    }
+    return response.fold(
+      (l) => Left(l),
+      (data) {
+        return Right(convertStringToSuccessData(data, (success) => mapSuccess(success)));
+      },
+    );
   }
 
   @override
   Future<Either<ServerFailure, T>> postToServer<T>(
-      {required String url, required Map<String, dynamic> params, required T Function(Map<String, dynamic> success) mapSuccess}) async {
+      {required String url,
+      required Map<String, dynamic> params,
+      required T Function(Map<String, dynamic> success) mapSuccess,
+      String? localKey}) async {
     if (!await isInternetEnable()) return Left(ServerFailure.noInternet());
-    return _callFunctionOfServer(
+    final response = await _callFunctionOfServer(
       response: client.post(Uri.parse(url), body: jsonEncode(params), headers: defaultHeader),
-      mapSuccess: mapSuccess,
       params: params,
       url: url,
       methodName: "post",
+    );
+    return response.fold(
+      (l) => Left(l),
+      (data) {
+        if (localKey != null) {
+          GetStorage().write(localKey, data);
+        }
+        return Right(convertStringToSuccessData(data, (success) => mapSuccess(success)));
+      },
     );
   }
 
   @override
   Future<Either<ServerFailure, T>> putToServer<T>(
-      {required String url, required Map<String, dynamic> params, required T Function(Map<String, dynamic> success) mapSuccess}) async {
+      {required String url,
+      required Map<String, dynamic> params,
+      required T Function(Map<String, dynamic> success) mapSuccess,
+      String? localKey}) async {
     if (!await isInternetEnable()) return Left(ServerFailure.noInternet());
-    return _callFunctionOfServer(
+    final response = await _callFunctionOfServer(
       response: client.put(Uri.parse(url), body: jsonEncode(params), headers: defaultHeader),
-      mapSuccess: mapSuccess,
       params: params,
       url: url,
       methodName: "put",
     );
+    return response.fold(
+      (l) => Left(l),
+      (data) {
+        if (localKey != null) {
+          GetStorage().write(localKey, data);
+        }
+        return Right(convertStringToSuccessData(data, (success) => mapSuccess(success)));
+      },
+    );
   }
 
-  Future<Either<ServerFailure, T>> _callFunctionOfServer<T>({
+  Future<Either<ServerFailure, String>> _callFunctionOfServer<T>({
     required String methodName,
     required Future<http.Response> response,
     required String url,
     required Map<String, dynamic> params,
-    required T Function(Map<String, dynamic> success) mapSuccess,
   }) async {
     try {
       Logger().v("$methodName===> url ===> $url \n\nbodyParameters ===> $params\n\ndefaultHeader ===> $defaultHeader");
@@ -141,7 +153,7 @@ class RemoteDataSourceImpl implements RemoteDataSource {
       Logger().d("$methodName===> response.statusCode==> ${finalResponse.statusCode}  for  $url");
       if (isSuccessfulHttp(finalResponse)) {
         Logger().i("$methodName===>$url response is===>${finalResponse.body}");
-        return Right(mapSuccess(jsonDecode(finalResponse.body)));
+        return Right(finalResponse.body);
       } else {
         Logger().e("$methodName===> response.error ===> ${finalResponse.statusCode}  ${finalResponse.body}");
         handleGlobalErrorInServer(finalResponse);
@@ -159,6 +171,8 @@ class RemoteDataSourceImpl implements RemoteDataSource {
     }
   }
 
+  T convertStringToSuccessData<T>(String data, T Function(Map<String, dynamic> success) mapSuccess) => mapSuccess(jsonDecode(data));
+
   void handleGlobalErrorInServer(http.Response response) {
     if (response.statusCode == AUTHENTICATION_IS_WRONG_STATUS_CODE) _removeTokenBecauseIfExpire(response);
   }
@@ -169,14 +183,56 @@ class RemoteDataSourceImpl implements RemoteDataSource {
 
   @override
   Future<Either<ServerFailure, T>> deleteToServer<T>(
-      {required String url, required Map<String, dynamic> params, required T Function(Map<String, dynamic> success) mapSuccess}) async {
+      {required String url,
+      required Map<String, dynamic> params,
+      required T Function(Map<String, dynamic> success) mapSuccess,
+      }) async {
     if (!await isInternetEnable()) return Left(ServerFailure.noInternet());
-    return _callFunctionOfServer(
+    final response = await _callFunctionOfServer(
       response: client.delete(Uri.parse(url), body: jsonEncode(params), headers: defaultHeader),
-      mapSuccess: mapSuccess,
       params: params,
       url: url,
       methodName: "delete",
     );
+    return response.fold(
+      (l) => Left(l),
+      (data) => Right(convertStringToSuccessData(data, (success) => mapSuccess(success))),
+    );
+  }
+
+  @override
+  Future<RequestResult> postMultipartToServer({
+    required String url,
+    required String imageName,
+    required XFile image,
+    required String attachName,
+    required Map<String, dynamic> bodyParameters,
+    String? localKey,
+  }) async {
+    if (!await isInternetEnable()) return RequestResult.failure(ServerFailure.noInternet());
+    try {
+      var dioRequest = dio.Dio();
+      dioRequest.options.baseUrl = url;
+      dioRequest.options.headers = defaultHeader;
+      var formData = dio.FormData.fromMap({});
+      final bytes = await image.readAsBytes();
+      final dio.MultipartFile file = dio.MultipartFile.fromBytes(bytes, filename: image.path.substring(image.path.lastIndexOf('/') + 1));
+      MapEntry<String, dio.MultipartFile> entry = MapEntry(imageName, file);
+      formData.files.add(entry);
+      bodyParameters.forEach((key, value) {
+        if (value != null) formData.fields.add(MapEntry(key, value.toString()));
+      });
+      var response = await dioRequest.post(url, data: formData);
+      if (isSuccessfulStatusCode(response.statusCode!)) {
+        if (localKey != null) {
+          GetStorage().write(localKey, response.data.toString());
+        }
+        return RequestResult.success();
+      } else {
+        return RequestResult.failure(Failure('attach wrong'));
+      }
+    } on dio.DioError {
+      return RequestResult.failure(Failure('attach wrong'));
+    }
   }
 }

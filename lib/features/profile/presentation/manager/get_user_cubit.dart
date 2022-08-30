@@ -11,9 +11,9 @@ class GetUserCubit extends Cubit<GetUserState> {
   })  : _main = main,
         super(const GetUserState.loading());
 
-  Future<void> initialPage(UserInfo user) async {
+  Future<void> initialPage(String nationalCode) async {
     emit(const GetUserState.loading());
-    final response = await _main.getUserInfo(user);
+    final response = await _main.getProfile(nationalCode);
     response.fold(
       (failure) => emit(GetUserState.error(failure: failure)),
       (user) => emit(GetUserState.loaded(user: user)),

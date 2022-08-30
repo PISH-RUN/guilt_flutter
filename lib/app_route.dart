@@ -7,6 +7,7 @@ import 'package:guilt_flutter/authenticate_page.dart';
 import 'package:guilt_flutter/features/login/api/login_api.dart';
 import 'package:guilt_flutter/features/login/presentation/pages/login_page.dart';
 import 'package:guilt_flutter/features/login/presentation/pages/register_page.dart';
+import 'package:guilt_flutter/features/profile/api/profile_api.dart';
 import 'package:guilt_flutter/features/profile/presentation/pages/profile_page.dart';
 import 'package:qlevar_router/qlevar_router.dart';
 
@@ -17,7 +18,7 @@ class AppRoutes {
     QRoute.withChild(
       path: '/guild',
       builderChild: (p0) => p0,
-      middleware: [AuthGuard(), QMiddlewareBuilder(canPopFunc: () async => !isDialogOpen)],
+      middleware: [AuthGuard(), ProfileGuard(), QMiddlewareBuilder(canPopFunc: () async => !isDialogOpen)],
       children: [
         QRoute(
           path: '/dashboard',
@@ -25,13 +26,18 @@ class AppRoutes {
           middleware: [AuthGuard()],
         ),
         QRoute(
-          path: '/profile',
+          path: '/profile/:nationalCode((^[0-9]*\$))',
           builder: () => AuthenticatedPage(child: GuildMainPanel(currentIndexBottomNavigation: 0, child: ProfilePage.wrappedRoute())),
           middleware: [AuthGuard()],
         ),
         QRoute(
+          path: '/signIn/profile/:nationalCode((^[0-9]*\$))',
+          builder: () => ProfilePage.wrappedRoute(),
+          middleware: [AuthGuard()],
+        ),
+        QRoute(
           path: '/faq',
-          builder: () => AuthenticatedPage(child: GuildMainPanel(currentIndexBottomNavigation: 2, child: Faq())),
+          builder: () => const AuthenticatedPage(child: GuildMainPanel(currentIndexBottomNavigation: 2, child: Faq())),
           middleware: [AuthGuard()],
         ),
         QRoute(
@@ -47,6 +53,7 @@ class AppRoutes {
         ),
       ],
     ),
+    QRoute(path: '/error', builder: () => BasePage(child: LoginPage.wrappedRoute())),
     QRoute(path: '/otp', builder: () => BasePage(child: LoginPage.wrappedRoute())),
     QRoute(path: '/register', builder: () => BasePage(child: RegisterPage.wrappedRoute())),
   ];
@@ -62,5 +69,17 @@ class AuthGuard extends QMiddleware {
       return '/register';
     }
     return null;
+  }
+}
+
+class ProfileGuard extends QMiddleware {
+  @override
+  Future<String?> redirectGuard(String path) async {
+    final nationalCode = QR.params['nationalCode'].toString();
+    final response = await GetIt.instance<ProfileApi>().hasProfile(nationalCode: nationalCode);
+    return response.fold(
+      (l) => '/error',
+      (hasProfile) => hasProfile ? null : '/signIn/profile/$nationalCode',
+    );
   }
 }

@@ -71,7 +71,7 @@ class GuildMain {
     if (list.isNotEmpty) {
       final guild = list[0];
       //todo Gender.boy is hardcode
-      userInfo = UserInfo(firstName: guild.firstName, lastName: guild.lastName,gender: Gender.boy, phoneNumber: guild.phoneNumber, nationalCode: guild.nationalCode);
+      userInfo = UserInfo(firstName: guild.firstName, lastName: guild.lastName,gender: Gender.boy, phoneNumber: guild.phoneNumber, nationalCode: guild.nationalCode,imageUrl: '');
     }
   }
 

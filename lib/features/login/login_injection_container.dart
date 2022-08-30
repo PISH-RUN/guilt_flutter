@@ -14,6 +14,9 @@ import 'presentation/manager/register_cubit.dart';
 final sl = GetIt.instance;
 
 Future<void> init() async {
+  //Apis
+  sl.registerLazySingleton<LoginApi>(() => LoginApiImpl(sl()));
+
   // Cubit
   sl.registerFactory(() => LoginCubit(loginMain: sl()));
   sl.registerFactory(() => RegisterCubit(loginMain: sl()));
@@ -25,6 +28,5 @@ Future<void> init() async {
   sl.registerLazySingleton<LoginRepository>(() => LoginRepositoryImpl(dataSource: sl(), readDataFromLocal: (key) => GetStorage().read<String>(key) ?? '',
     writeDataToLocal: GetStorage().write));
 
-  //Apis
-  sl.registerLazySingleton<LoginApi>(() => LoginApiImpl(sl()));
+
 }

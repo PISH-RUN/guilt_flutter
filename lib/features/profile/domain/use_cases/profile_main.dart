@@ -1,24 +1,24 @@
 import 'package:dartz/dartz.dart';
-import 'package:guilt_flutter/application/guild/domain/usecases/guild_main.dart';
 import 'package:guilt_flutter/commons/failures.dart';
 import 'package:guilt_flutter/commons/request_result.dart';
 import 'package:guilt_flutter/features/profile/domain/entities/user_info.dart';
+import 'package:guilt_flutter/features/profile/domain/repositories/profile_repository.dart';
 import 'package:image_picker/image_picker.dart';
 
 class ProfileMain {
-  final GuildMain guild;
+  final ProfileRepository repository;
 
-  ProfileMain(this.guild);
+  ProfileMain(this.repository);
 
-  Future<Either<Failure, UserInfo>> getUserInfo(UserInfo user) async {
-    return Right(userInfo);
+  Future<Either<Failure, UserInfo>> getProfile(String nationalCode) async {
+    return repository.getProfile(nationalCode);
   }
 
-  Future<RequestResult> updateUserInfo(UserInfo user) {
-    return guild.updateProfileInAllGuildList(profile: user);
+  Future<RequestResult> updateUserInfo(String nationalCode, UserInfo user) {
+    return repository.updateProfile(nationalCode, user);
   }
 
-  Future<RequestResult> changeAvatar(UserInfo user, XFile file) {
-    return guild.updateProfileInAllGuildList(profile: user);
+  Future<RequestResult> changeAvatar(String nationalCode, XFile avatar) {
+    return repository.changeAvatar(nationalCode, avatar);
   }
 }

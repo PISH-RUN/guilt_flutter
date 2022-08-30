@@ -35,13 +35,14 @@ void prepareGetIt() {
   di_profile.init();
 }
 
-const String initPath = 'guild/dashboard';
+String initPath = 'guild/dashboard';
 
 class MyApp extends StatelessWidget {
   MyApp({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    initPath='guild/dashboard';
     return MaterialApp.router(
       title: 'guild',
       theme: lightThemeData(),

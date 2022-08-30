@@ -67,7 +67,7 @@ class GuildRemoteRepositoryImpl implements GuildRemoteRepository {
                   : ServerFailure(finalResponse),
         );
       }
-    } on Exception catch (e) {
+    } on Exception {
       return RequestResult.failure(ServerFailure.somethingWentWrong());
     }
   }
