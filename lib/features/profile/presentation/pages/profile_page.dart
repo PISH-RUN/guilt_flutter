@@ -1,15 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
+import 'package:guilt_flutter/commons/failures.dart';
 import 'package:guilt_flutter/commons/fix_rtl_flutter_bug.dart';
 import 'package:guilt_flutter/commons/text_style.dart';
 import 'package:guilt_flutter/commons/utils.dart';
+import 'package:guilt_flutter/commons/widgets/loading_widget.dart';
 import 'package:guilt_flutter/commons/widgets/warning_dialog.dart';
 import 'package:guilt_flutter/features/login/api/login_api.dart';
 import 'package:guilt_flutter/features/profile/domain/entities/gender_type.dart';
 import 'package:guilt_flutter/features/profile/domain/entities/user_info.dart';
+import 'package:guilt_flutter/features/profile/presentation/manager/get_user_cubit.dart';
+import 'package:guilt_flutter/features/profile/presentation/manager/get_user_state.dart';
 import 'package:guilt_flutter/features/profile/presentation/manager/update_user_cubit.dart';
+import 'package:guilt_flutter/features/profile/presentation/manager/update_user_state.dart';
 import 'package:guilt_flutter/main.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:logger/logger.dart';
 import 'package:qlevar_router/qlevar_router.dart';
 import 'package:toggle_switch/toggle_switch.dart';
 
@@ -20,90 +27,168 @@ class ProfilePage extends StatefulWidget {
   _ProfilePageState createState() => _ProfilePageState();
 
   static Widget wrappedRoute() {
-    return BlocProvider(create: (ctx) => GetIt.instance<UpdateUserCubit>(), child: const ProfilePage());
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider<UpdateUserCubit>(create: (BuildContext context) => GetIt.instance<UpdateUserCubit>()),
+        BlocProvider<GetUserCubit>(create: (BuildContext context) => GetIt.instance<GetUserCubit>()),
+      ],
+      child: const ProfilePage(),
+    );
   }
 }
 
 class _ProfilePageState extends State<ProfilePage> {
-  late TextEditingController firstNameController;
-  late TextEditingController lastNameController;
-  late TextEditingController phoneController;
-  late TextEditingController nationalCodeController;
-  late Gender gender;
-
-  final GlobalKey<FormState> formKey = GlobalKey();
-
-  bool isEditable = false;
+  late UserInfo user;
 
   @override
   void initState() {
-    firstNameController = TextEditingController(text: userInfo.firstName);
-    lastNameController = TextEditingController(text: userInfo.lastName);
-    phoneController = TextEditingController(text: userInfo.phoneNumber);
-    nationalCodeController = TextEditingController(text: userInfo.nationalCode);
-    gender = userInfo.gender;
+    BlocProvider.of<GetUserCubit>(context).initialPage();
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Stack(
+    return Scaffold(body: BlocBuilder<GetUserCubit, GetUserState>(
+      builder: (context, state) {
+        return state.when(
+          loading: () => LoadingWidget(),
+          error: (failure) {
+            if (failure.failureType == FailureType.haveNoGuild) {
+              user = UserInfo.empty();
+              return FormWidget(user: user, isEditable: true);
+            }
+            return Center(child: Text(failure.message));
+          },
+          loaded: (userInfo) {
+            user = userInfo;
+            return FormWidget(user: user, isEditable: false);
+          },
+        );
+      },
+    ));
+  }
+}
+
+class FormWidget extends StatefulWidget {
+  final UserInfo user;
+  final bool isEditable;
+
+  const FormWidget({required this.user, required this.isEditable, Key? key}) : super(key: key);
+
+  @override
+  _FormWidgetState createState() => _FormWidgetState();
+}
+
+class _FormWidgetState extends State<FormWidget> {
+  late TextEditingController firstNameController;
+  late TextEditingController lastNameController;
+  late TextEditingController phoneController;
+  late TextEditingController nationalCodeController;
+  late Gender gender;
+  final GlobalKey<FormState> formKey = GlobalKey();
+  bool isEditable = false;
+  late UserInfo user;
+
+  @override
+  void initState() {
+    user = widget.user;
+    initialTextEditingController();
+    isEditable = widget.isEditable;
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocConsumer<UpdateUserCubit, UpdateUserState>(
+      listener: (context, state) {
+        if (state is Success) {
+          if (QR.currentPath.contains('signIn/profile')) {
+            QR.navigator.replaceAll(initPath);
+          }
+        }
+      },
+      builder: (context, _) {
+        return Scaffold(
+          body: formWidget(context),
+          floatingActionButton: BlocBuilder<GetUserCubit, GetUserState>(
+            builder: (context, state) {
+              return isEditable
+                  ? FloatingActionButton(
+                      onPressed: () {
+                        if (!formKey.currentState!.validate()) {
+                          return;
+                        }
+                        formKey.currentState!.save();
+                        BlocProvider.of<UpdateUserCubit>(context).updateUserInfo(user);
+                        isEditable = false;
+                        setState(() {});
+                      },
+                      backgroundColor: Theme.of(context).primaryColor,
+                      foregroundColor: Colors.white,
+                      child: const Icon(Icons.save),
+                    )
+                  : const SizedBox();
+            },
+          ),
+        );
+      },
+    );
+  }
+
+  void initialTextEditingController() {
+    firstNameController = TextEditingController(text: widget.user.firstName);
+    lastNameController = TextEditingController(text: widget.user.lastName);
+    phoneController = TextEditingController(text: widget.user.phoneNumber);
+    nationalCodeController = TextEditingController(text: widget.user.nationalCode);
+    gender = widget.user.gender;
+  }
+
+  Form formWidget(BuildContext context) {
+    return Form(
+      key: formKey,
+      child: Column(
         children: [
-          Form(
-            key: formKey,
-            child: Column(
-              children: [
-                Expanded(
-                  child: SingleChildScrollView(
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        const SizedBox(height: 40.0),
-                        baseInformationWidget(context),
-                      ],
-                    ),
-                  ),
-                ),
-              ],
+          Expanded(
+            child: SingleChildScrollView(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  const SizedBox(height: 10.0),
+                  avatarWidget(context),
+                  const SizedBox(height: 10.0),
+                  baseInformationWidget(context),
+                ],
+              ),
             ),
           ),
         ],
       ),
-      floatingActionButton: isEditable
-          ? FloatingActionButton(
-              onPressed: () {
-                if (!formKey.currentState!.validate()) {
-                  return;
-                }
-                formKey.currentState!.save();
-                BlocProvider.of<UpdateUserCubit>(context).updateUserInfo(userInfo);
-                isEditable = false;
-                setState(() {});
-              },
-              backgroundColor: Theme.of(context).primaryColor,
-              foregroundColor: Colors.white,
-              child: const Icon(Icons.save),
-            )
-          : null,
     );
   }
 
   Widget avatarWidget(BuildContext context) {
     return GestureDetector(
-      onTap: () async {},
+      onTap: () async {
+        final ImagePicker picker = ImagePicker();
+        final XFile? image = await picker.pickImage(source: ImageSource.gallery);
+        await BlocProvider.of<UpdateUserCubit>(context).changeAvatar(user, image!);
+        // BlocProvider.of<UpdateUserCubit>(context).prepareLoading();
+        // await Future.delayed(const Duration(milliseconds: 800), () => "1");
+        // BlocProvider.of<UpdateUserCubit>(context).initialPage();
+        setState(() {});
+      },
       child: AbsorbPointer(
         child: SizedBox(
           height: 140,
           width: 140,
           child: Stack(
             children: [
-              const Align(
+              Align(
                 alignment: Alignment.center,
                 child: SizedBox(
                   height: 130,
                   width: 130,
-                  child: Image(image: AssetImage('images/avatar.png')),
+                  child: user.avatar == null ? const Image(image: AssetImage('images/avatar.png')) : ClipRRect(borderRadius: const BorderRadius.all(Radius.circular(100)),child: Image(image: NetworkImage(user.avatar!))),
                 ),
               ),
               Align(
@@ -185,7 +270,7 @@ class _ProfilePageState extends State<ProfilePage> {
                                   if (value.length < 2) return "نام کوتاه است";
                                   return null;
                                 },
-                                onSaved: (value) => userInfo = userInfo.copyWith(firstName: value),
+                                onSaved: (value) => user = user.copyWith(firstName: value),
                               )
                             : labelWidget(Icons.person_outline, "نام", firstNameController.text),
                         SizedBox(height: paddingBetweenTextFiled),
@@ -203,7 +288,7 @@ class _ProfilePageState extends State<ProfilePage> {
                                   if (value.length < 2) return "نام خانوادگی کوتاه است";
                                   return null;
                                 },
-                                onSaved: (value) => userInfo = userInfo.copyWith(lastName: value),
+                                onSaved: (value) => user = user.copyWith(lastName: value),
                               )
                             : labelWidget(Icons.person_outline, "نام خانوادگی", lastNameController.text),
                         SizedBox(height: paddingBetweenTextFiled),
@@ -223,7 +308,7 @@ class _ProfilePageState extends State<ProfilePage> {
                                   if (!validatePhoneNumber(value)) return "شماره تلفن معتبر نیست";
                                   return null;
                                 },
-                                onSaved: (value) => userInfo = userInfo.copyWith(phoneNumber: value),
+                                onSaved: (value) => user = user.copyWith(phoneNumber: value),
                               )
                             : labelWidget(Icons.phone, "شماره تلفن", phoneController.text),
                         SizedBox(height: paddingBetweenTextFiled),
@@ -243,10 +328,10 @@ class _ProfilePageState extends State<ProfilePage> {
                                 labels: Gender.values.map((e) => e.persianName).toList(),
                                 onToggle: (index) {
                                   gender = Gender.values[index!];
-                                  userInfo = userInfo.copyWith(gender: gender);
+                                  user = user.copyWith(gender: gender);
                                 },
                               )
-                            : labelWidget(Icons.male, "جنسیت", userInfo.gender.persianName),
+                            : labelWidget(Icons.male, "جنسیت", user.gender.persianName),
                         SizedBox(height: paddingBetweenTextFiled),
                         const SizedBox(height: 16.0),
                       ],

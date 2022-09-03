@@ -7,8 +7,8 @@ import 'package:guilt_flutter/commons/request_result.dart';
 import 'package:http/http.dart' as http;
 import 'package:dio/dio.dart' as dio;
 import 'package:image_picker/image_picker.dart';
+import 'package:http_parser/http_parser.dart';
 import 'package:logger/logger.dart';
-
 import '../../utils.dart';
 import '../model/server_failure.dart';
 import 'remote_data_source.dart';
@@ -26,7 +26,7 @@ class RemoteDataSourceImpl implements RemoteDataSource {
       'Content-Type': 'application/json',
       'Accept': 'application/json',
     };
-    String token = readDataFromLocal(TOKEN_KEY_SAVE_IN_LOCAL);
+    String token = readDataFromLocal(LocalKeys.token.name);
     if (token.isNotEmpty) {
       String preFix = "Bearer";
       output['Authorization'] = '$preFix $token';
@@ -39,8 +39,13 @@ class RemoteDataSourceImpl implements RemoteDataSource {
     required String url,
     required Map<String, dynamic> params,
     required List<T> Function(List<dynamic> success) mapSuccess,
+    String? localKey,
+    bool isForceRefresh = false,
   }) async {
     String methodName = "getList";
+    if (localKey != null && GetStorage().hasData(localKey) && !isForceRefresh) {
+      return Right(mapSuccess((jsonDecode(GetStorage().read(localKey)) as List)));
+    }
     try {
       Logger().v("$methodName===> url ===> $url \n\nbodyParameters ===> $params\n\ndefaultHeader ===> $defaultHeader");
       final finalUri = Uri.parse(url).replace(queryParameters: params);
@@ -48,6 +53,9 @@ class RemoteDataSourceImpl implements RemoteDataSource {
       Logger().d("$methodName===> response.statusCode==> ${finalResponse.statusCode}  for  $url");
       if (isSuccessfulHttp(finalResponse)) {
         Logger().i("$methodName===>$url response is===>${finalResponse.body}");
+        if (localKey != null) {
+          GetStorage().write(localKey, finalResponse.body);
+        }
         return Right(mapSuccess((jsonDecode(finalResponse.body) as List)));
       } else {
         Logger().e("$methodName===> response.error ===> ${finalResponse.body}");
@@ -88,6 +96,9 @@ class RemoteDataSourceImpl implements RemoteDataSource {
     return response.fold(
       (l) => Left(l),
       (data) {
+        if (localKey != null) {
+          GetStorage().write(localKey, data);
+        }
         return Right(convertStringToSuccessData(data, (success) => mapSuccess(success)));
       },
     );
@@ -95,10 +106,7 @@ class RemoteDataSourceImpl implements RemoteDataSource {
 
   @override
   Future<Either<ServerFailure, T>> postToServer<T>(
-      {required String url,
-      required Map<String, dynamic> params,
-      required T Function(Map<String, dynamic> success) mapSuccess,
-      String? localKey}) async {
+      {required String url, required dynamic params, required T Function(Map<String, dynamic> success) mapSuccess, String? localKey}) async {
     if (!await isInternetEnable()) return Left(ServerFailure.noInternet());
     final response = await _callFunctionOfServer(
       response: client.post(Uri.parse(url), body: jsonEncode(params), headers: defaultHeader),
@@ -145,7 +153,7 @@ class RemoteDataSourceImpl implements RemoteDataSource {
     required String methodName,
     required Future<http.Response> response,
     required String url,
-    required Map<String, dynamic> params,
+    required dynamic params,
   }) async {
     try {
       Logger().v("$methodName===> url ===> $url \n\nbodyParameters ===> $params\n\ndefaultHeader ===> $defaultHeader");
@@ -178,15 +186,15 @@ class RemoteDataSourceImpl implements RemoteDataSource {
   }
 
   void _removeTokenBecauseIfExpire(http.Response response) {
-    writeDataToLocal(TOKEN_KEY_SAVE_IN_LOCAL, "");
+    writeDataToLocal(LocalKeys.token.name, "");
   }
 
   @override
-  Future<Either<ServerFailure, T>> deleteToServer<T>(
-      {required String url,
-      required Map<String, dynamic> params,
-      required T Function(Map<String, dynamic> success) mapSuccess,
-      }) async {
+  Future<Either<ServerFailure, T>> deleteToServer<T>({
+    required String url,
+    required Map<String, dynamic> params,
+    required T Function(Map<String, dynamic> success) mapSuccess,
+  }) async {
     if (!await isInternetEnable()) return Left(ServerFailure.noInternet());
     final response = await _callFunctionOfServer(
       response: client.delete(Uri.parse(url), body: jsonEncode(params), headers: defaultHeader),
@@ -214,24 +222,35 @@ class RemoteDataSourceImpl implements RemoteDataSource {
       var dioRequest = dio.Dio();
       dioRequest.options.baseUrl = url;
       dioRequest.options.headers = defaultHeader;
-      var formData = dio.FormData.fromMap({});
-      final bytes = await image.readAsBytes();
-      final dio.MultipartFile file = dio.MultipartFile.fromBytes(bytes, filename: image.path.substring(image.path.lastIndexOf('/') + 1));
-      MapEntry<String, dio.MultipartFile> entry = MapEntry(imageName, file);
-      formData.files.add(entry);
+      var formData = dio.FormData.fromMap({
+        imageName: await dio.MultipartFile.fromFile(
+          image.path,
+          filename: image.path.split('/').last,
+          contentType: MediaType("image", image.path.split('.').last),
+        ),
+      });
+      // final bytes = await image.readAsBytes();
+      // Logger().i("info=>1111111 ${image.path} ");
+      // final dio.MultipartFile file = dio.MultipartFile.fromBytes(bytes, filename: image.path.substring(image.path.lastIndexOf('/') + 1));
+      // MapEntry<String, dio.MultipartFile> entry = MapEntry(imageName, file);
+      // formData.files.add(entry);
       bodyParameters.forEach((key, value) {
         if (value != null) formData.fields.add(MapEntry(key, value.toString()));
       });
       var response = await dioRequest.post(url, data: formData);
+      Logger().i("statusCode=> ${response.statusCode!} ");
       if (isSuccessfulStatusCode(response.statusCode!)) {
+        Logger().i("data=> ${response.data.toString()} ");
         if (localKey != null) {
           GetStorage().write(localKey, response.data.toString());
         }
         return RequestResult.success();
       } else {
+        Logger().e("error=> ${response.data.toString()} ");
         return RequestResult.failure(Failure('attach wrong'));
       }
-    } on dio.DioError {
+    } on dio.DioError catch (e) {
+      Logger().wtf("wtf=> ${e.message}    ${e.response.toString()}");
       return RequestResult.failure(Failure('attach wrong'));
     }
   }

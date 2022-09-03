@@ -8,6 +8,7 @@ import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:guilt_flutter/application/guild/domain/entities/icis.dart';
+import 'package:guilt_flutter/application/isic.dart';
 import 'package:http/http.dart';
 import 'package:persian_utils/persian_utils.dart';
 import 'package:shamsi_date/shamsi_date.dart';
@@ -266,21 +267,32 @@ bool jsonFiledParserBool(Map<String, dynamic> json, List<String> filedNames) {
   return result.isEmpty ? false : result == "1" || result == "true";
 }
 
-List<Isic> isicList = [];
+List<Isic> _isicList = [];
 
-Future<void> initialListOfIsic(BuildContext context) async {
-  String data = await DefaultAssetBundle.of(context).loadString("jsons/isic.json");
-  final jsonResult = jsonDecode(data) as List;
-  final output = jsonResult.map<Isic>((e) => Isic(name: e["ISICName"].toString().trim(), code: e["isicCoding"].toString().trim())).toList();
-  isicList = output;
+void initialListOfIsic() {
+  final output = isicListJson.map<Isic>((e) => Isic(name: e["ISICName"].toString().trim(), code: e["isicCoding"].toString().trim())).toList();
+  _isicList = output;
+}
+
+List<Isic> getListOfIsic() {
+  if (_isicList.isEmpty) {
+    initialListOfIsic();
+  }
+  return _isicList;
 }
 
 Isic getIsicWithCode(String code) {
-  return isicList.firstWhere((element) => element.code == code);
+  if (_isicList.isEmpty) {
+    initialListOfIsic();
+  }
+  return _isicList.firstWhere((element) => element.code == code);
 }
 
 Isic getIsicWithName(String name) {
-  return isicList.firstWhere((element) => element.name == name);
+  if (_isicList.isEmpty) {
+    initialListOfIsic();
+  }
+  return _isicList.firstWhere((element) => element.name == name);
 }
 
 Future<List<String>> getIranProvince(BuildContext context) async {
@@ -348,3 +360,4 @@ extension NewProperty on Duration {
     return int.parse(times[2]);
   }
 }
+

@@ -11,7 +11,6 @@ import 'package:guilt_flutter/commons/utils.dart';
 import 'package:guilt_flutter/commons/widgets/loading_widget.dart';
 import 'package:guilt_flutter/commons/widgets/our_item_picker.dart';
 import 'package:guilt_flutter/commons/widgets/warning_dialog.dart';
-import 'package:guilt_flutter/features/profile/domain/entities/user_info.dart';
 import 'package:guilt_flutter/main.dart';
 import 'package:latlong2/latlong.dart' as lat_lng;
 import 'package:qlevar_router/qlevar_router.dart';
@@ -95,7 +94,7 @@ class _GuildFormWidgetState extends State<GuildFormWidget> {
   void initState() {
     guild = widget.guild;
     organController = TextEditingController(text: guild.organName);
-    guildNameController = TextEditingController(text: guild.name);
+    guildNameController = TextEditingController(text: guild.title);
     addressController = TextEditingController(text: guild.address);
     provinceController = TextEditingController(text: guild.province);
     isicController = TextEditingController(text: guild.isic.name);
@@ -142,7 +141,6 @@ class _GuildFormWidgetState extends State<GuildFormWidget> {
                   if (!formKey.currentState!.validate()) {
                     return;
                   }
-                  guild = guild.copyWith(nationalCode: userInfo.nationalCode);
                   isLoading = true;
                   setState(() {});
                   formKey.currentState!.save();
@@ -239,7 +237,7 @@ class _GuildFormWidgetState extends State<GuildFormWidget> {
                                   if (value.isEmpty) return "این فیلد الزامی است";
                                   return null;
                                 },
-                                onSaved: (value) => guild = guild.copyWith(guildName: value),
+                                onSaved: (value) => guild = guild.copyWith(title: value),
                               )
                             : labelWidget(Icons.store, "نام کسب و کار", guildNameController.text),
                       ),
@@ -284,7 +282,7 @@ class _GuildFormWidgetState extends State<GuildFormWidget> {
                           ? OurItemPicker(
                               hint: "رسته صنفی",
                               icon: Icons.pin,
-                              items: isicList.map((e) => e.name).toList(),
+                              items: getListOfIsic().map((e) => e.name).toList(),
                               onChanged: (value) {
                                 final isic = getIsicWithName(value);
                                 guild = guild.copyWith(isic: isic);

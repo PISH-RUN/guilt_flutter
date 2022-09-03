@@ -136,7 +136,7 @@ class _GuildListPageState extends State<GuildListPage> {
                         mainAxisSize: MainAxisSize.min,
                         children: [
                           ListTile(
-                            title: AutoSizeText(guild.name, style: defaultTextStyle(context, headline: 3), maxLines: 1, minFontSize: 2),
+                            title: AutoSizeText(guild.title, style: defaultTextStyle(context, headline: 3), maxLines: 1, minFontSize: 2),
                             subtitle: Text(guild.city, style: defaultTextStyle(context, headline: 5).c(Colors.grey)),
                             onTap: () {
                               QR.to('guild/${guild.id}').then((v) => BlocProvider.of<GuildListCubit>(context).initialPage(context));
@@ -227,7 +227,7 @@ class _GuildListPageState extends State<GuildListPage> {
   }
 
   void search() {
-    guildList = widget.guildList.where((element) => element.name.contains(controller.text)).toList();
+    guildList = widget.guildList.where((element) => element.title.contains(controller.text)).toList();
     setState(() {});
   }
 }

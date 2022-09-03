@@ -20,4 +20,13 @@ class UpdateUserCubit extends Cubit<UpdateUserState> {
       () => emit(const UpdateUserState.success()),
     );
   }
+
+  Future<void> changeAvatar(UserInfo user, XFile avatar) async {
+    emit(const UpdateUserState.loading());
+    final response = await _main.changeAvatar(user.nationalCode, avatar);
+    response.fold(
+      (failure) => emit(UpdateUserState.error(failure: failure)),
+      () => emit(const UpdateUserState.success()),
+    );
+  }
 }

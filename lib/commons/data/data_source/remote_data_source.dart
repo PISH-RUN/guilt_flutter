@@ -9,7 +9,7 @@ abstract class RemoteDataSource {
       {required String url, required Map<String, dynamic> params, required T Function(Map<String, dynamic> success) mapSuccess, String? localKey});
 
   Future<Either<ServerFailure, T>> postToServer<T>(
-      {required String url, required Map<String, dynamic> params, required T Function(Map<String, dynamic> success) mapSuccess, String? localKey});
+      {required String url, required dynamic params, required T Function(Map<String, dynamic> success) mapSuccess, String? localKey});
 
   Future<Either<ServerFailure, T>> deleteToServer<T>(
       {required String url, required Map<String, dynamic> params, required T Function(Map<String, dynamic> success) mapSuccess});
@@ -21,8 +21,13 @@ abstract class RemoteDataSource {
     String? localKey,
   });
 
-  Future<Either<ServerFailure, List<T>>> getListFromServer<T>(
-      {required String url, required Map<String, dynamic> params, required List<T> Function(List<dynamic> success) mapSuccess});
+  Future<Either<ServerFailure, List<T>>> getListFromServer<T>({
+    required String url,
+    required Map<String, dynamic> params,
+    required List<T> Function(List<dynamic> success) mapSuccess,
+    String? localKey,
+    bool isForceRefresh = false,
+  });
 
   Future<RequestResult> postMultipartToServer({
     required String url,

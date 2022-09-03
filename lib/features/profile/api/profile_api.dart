@@ -15,7 +15,7 @@ class ProfileApi {
   Future<Either<Failure, bool>> hasProfile({required String nationalCode}) async {
     final output = await main.getProfile(nationalCode);
     return output.fold(
-      (failure) => Left(failure),
+      (failure) => failure.failureType == FailureType.haveNoGuild ? const Right(false) : Left(failure),
       (user) => Right(user.firstName.isNotEmpty && user.lastName.isNotEmpty && user.nationalCode.isNotEmpty && user.phoneNumber.isNotEmpty),
     );
   }

@@ -1,11 +1,19 @@
-import 'package:guilt_flutter/application/guild/domain/usecases/guild_main.dart';
+import 'package:dartz/dartz.dart';
+import 'package:guilt_flutter/application/guild/domain/entities/guild.dart';
+import 'package:guilt_flutter/application/guild/domain/repositories/guild_remote_repository.dart';
+import 'package:guilt_flutter/commons/failures.dart';
+import 'package:guilt_flutter/commons/request_result.dart';
 
 class GuildApi {
-  final GuildMain main;
+  final GuildRemoteRepository guildRemoteRepository;
 
-  GuildApi(this.main);
+  GuildApi({required this.guildRemoteRepository});
 
-// Future<Either<Failure, List<DailyTip>>> call({@required int weekNumber}) async {
-//   return await repository.getTipsOfOneWeek(weekNumber);
-// }
+  Future<Either<Failure, List<Guild>>> getMyGuildList({required String nationalCode, bool isForceRefresh = false}) async {
+    return guildRemoteRepository.getListOfMyGuilds(nationalCode, isForceRefresh);
+  }
+
+  Future<RequestResult> updateGuildList({required String nationalCode, required List<Guild> guildList}) async {
+    return guildRemoteRepository.updateAllData(nationalCode, guildList);
+  }
 }

@@ -6,6 +6,8 @@ abstract class LoginApi {
   void signOut();
 
   String getUserId();
+
+  String getUserPhone();
 }
 
 class LoginApiImpl extends LoginApi {
@@ -18,6 +20,9 @@ class LoginApiImpl extends LoginApi {
 
   @override
   String getUserId() => loginRepository.getUserId();
+
+  @override
+  String getUserPhone() => loginRepository.getUserPhone();
 
   @override
   void signOut() async => loginRepository.saveTokenInStorage("");

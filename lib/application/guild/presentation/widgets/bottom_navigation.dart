@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:guilt_flutter/application/colors.dart';
-import 'package:guilt_flutter/commons/widgets/simple_snake_bar.dart';
-import 'package:guilt_flutter/features/profile/domain/entities/user_info.dart';
 import 'package:qlevar_router/qlevar_router.dart';
 
 const double iconSize = 36;
@@ -54,14 +52,10 @@ class BottomNavigation extends StatelessWidget {
             backgroundColor: Colors.white,
           ),
         ],
-        onTap: (index) {
+        onTap: (index) async {
           switch (index) {
             case 0:
-              if (userInfo.firstName.isEmpty) {
-                showSnakeBar(context, 'ابتدا صنف جدید را وارد کنید');
-              } else {
-                QR.to('/guild/profile');
-              }
+              QR.to('/guild/profile');
               return;
             case 1:
               QR.to('/guild/dashboard');

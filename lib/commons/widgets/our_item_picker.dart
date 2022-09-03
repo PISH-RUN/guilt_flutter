@@ -122,7 +122,7 @@ class _ShowAlertDialogWithButtonsState extends State<ShowAlertDialogWithButtons>
       child: Center(
         child: SizedBox(
           width: 320,
-          height: widget.items.length * 80.0 + 30,
+          height: (widget.items.length * 80.0) + 60,
           child: ConstrainedBox(
             constraints: const BoxConstraints(maxWidth: 650),
             child: Card(

@@ -13,14 +13,14 @@ final sl = GetIt.instance;
 
 Future<void> init() async {
   //Apis
-  sl.registerLazySingleton<GuildApi>(() => GuildApi(sl()));
+  sl.registerLazySingleton<GuildApi>(() => GuildApi(guildRemoteRepository: sl()));
 
   // Cubit
   sl.registerFactory(() => GuildCubit(main: sl()));
   sl.registerFactory(() => GuildListCubit(main: sl()));
 
   // Use cases
-  sl.registerLazySingleton(() => GuildMain(sl(), sl()));
+  sl.registerLazySingleton(() => GuildMain(sl()));
 
   // Repository
   sl.registerLazySingleton<GuildRemoteRepository>(() => GuildRemoteRepositoryImpl(remoteDataSource: sl()));

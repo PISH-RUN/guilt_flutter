@@ -18,7 +18,6 @@ class GuildListCubit extends Cubit<GuildListState> {
   }) : super(const GuildListState.loading());
 
   Future<void> initialPage(BuildContext context) async {
-    await initialListOfIsic(context);
     emit(const GuildListState.loading());
     await Future.delayed(const Duration(milliseconds:300), () => "1");
     final response = await main.getListOfMyGuilds(nationalCode: GetIt.instance<LoginApi>().getUserId());

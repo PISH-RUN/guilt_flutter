@@ -1,22 +1,22 @@
 import 'package:equatable/equatable.dart';
+import 'package:get_it/get_it.dart';
+import 'package:guilt_flutter/features/login/api/login_api.dart';
 import 'gender_type.dart';
 
-UserInfo userInfo = UserInfo.empty();
-
 class UserInfo extends Equatable {
-  final String imageUrl;
   final String firstName;
   final String lastName;
   final String phoneNumber;
   final String nationalCode;
+  final String? avatar;
   final Gender gender;
 
   const UserInfo({
-    required this.imageUrl,
     required this.firstName,
     required this.lastName,
     required this.phoneNumber,
     required this.nationalCode,
+    required this.avatar,
     required this.gender,
   });
 
@@ -25,19 +25,31 @@ class UserInfo extends Equatable {
     String? lastName,
     String? phoneNumber,
     Gender? gender,
-    String? imageUrl,
+    String? avatar,
   }) {
     return UserInfo(
       firstName: firstName ?? this.firstName,
       lastName: lastName ?? this.lastName,
       phoneNumber: phoneNumber ?? this.phoneNumber,
+      avatar: avatar ?? this.avatar,
       nationalCode: nationalCode,
       gender: gender ?? this.gender,
-      imageUrl: imageUrl ?? this.imageUrl,
     );
   }
 
-  factory UserInfo.empty() => const UserInfo(nationalCode: "", firstName: "", lastName: "", phoneNumber: "", imageUrl: "", gender: Gender.boy);
+  @override
+  String toString() {
+    return 'UserInfo{avatar: $avatar, firstName: $firstName, lastName: $lastName, phoneNumber: $phoneNumber, nationalCode: $nationalCode, gender: $gender}';
+  }
+
+  factory UserInfo.empty() => UserInfo(
+        nationalCode: GetIt.instance<LoginApi>().getUserId(),
+        firstName: "",
+        lastName: "",
+        phoneNumber: GetIt.instance<LoginApi>().getUserPhone(),
+        avatar: null,
+        gender: Gender.boy,
+      );
 
   @override
   List<Object> get props => [nationalCode];

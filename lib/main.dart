@@ -48,8 +48,8 @@ class MyApp extends StatelessWidget {
       theme: lightThemeData(),
       debugShowCheckedModeBanner: false,
       routeInformationParser: const QRouteInformationParser(),
-      builder: (context, child) => child == null ? const SizedBox() : Directionality(textDirection: TextDirection.rtl, child: child),
-      routerDelegate: QRouterDelegate(AppRoutes().routes, withWebBar: false, initPath: initPath),
+      builder: (context, child) => child == null ? const SizedBox() : SafeArea(child: Directionality(textDirection: TextDirection.rtl, child: child)),
+      routerDelegate: QRouterDelegate(AppRoutes().routes, withWebBar: true, initPath: initPath),
     );
   }
 }

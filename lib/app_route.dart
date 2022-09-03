@@ -1,17 +1,19 @@
 import 'package:get_it/get_it.dart';
-import 'package:guilt_flutter/application/faq.dart';
-import 'package:guilt_flutter/application/guild/presentation/pages/guild_form_page.dart';
-import 'package:guilt_flutter/application/guild/presentation/pages/guild_list_page.dart';
-import 'package:guilt_flutter/application/guild/presentation/pages/guild_main_panel.dart';
-import 'package:guilt_flutter/authenticate_page.dart';
-import 'package:guilt_flutter/features/login/api/login_api.dart';
-import 'package:guilt_flutter/features/login/presentation/pages/login_page.dart';
-import 'package:guilt_flutter/features/login/presentation/pages/register_page.dart';
-import 'package:guilt_flutter/features/profile/api/profile_api.dart';
-import 'package:guilt_flutter/features/profile/presentation/pages/profile_page.dart';
+import 'package:guilt_flutter/application/error_page.dart';
 import 'package:qlevar_router/qlevar_router.dart';
 
+import 'application/faq.dart';
+import 'application/guild/presentation/pages/guild_form_page.dart';
+import 'application/guild/presentation/pages/guild_list_page.dart';
+import 'application/guild/presentation/pages/guild_main_panel.dart';
+import 'authenticate_page.dart';
 import 'base_page.dart';
+import 'commons/failures.dart';
+import 'features/login/api/login_api.dart';
+import 'features/login/presentation/pages/login_page.dart';
+import 'features/login/presentation/pages/register_page.dart';
+import 'features/profile/api/profile_api.dart';
+import 'features/profile/presentation/pages/profile_page.dart';
 
 class AppRoutes {
   final routes = [
@@ -26,13 +28,8 @@ class AppRoutes {
           middleware: [AuthGuard()],
         ),
         QRoute(
-          path: '/profile/:nationalCode((^[0-9]*\$))',
+          path: '/profile',
           builder: () => AuthenticatedPage(child: GuildMainPanel(currentIndexBottomNavigation: 0, child: ProfilePage.wrappedRoute())),
-          middleware: [AuthGuard()],
-        ),
-        QRoute(
-          path: '/signIn/profile/:nationalCode((^[0-9]*\$))',
-          builder: () => ProfilePage.wrappedRoute(),
           middleware: [AuthGuard()],
         ),
         QRoute(
@@ -53,7 +50,8 @@ class AppRoutes {
         ),
       ],
     ),
-    QRoute(path: '/error', builder: () => BasePage(child: LoginPage.wrappedRoute())),
+    QRoute(path: '/signIn/profile', builder: () => ProfilePage.wrappedRoute(), middleware: [AuthGuard()]),
+    QRoute(path: '/error', builder: () => BasePage(child: ErrorPage(failure: Failure('بروز خطای ناشناخته')))),
     QRoute(path: '/otp', builder: () => BasePage(child: LoginPage.wrappedRoute())),
     QRoute(path: '/register', builder: () => BasePage(child: RegisterPage.wrappedRoute())),
   ];
@@ -75,11 +73,10 @@ class AuthGuard extends QMiddleware {
 class ProfileGuard extends QMiddleware {
   @override
   Future<String?> redirectGuard(String path) async {
-    final nationalCode = QR.params['nationalCode'].toString();
-    final response = await GetIt.instance<ProfileApi>().hasProfile(nationalCode: nationalCode);
+    final response = await GetIt.instance<ProfileApi>().hasProfile(nationalCode: GetIt.instance<LoginApi>().getUserId());
     return response.fold(
-      (l) => '/error',
-      (hasProfile) => hasProfile ? null : '/signIn/profile/$nationalCode',
+      (l) => l.failureType == FailureType.authentication ? '/register' : '/error',
+      (hasProfile) => hasProfile ? null : '/signIn/profile',
     );
   }
 }

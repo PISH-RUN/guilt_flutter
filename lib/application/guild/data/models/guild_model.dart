@@ -1,9 +1,11 @@
+import 'dart:convert';
+import 'package:guilt_flutter/application/guild/data/models/pos_model.dart';
 import 'package:guilt_flutter/application/guild/domain/entities/icis.dart';
+import 'package:guilt_flutter/application/guild/domain/entities/pos.dart';
 import 'package:guilt_flutter/commons/data/model/json_parser.dart';
 import 'package:guilt_flutter/commons/utils.dart';
-import 'package:latlong2/latlong.dart' as latLng;
-import 'package:logger/logger.dart';
-
+import 'package:guilt_flutter/features/profile/domain/entities/gender_type.dart';
+import 'package:latlong2/latlong.dart' as lat_lng;
 import '../../domain/entities/guild.dart';
 
 class GuildModel extends Guild {
@@ -18,27 +20,33 @@ class GuildModel extends Guild {
     required String guildName,
     required String province,
     required String city,
+    required String? avatar,
     required bool isCouponRequested,
     required String homeTelephone,
     required String address,
     required String postalCode,
-    required latLng.LatLng? location,
+    required List<Pos> poses,
+    required Gender gender,
+    required lat_lng.LatLng? location,
   }) : super(
           id: id,
           nationalCode: nationalCode,
           phoneNumber: phoneNumber,
           isCouponRequested: isCouponRequested,
           firstName: firstName,
+          poses: poses,
+          avatar: avatar,
           lastName: lastName,
           isic: isic,
           organName: organName,
-          name: guildName,
+          title: guildName,
           province: province,
           city: city,
           homeTelephone: homeTelephone,
           address: address,
           postalCode: postalCode,
           location: location,
+          gender: gender,
         );
 
   factory GuildModel.fromJson(Map<String, dynamic> json, int index) {
@@ -50,16 +58,23 @@ class GuildModel extends Guild {
       isic: getIsicWithCode(JsonParser.stringParser(json, ['IsicCoding'])),
       organName: JsonParser.stringParser(json, ['OrganName']),
       guildName: JsonParser.stringParser(json, ['GuildName']),
+      avatar: JsonParser.stringTryParser(json, ['Image']),
+      // poses: JsonParser.listParser(json, ['Poses']).map((pos) => PosModel.fromJson(pos)).toList(),
+      poses: [],
       province: JsonParser.stringParser(json, ['OstanName']),
       city: JsonParser.stringParser(json, ['ShahrestanName']),
       isCouponRequested: JsonParser.boolParser(json, ['isCouponRequested']),
       homeTelephone: JsonParser.stringParser(json, ['PhoneNo']),
+      gender: JsonParser.boolParser(json, ['Gender']) ? Gender.boy : Gender.girl,
       address: JsonParser.stringParser(json, ['Address']),
       postalCode: JsonParser.stringParser(json, ['PostalCode']),
       nationalCode: JsonParser.stringParser(json, ['NationalCode']),
-      location: JsonParser.stringParser(json, ['location']).isEmpty
+      location: JsonParser.stringParser(json, ['Location']).isEmpty
           ? null
-          : latLng.LatLng(JsonParser.doubleParser(json, ['location', 'lat']), JsonParser.doubleParser(json, ['location', 'lon'])),
+          : lat_lng.LatLng(
+              double.parse(JsonParser.listParser(json, ['Location'])[0].toString()),
+              double.parse(JsonParser.listParser(json, ['Location'])[1].toString()),
+            ),
     );
   }
 
@@ -71,11 +86,14 @@ class GuildModel extends Guild {
       firstName: guild.firstName,
       lastName: guild.lastName,
       isic: guild.isic,
+      poses: guild.poses,
+      avatar: guild.avatar,
       isCouponRequested: guild.isCouponRequested,
       organName: guild.organName,
-      guildName: guild.name,
+      guildName: guild.title,
       province: guild.province,
       city: guild.city,
+      gender: guild.gender,
       homeTelephone: guild.homeTelephone,
       address: guild.address,
       postalCode: guild.postalCode,
@@ -85,25 +103,24 @@ class GuildModel extends Guild {
 
   Map<String, dynamic> toJson() {
     return {
-      "MobileNo": phoneNumber,
-      "FirstName": firstName,
-      "LastName": lastName,
-      "IsicCoding": isic.code,
-      "OrganName": organName,
-      "GuildName": name,
-      "OstanName": province,
-      "isCouponRequested": isCouponRequested,
-      "ShahrestanName": city,
-      "PhoneNo": homeTelephone,
-      "Address": address,
-      "PostalCode": postalCode,
-      "NationalCode": nationalCode,
-      "location": location == null
-          ? null
-          : {
-              'lat': location!.latitude,
-              'lon': location!.longitude,
-            },
+      'MobileNo': phoneNumber,
+      'FirstName': firstName,
+      'LastName': lastName,
+      'IsicCoding': isic.code,
+      'OrganName': organName,
+      'GuildName': title,
+      'Image': avatar,
+      'OstanName': province,
+      'isCouponRequested': isCouponRequested,
+      'ShahrestanName': city,
+      // 'Poses': jsonEncode(poses.map((e) => PosModel.fromSuper(e).toJson()).toList()),
+      'Poses': [],
+      'PhoneNo': homeTelephone,
+      'Address': address,
+      'PostalCode': postalCode,
+      'NationalCode': nationalCode,
+      'Gender': gender == Gender.boy,
+      'Location': location == null ? null : [location!.latitude, location!.longitude],
     };
   }
 }

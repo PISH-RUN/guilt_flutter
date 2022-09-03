@@ -51,14 +51,15 @@ class _LoginPageState extends State<LoginPage> {
   @override
   void dispose() {
     smsUserConsent.dispose();
+    expireAt = 0;
     super.dispose();
   }
 
   startTimer() async {
     expireAt = 120;
     while (expireAt > 0) {
-      await Future.delayed(const Duration(seconds: 1), () => "1");
       setState(() => expireAt--);
+      await Future.delayed(const Duration(seconds: 1), () => "1");
     }
   }
 
@@ -157,7 +158,7 @@ class _LoginPageState extends State<LoginPage> {
                                 const SizedBox(height: 16.0),
                                 expireAt > 0
                                     ? Text(
-                                        "${(expireAt ~/ 60).toString().padLeft(2, '0')}:${(expireAt % 60).toString().padLeft(2, '0')}",
+                                        "ارسال مجدد کد تا ${(expireAt ~/ 60).toString().padLeft(2, '0')}:${(expireAt % 60).toString().padLeft(2, '0')}",
                                         style: Theme.of(context).textTheme.headline4!.copyWith(color: Colors.black.withOpacity(0.45)),
                                       )
                                     : const SizedBox(height: 8.0),
