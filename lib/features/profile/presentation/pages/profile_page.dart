@@ -171,10 +171,7 @@ class _FormWidgetState extends State<FormWidget> {
         final ImagePicker picker = ImagePicker();
         final XFile? image = await picker.pickImage(source: ImageSource.gallery);
         await BlocProvider.of<UpdateUserCubit>(context).changeAvatar(user, image!);
-        // BlocProvider.of<UpdateUserCubit>(context).prepareLoading();
-        // await Future.delayed(const Duration(milliseconds: 800), () => "1");
         BlocProvider.of<GetUserCubit>(context).initialPage();
-        setState(() {});
       },
       child: AbsorbPointer(
         child: SizedBox(
@@ -189,7 +186,10 @@ class _FormWidgetState extends State<FormWidget> {
                   width: 130,
                   child: user.avatar == null
                       ? const Image(image: AssetImage('images/avatar.png'))
-                      : ClipRRect(borderRadius: const BorderRadius.all(Radius.circular(100)), child: Image(image: NetworkImage(user.avatar!))),
+                      : ClipRRect(
+                          borderRadius: const BorderRadius.all(Radius.circular(100)),
+                          child: Image(image: NetworkImage(user.avatar!), fit: BoxFit.cover),
+                        ),
                 ),
               ),
             ],
@@ -199,7 +199,7 @@ class _FormWidgetState extends State<FormWidget> {
     );
   }
 
-  double paddingBetweenTextFiled = 0.0;
+  double paddingBetweenTextFiled = 15.0;
 
   Widget baseInformationWidget(BuildContext context) {
     return ConstrainedBox(

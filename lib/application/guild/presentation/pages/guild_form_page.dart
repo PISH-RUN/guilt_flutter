@@ -132,10 +132,13 @@ class _GuildFormWidgetState extends State<GuildFormWidget> {
                           const SizedBox(height: 40.0),
                           baseInformationWidget(context),
                           const SizedBox(height: 20.0),
-                          if (!isEditable) guild.poses.isEmpty?Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 20.0),
-                            child: addPoseButton(context),
-                          ):posesList(context),
+                          if (!isEditable)
+                            guild.poses.isEmpty
+                                ? Padding(
+                                    padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                                    child: addPoseButton(context),
+                                  )
+                                : posesList(context),
                           const SizedBox(height: 20.0),
                         ],
                       ),
@@ -172,7 +175,7 @@ class _GuildFormWidgetState extends State<GuildFormWidget> {
     );
   }
 
-  double paddingBetweenTextFiled = 20.0;
+  double paddingBetweenTextFiled = 10.0;
 
   Widget baseInformationWidget(BuildContext context) {
     return ConstrainedBox(
@@ -233,25 +236,21 @@ class _GuildFormWidgetState extends State<GuildFormWidget> {
                       SizedBox(height: paddingBetweenTextFiled),
                       isEditable || widget.isAddNew ? const SizedBox() : labelWidget(Icons.person_outline, "نام خانوادگی", guild.lastName),
                       SizedBox(height: paddingBetweenTextFiled),
-                      Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: isEditable || widget.isAddNew
-                            ? TextFormField(
-                                style: defaultTextStyle(context),
-                                controller: guildNameController,
-                                keyboardType: TextInputType.name,
-                                onTap: () => setState(() => fixRtlFlutterBug(guildNameController)),
-                                decoration:
-                                    defaultInputDecoration().copyWith(labelText: "نام کسب و کار", prefixIcon: const Icon(Icons.person_outline)),
-                                validator: (value) {
-                                  if (value == null) return null;
-                                  if (value.isEmpty) return "این فیلد الزامی است";
-                                  return null;
-                                },
-                                onSaved: (value) => guild = guild.copyWith(title: value),
-                              )
-                            : labelWidget(Icons.store, "نام کسب و کار", guildNameController.text),
-                      ),
+                      isEditable || widget.isAddNew
+                          ? TextFormField(
+                              style: defaultTextStyle(context),
+                              controller: guildNameController,
+                              keyboardType: TextInputType.name,
+                              onTap: () => setState(() => fixRtlFlutterBug(guildNameController)),
+                              decoration: defaultInputDecoration().copyWith(labelText: "نام کسب و کار", prefixIcon: const Icon(Icons.person_outline)),
+                              validator: (value) {
+                                if (value == null) return null;
+                                if (value.isEmpty) return "این فیلد الزامی است";
+                                return null;
+                              },
+                              onSaved: (value) => guild = guild.copyWith(title: value),
+                            )
+                          : labelWidget(Icons.store, "نام کسب و کار", guildNameController.text),
                       SizedBox(height: paddingBetweenTextFiled),
                       isEditable || widget.isAddNew
                           ? TextFormField(
@@ -362,12 +361,14 @@ class _GuildFormWidgetState extends State<GuildFormWidget> {
                               decoration: defaultInputDecoration().copyWith(
                                 labelText: "نشانی کامل",
                                 prefixIcon: const Icon(Icons.pin_drop_rounded),
+                                contentPadding: const EdgeInsets.symmetric(vertical: 16.0),
                               ),
                               onSaved: (value) => guild = guild.copyWith(address: value),
                               minLines: 4,
                               maxLines: 4,
                             )
                           : labelWidget(Icons.pin_drop_outlined, "نشانی کامل", addressController.text),
+                      SizedBox(height: paddingBetweenTextFiled),
                       if (widget.isAddNew || isEditable || pinLocation != null)
                         GestureDetector(
                           onTap: () {

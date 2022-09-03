@@ -36,9 +36,9 @@ ThemeData lightThemeData() {
         borderSide: BorderSide(width: 2, color: Colors.red),
       ),
       labelStyle: TextStyle(fontSize: 16.0, color: Colors.grey),
-      errorStyle: TextStyle(fontSize: 12.0, fontWeight: FontWeight.bold, color: Colors.red),
-      helperStyle: TextStyle(fontSize: 12.0, fontWeight: FontWeight.bold, color: Colors.grey),
-      contentPadding: EdgeInsets.symmetric(vertical: 5.0, horizontal: 12.0),
+      errorStyle: TextStyle(fontSize: 12.0, fontWeight: FontWeight.bold, color: Colors.red,height: 0.2),
+      helperStyle: TextStyle(fontSize: 12.0, fontWeight: FontWeight.bold, color: Colors.grey,height: 0.2),
+      contentPadding: EdgeInsets.symmetric(vertical: 0.0, horizontal: 12.0),
     ),
     cardTheme: const CardTheme(
       shadowColor: Color(0xff8899f8),
