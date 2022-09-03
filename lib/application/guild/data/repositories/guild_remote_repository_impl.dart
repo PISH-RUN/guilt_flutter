@@ -65,7 +65,7 @@ class GuildRemoteRepositoryImpl implements GuildRemoteRepository {
       mapSuccess: (date) => guild,
     );
     if (response.isRight()) {
-      final listJson = jsonDecode(GetStorage().read(getLocalKeyOfUser(nationalCode))) as List;
+      final listJson = jsonDecode(GetStorage().read<String>(getLocalKeyOfUser(nationalCode))??"[]") as List;
       listJson.add(GuildModel.fromSuper(guild).toJson());
       GetStorage().write(getLocalKeyOfUser(nationalCode), jsonEncode(listJson));
     }

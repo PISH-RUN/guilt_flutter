@@ -11,6 +11,7 @@ import 'package:guilt_flutter/commons/widgets/icon_name_widget.dart';
 import 'package:guilt_flutter/commons/widgets/our_button.dart';
 import 'package:guilt_flutter/features/login/presentation/manager/login_cubit.dart';
 import 'package:guilt_flutter/features/login/presentation/manager/login_state.dart';
+import 'package:guilt_flutter/main.dart';
 import 'package:qlevar_router/qlevar_router.dart';
 import 'package:sms_user_consent/sms_user_consent.dart';
 
@@ -68,7 +69,7 @@ class _LoginPageState extends State<LoginPage> {
     return Scaffold(
       body: BlocConsumer<LoginCubit, LoginState>(
         listener: (context, state) {
-          state.maybeWhen(success: () => QR.navigator.replaceAll(redirectPath), orElse: () {});
+          state.maybeWhen(success: () => QR.navigator.replaceAll(redirectPath.isNotEmpty ? redirectPath : initPath), orElse: () {});
         },
         builder: (context, state) {
           return SafeArea(

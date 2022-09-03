@@ -10,7 +10,7 @@ class ServerFailure extends Failure {
 
   ServerFailure(Response response)
       : statusCode = response.statusCode,
-        super(parseErrorMessage(response.body), failureType: FailureType.serverError); //todo parse error here
+        super(parseErrorMessage(response.body), failureType: FailureType.serverError);
 
   ServerFailure.fromMessage(String message)
       : statusCode = -1,

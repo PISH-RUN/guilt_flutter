@@ -1,14 +1,19 @@
+import 'package:dotted_border/dotted_border.dart';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
 import 'package:guilt_flutter/application/guild/domain/entities/guild.dart';
+import 'package:guilt_flutter/application/guild/domain/entities/pos.dart';
 import 'package:guilt_flutter/application/guild/presentation/manager/guild_cubit.dart';
 import 'package:guilt_flutter/application/guild/presentation/manager/guild_state.dart';
 import 'package:guilt_flutter/application/guild/presentation/widgets/map_widget.dart';
+import 'package:guilt_flutter/application/guild/presentation/widgets/pos_item.dart';
 import 'package:guilt_flutter/commons/fix_rtl_flutter_bug.dart';
 import 'package:guilt_flutter/commons/text_style.dart';
 import 'package:guilt_flutter/commons/utils.dart';
 import 'package:guilt_flutter/commons/widgets/loading_widget.dart';
+import 'package:guilt_flutter/commons/widgets/our_button.dart';
 import 'package:guilt_flutter/commons/widgets/our_item_picker.dart';
 import 'package:guilt_flutter/commons/widgets/warning_dialog.dart';
 import 'package:guilt_flutter/main.dart';
@@ -126,6 +131,9 @@ class _GuildFormWidgetState extends State<GuildFormWidget> {
                         children: [
                           const SizedBox(height: 40.0),
                           baseInformationWidget(context),
+                          const SizedBox(height: 20.0),
+                          posesList(context),
+                          const SizedBox(height: 20.0),
                         ],
                       ),
                     ),
@@ -418,6 +426,165 @@ class _GuildFormWidgetState extends State<GuildFormWidget> {
         ],
       ),
     );
+  }
+
+  Widget posesList(BuildContext context) {
+    return ConstrainedBox(
+      constraints: const BoxConstraints(maxWidth: 650),
+      child: Card(
+        margin: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 6.0),
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            children: [
+              ...guild.poses
+                  .map((pos) => Container(
+                        width: double.infinity,
+                        padding: const EdgeInsets.all(10),
+                        margin: const EdgeInsets.all(8),
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          shape: BoxShape.rectangle,
+                          border: Border.all(color: Colors.black, width: 1),
+                          borderRadius: const BorderRadius.all(Radius.circular(10)),
+                        ),
+                        child: PosItem(pos: pos),
+                      ))
+                  .toList(),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: DottedBorder(
+                  color: const Color(0xff4ADE80),
+                  strokeWidth: 2,
+                  padding: EdgeInsets.zero,
+                  dashPattern: const [6, 6],
+                  borderType: BorderType.RRect,
+                  radius: const Radius.circular(10),
+                  child: GestureDetector(
+                    onTap: () async {
+                      GlobalKey<FormState> formKeyDialog = GlobalKey();
+                      TextEditingController pspController = TextEditingController();
+                      TextEditingController terminalController = TextEditingController();
+                      TextEditingController accountController = TextEditingController();
+                      isDialogOpen = true;
+                      await showDialog(
+                        context: context,
+                        builder: (context) => BlocProvider(
+                          create: (context) => GetIt.instance<GuildCubit>(),
+                          child: Builder(builder: (context) {
+                            return AlertDialog(
+                              content: Form(
+                                key: formKeyDialog,
+                                onWillPop: () async => true,
+                                child: Column(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    TextFormField(
+                                      style: defaultTextStyle(context),
+                                      controller: terminalController,
+                                      keyboardType: TextInputType.name,
+                                      textAlign: TextAlign.end,
+                                      decoration: defaultInputDecoration().copyWith(labelText: "شماره ترمینال:"),
+                                      validator: (value) => posValidatorCheck(value),
+                                      maxLines: 1,
+                                    ),
+                                    const SizedBox(width: 10.0),
+                                    TextFormField(
+                                      style: defaultTextStyle(context),
+                                      controller: pspController,
+                                      keyboardType: TextInputType.name,
+                                      textAlign: TextAlign.end,
+                                      decoration: defaultInputDecoration().copyWith(labelText: "psp:"),
+                                      validator: (value) => posValidatorCheck(value),
+                                      maxLines: 1,
+                                    ),
+                                    const SizedBox(width: 10.0),
+                                    TextFormField(
+                                      style: defaultTextStyle(context),
+                                      controller: accountController,
+                                      keyboardType: TextInputType.name,
+                                      textAlign: TextAlign.end,
+                                      decoration: defaultInputDecoration().copyWith(labelText: "شماره حساب:"),
+                                      validator: (value) => posValidatorCheck(value),
+                                      maxLines: 1,
+                                    ),
+                                    const SizedBox(width: 10.0),
+                                    Row(
+                                      children: [
+                                        Expanded(
+                                            child: OurButton(
+                                          onTap: () {
+                                            isDialogOpen = false;
+                                            Navigator.pop(context);
+                                          },
+                                          title: "انصراف",
+                                          isLoading: false,
+                                          color: Colors.grey,
+                                        )),
+                                        const SizedBox(width: 12.0),
+                                        Expanded(
+                                            child: OurButton(
+                                          onTap: () async {
+                                            isDialogOpen = false;
+                                            if (!formKeyDialog.currentState!.validate()) {
+                                              return;
+                                            }
+                                            final pos = Pos(
+                                              terminalId: terminalController.text,
+                                              accountNumber: accountController.text,
+                                              psp: pspController.text,
+                                            );
+                                            guild = guild.copyWith(poses: [...guild.poses, pos]);
+                                            await BlocProvider.of<GuildCubit>(context).saveGuild(guild);
+                                            Navigator.pop(context);
+                                          },
+                                          title: "ثبت",
+                                          isLoading: false,
+                                        )),
+                                      ],
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            );
+                          }),
+                        ),
+                      );
+                      isDialogOpen = false;
+                      setState(() {});
+                    },
+                    child: Container(
+                      width: double.infinity,
+                      padding: const EdgeInsets.all(12),
+                      decoration: const BoxDecoration(
+                        color: Color(0xffDCFCE7),
+                        shape: BoxShape.rectangle,
+                        borderRadius: BorderRadius.all(Radius.circular(10)),
+                      ),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.max,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: <Widget>[
+                          const Icon(Icons.add, color: Color(0xff166534), size: 25.0),
+                          const SizedBox(width: 10.0),
+                          Text("افزودن دستگاه پوز", style: defaultTextStyle(context, headline: 4).c(const Color(0xff166534)))
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  String? posValidatorCheck(String? value) {
+    if (value == null) return null;
+    if (value.isEmpty) return 'این فیلد خالی است';
+    return null;
   }
 
   InputDecoration defaultInputDecoration() {

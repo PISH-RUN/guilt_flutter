@@ -188,7 +188,9 @@ class _FormWidgetState extends State<FormWidget> {
                 child: SizedBox(
                   height: 130,
                   width: 130,
-                  child: user.avatar == null ? const Image(image: AssetImage('images/avatar.png')) : ClipRRect(borderRadius: const BorderRadius.all(Radius.circular(100)),child: Image(image: NetworkImage(user.avatar!))),
+                  child: user.avatar == null
+                      ? const Image(image: AssetImage('images/avatar.png'))
+                      : ClipRRect(borderRadius: const BorderRadius.all(Radius.circular(100)), child: Image(image: NetworkImage(user.avatar!))),
                 ),
               ),
               Align(
