@@ -1,19 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
-import 'package:guilt_flutter/app_route.dart';
-import 'package:guilt_flutter/application/colors.dart';
-import 'package:guilt_flutter/application/constants.dart';
-import 'package:guilt_flutter/commons/failures.dart';
-import 'package:guilt_flutter/commons/text_style.dart';
-import 'package:guilt_flutter/commons/utils.dart';
-import 'package:guilt_flutter/commons/widgets/icon_name_widget.dart';
-import 'package:guilt_flutter/commons/widgets/our_button.dart';
-import 'package:guilt_flutter/features/login/presentation/manager/login_cubit.dart';
-import 'package:guilt_flutter/features/login/presentation/manager/login_state.dart';
-import 'package:guilt_flutter/main.dart';
 import 'package:qlevar_router/qlevar_router.dart';
 import 'package:sms_user_consent/sms_user_consent.dart';
+
+import '../../../../app_route.dart';
+import '../../../../application/colors.dart';
+import '../../../../application/constants.dart';
+import '../../../../commons/failures.dart';
+import '../../../../commons/text_style.dart';
+import '../../../../commons/utils.dart';
+import '../../../../commons/widgets/icon_name_widget.dart';
+import '../../../../commons/widgets/our_button.dart';
+import '../../../../main.dart';
+import '../manager/login_cubit.dart';
+import '../manager/login_state.dart';
 
 class LoginPage extends StatefulWidget {
   LoginPage({Key? key}) : super(key: key);

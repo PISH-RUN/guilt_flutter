@@ -232,17 +232,13 @@ class _GuildFormWidgetState extends State<GuildFormWidget> {
                   Column(
                     mainAxisSize: MainAxisSize.min,
                     children: <Widget>[
-                      isEditable || widget.isAddNew ? const SizedBox() : labelWidget(Icons.person_outline, "نام", guild.firstName),
-                      SizedBox(height: paddingBetweenTextFiled),
-                      isEditable || widget.isAddNew ? const SizedBox() : labelWidget(Icons.person_outline, "نام خانوادگی", guild.lastName),
-                      SizedBox(height: paddingBetweenTextFiled),
                       isEditable || widget.isAddNew
                           ? TextFormField(
                               style: defaultTextStyle(context),
                               controller: guildNameController,
                               keyboardType: TextInputType.name,
                               onTap: () => setState(() => fixRtlFlutterBug(guildNameController)),
-                              decoration: defaultInputDecoration().copyWith(labelText: "نام کسب و کار", prefixIcon: const Icon(Icons.person_outline)),
+                              decoration: defaultInputDecoration().copyWith(labelText: "نام کسب و کار", prefixIcon: const Icon(Icons.store)),
                               validator: (value) {
                                 if (value == null) return null;
                                 if (value.isEmpty) return "این فیلد الزامی است";
@@ -258,7 +254,7 @@ class _GuildFormWidgetState extends State<GuildFormWidget> {
                               controller: organController,
                               keyboardType: TextInputType.name,
                               onTap: () => setState(() => fixRtlFlutterBug(organController)),
-                              decoration: defaultInputDecoration().copyWith(labelText: "نام ارگان", prefixIcon: const Icon(Icons.person_outline)),
+                              decoration: defaultInputDecoration().copyWith(labelText: "نام ارگان", prefixIcon: const Icon(Icons.store)),
                               validator: (value) {
                                 if (value == null) return null;
                                 if (value.isEmpty) return "این فیلد الزامی است";
@@ -267,8 +263,6 @@ class _GuildFormWidgetState extends State<GuildFormWidget> {
                               onSaved: (value) => guild = guild.copyWith(organName: value),
                             )
                           : labelWidget(Icons.store, "نام ارگان", organController.text),
-                      SizedBox(height: paddingBetweenTextFiled),
-                      isEditable || widget.isAddNew ? const SizedBox() : labelWidget(Icons.phone, "شماره موبایل", guild.phoneNumber),
                       SizedBox(height: paddingBetweenTextFiled),
                       isEditable || widget.isAddNew
                           ? TextFormField(
@@ -286,12 +280,10 @@ class _GuildFormWidgetState extends State<GuildFormWidget> {
                             )
                           : labelWidget(Icons.phone, "شماره تلفن", homeTelephoneController.text),
                       SizedBox(height: paddingBetweenTextFiled),
-                      isEditable || widget.isAddNew ? const SizedBox() : labelWidget(Icons.pin, "کد ملی", guild.nationalCode),
-                      SizedBox(height: paddingBetweenTextFiled),
                       isEditable || widget.isAddNew
                           ? OurItemPicker(
                               hint: "رسته صنفی",
-                              icon: Icons.pin,
+                              icon: Icons.store,
                               items: getListOfIsic().map((e) => e.name).toList(),
                               onChanged: (value) {
                                 final isic = getIsicWithName(value);
@@ -300,7 +292,7 @@ class _GuildFormWidgetState extends State<GuildFormWidget> {
                               currentText: isic,
                               controller: isicController,
                             )
-                          : labelWidget(Icons.pin, "رسته صنفی", isic),
+                          : labelWidget(Icons.store, "رسته صنفی", isic),
                       SizedBox(height: paddingBetweenTextFiled),
                       isEditable || widget.isAddNew
                           ? OurItemPicker(
@@ -311,7 +303,6 @@ class _GuildFormWidgetState extends State<GuildFormWidget> {
                               onChanged: (value) {
                                 guild = guild.copyWith(province: value, city: '');
                                 cityController.text = '';
-                                setState(() {});
                               },
                               currentText: provinceController.text,
                               controller: provinceController,

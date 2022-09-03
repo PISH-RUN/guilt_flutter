@@ -1,10 +1,11 @@
+import 'package:get_storage/get_storage.dart';
 
 import '../domain/repositories/login_repository.dart';
 
 abstract class LoginApi {
   bool isUserRegistered();
 
-  void signOut();
+  Future<void> signOut();
 
   String getUserId();
 
@@ -26,5 +27,5 @@ class LoginApiImpl extends LoginApi {
   String getUserPhone() => loginRepository.getUserPhone();
 
   @override
-  void signOut() async => loginRepository.saveTokenInStorage("");
+  Future<void> signOut() async => await GetStorage().erase();
 }

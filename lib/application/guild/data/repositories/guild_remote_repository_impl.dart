@@ -15,6 +15,7 @@ import 'package:guilt_flutter/commons/request_result.dart';
 import 'package:guilt_flutter/features/login/api/login_api.dart';
 import 'package:guilt_flutter/features/profile/api/profile_api.dart';
 import 'package:http/http.dart' as http;
+import 'package:logger/logger.dart';
 
 class GuildRemoteRepositoryImpl implements GuildRemoteRepository {
   final RemoteDataSource remoteDataSource;
@@ -27,7 +28,7 @@ class GuildRemoteRepositoryImpl implements GuildRemoteRepository {
       url: '$BASE_URL_API/api/v1/users/record/$nationalCode',
       params: {},
       isForceRefresh: isForceRefresh,
-      // localKey: getLocalKeyOfUser(nationalCode),//todo
+      localKey: getLocalKeyOfUser(nationalCode),
       mapSuccess: (data) => data.mapIndexed((index, json) => GuildModel.fromJson(json, index)).toList(),
     );
   }
@@ -35,6 +36,7 @@ class GuildRemoteRepositoryImpl implements GuildRemoteRepository {
   @override
   Future<RequestResult> updateAllData(String nationalCode, List<Guild> guildList) async {
     final json = guildList.map((guild) => GuildModel.fromSuper(guild).toJson()).toList();
+    GetStorage().write(getLocalKeyOfUser(nationalCode), jsonEncode(json));
     return RequestResult.fromEither(
       await remoteDataSource.postToServer(
         url: '$BASE_URL_API/api/v1/users/record/$nationalCode/upsert',

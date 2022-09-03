@@ -6,6 +6,7 @@ import 'package:guilt_flutter/commons/fix_rtl_flutter_bug.dart';
 import 'package:guilt_flutter/commons/text_style.dart';
 import 'package:guilt_flutter/commons/utils.dart';
 import 'package:guilt_flutter/commons/widgets/loading_widget.dart';
+import 'package:guilt_flutter/commons/widgets/simple_snake_bar.dart';
 import 'package:guilt_flutter/commons/widgets/warning_dialog.dart';
 import 'package:guilt_flutter/features/login/api/login_api.dart';
 import 'package:guilt_flutter/features/profile/domain/entities/gender_type.dart';
@@ -100,11 +101,15 @@ class _FormWidgetState extends State<FormWidget> {
   Widget build(BuildContext context) {
     return BlocConsumer<UpdateUserCubit, UpdateUserState>(
       listener: (context, state) {
-        if (state is Success) {
-          if (QR.currentPath.contains('signIn/profile')) {
-            QR.navigator.replaceAll(initPath);
-          }
-        }
+        state.maybeWhen(
+          error: (failure) => showSnakeBar(context, failure.message),
+          success: () {
+            if (QR.currentPath.contains('signIn/profile')) {
+              QR.navigator.replaceAll(initPath);
+            }
+          },
+          orElse: () {},
+        );
       },
       builder: (context, _) {
         return Scaffold(
@@ -153,7 +158,7 @@ class _FormWidgetState extends State<FormWidget> {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   const SizedBox(height: 6.0),
-                  if (!QR.currentPath.contains('signIn/profile')) avatarWidget(context),
+                  QR.currentPath.contains('signIn/profile') || isEditable ? const SizedBox(height: 15.0) : avatarWidget(context),
                   const SizedBox(height: 6.0),
                   baseInformationWidget(context),
                 ],
@@ -184,7 +189,7 @@ class _FormWidgetState extends State<FormWidget> {
                 child: SizedBox(
                   height: 130,
                   width: 130,
-                  child: user.avatar == null
+                  child: !isUrlValid(user.avatar ?? "")
                       ? const Image(image: AssetImage('images/avatar.png'))
                       : ClipRRect(
                           borderRadius: const BorderRadius.all(Radius.circular(100)),
@@ -336,8 +341,8 @@ class _FormWidgetState extends State<FormWidget> {
           ),
           if (!isEditable)
             GestureDetector(
-              onTap: () {
-                GetIt.instance<LoginApi>().signOut();
+              onTap: () async {
+                await GetIt.instance<LoginApi>().signOut();
                 QR.navigator.replaceAll(initPath);
               },
               child: Container(
