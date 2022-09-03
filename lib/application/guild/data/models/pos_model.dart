@@ -1,6 +1,5 @@
 import 'package:guilt_flutter/application/guild/domain/entities/pos.dart';
 import 'package:guilt_flutter/commons/data/model/json_parser.dart';
-import 'package:logger/logger.dart';
 
 class PosModel extends Pos {
   const PosModel({
@@ -14,7 +13,6 @@ class PosModel extends Pos {
         );
 
   factory PosModel.fromJson(Map<String, dynamic> json) {
-    Logger().i("info=> ${json} ");
     return PosModel(
       accountNumber: JsonParser.stringParser(json, ['AccountNumber']),
       terminalId: JsonParser.stringParser(json, ['TerminalId']),

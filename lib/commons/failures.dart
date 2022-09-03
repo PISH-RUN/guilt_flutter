@@ -6,7 +6,7 @@ class Failure extends Equatable {
   final FailureType failureType;
   final String message;
 
-  Failure(String message, {this.failureType = FailureType.other}) : this.message = convertMessageToPersian(message);
+  Failure(String message, {this.failureType = FailureType.other}) : message = convertMessageToPersian(message);
 
   factory Failure.notRegistered() {
     return Failure("لطفا ابتدا وراد شوید", failureType: FailureType.authentication);

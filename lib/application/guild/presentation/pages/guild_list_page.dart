@@ -12,7 +12,6 @@ import 'package:guilt_flutter/commons/text_style.dart';
 import 'package:guilt_flutter/commons/utils.dart';
 import 'package:guilt_flutter/commons/widgets/loading_widget.dart';
 import 'package:guilt_flutter/commons/widgets/our_button.dart';
-import 'package:guilt_flutter/commons/widgets/simple_snake_bar.dart';
 import 'package:qlevar_router/qlevar_router.dart';
 
 class GuildPage extends StatelessWidget {
@@ -159,10 +158,10 @@ class _GuildListPageState extends State<GuildListPage> {
                                         color: Colors.white,
                                         shape: BoxShape.rectangle,
                                         border: Border.all(color: Colors.green, width: 2),
-                                        borderRadius: BorderRadius.all(Radius.circular(6)),
+                                        borderRadius: const BorderRadius.all(Radius.circular(6)),
                                       ),
                                       child: Text(
-                                        'درخواست کالا برگ شما ثبت شد',
+                                        "درخواست کالا برگ شما ثبت شد",
                                         style: defaultTextStyle(context, headline: 4).c(Colors.green).w(FontWeight.w600),
                                       ),
                                     ),

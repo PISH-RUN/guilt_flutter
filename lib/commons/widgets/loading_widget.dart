@@ -6,7 +6,7 @@ class LoadingWidget extends StatelessWidget {
   Color color;
   double size;
 
-  LoadingWidget({this.color = Colors.grey, this.size = 100});
+  LoadingWidget({this.color = Colors.grey, this.size = 100, Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

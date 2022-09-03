@@ -16,7 +16,6 @@ import 'package:guilt_flutter/features/profile/presentation/manager/update_user_
 import 'package:guilt_flutter/features/profile/presentation/manager/update_user_state.dart';
 import 'package:guilt_flutter/main.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:logger/logger.dart';
 import 'package:qlevar_router/qlevar_router.dart';
 import 'package:toggle_switch/toggle_switch.dart';
 
@@ -153,9 +152,9 @@ class _FormWidgetState extends State<FormWidget> {
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  const SizedBox(height: 10.0),
-                  avatarWidget(context),
-                  const SizedBox(height: 10.0),
+                  const SizedBox(height: 6.0),
+                  if (!QR.currentPath.contains('signIn/profile')) avatarWidget(context),
+                  const SizedBox(height: 6.0),
                   baseInformationWidget(context),
                 ],
               ),
@@ -174,7 +173,7 @@ class _FormWidgetState extends State<FormWidget> {
         await BlocProvider.of<UpdateUserCubit>(context).changeAvatar(user, image!);
         // BlocProvider.of<UpdateUserCubit>(context).prepareLoading();
         // await Future.delayed(const Duration(milliseconds: 800), () => "1");
-        // BlocProvider.of<UpdateUserCubit>(context).initialPage();
+        BlocProvider.of<GetUserCubit>(context).initialPage();
         setState(() {});
       },
       child: AbsorbPointer(
@@ -191,14 +190,6 @@ class _FormWidgetState extends State<FormWidget> {
                   child: user.avatar == null
                       ? const Image(image: AssetImage('images/avatar.png'))
                       : ClipRRect(borderRadius: const BorderRadius.all(Radius.circular(100)), child: Image(image: NetworkImage(user.avatar!))),
-                ),
-              ),
-              Align(
-                alignment: Alignment.bottomRight,
-                child: CircleAvatar(
-                  radius: 23,
-                  backgroundColor: Colors.grey.withOpacity(0.3),
-                  child: const Icon(Icons.camera_alt_rounded, color: Colors.black, size: 25.0),
                 ),
               ),
             ],

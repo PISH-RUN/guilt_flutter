@@ -40,7 +40,7 @@ class _StatePickerState extends State<StatePicker> {
             height: 27,
             decoration: const BoxDecoration(color: Colors.green, shape: BoxShape.rectangle, borderRadius: BorderRadius.all(Radius.circular(3))),
             child: const Center(
-              child: const Icon(Icons.arrow_back_ios_outlined, color: Colors.white, size: 14.0),
+              child: Icon(Icons.arrow_back_ios_outlined, color: Colors.white, size: 14.0),
             ),
           ),
         ),

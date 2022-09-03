@@ -4,7 +4,6 @@ import 'package:guilt_flutter/application/guild/data/models/guild_model.dart';
 import 'package:guilt_flutter/application/guild/domain/entities/guild.dart';
 import 'package:guilt_flutter/application/guild/domain/repositories/guild_local_repository.dart';
 import 'package:collection/collection.dart';
-import 'package:logger/logger.dart';
 
 class GuildLocalRepositoryImpl implements GuildLocalRepository {
   final String Function(String key) readData;

@@ -4,8 +4,6 @@ import 'package:guilt_flutter/application/guild/domain/entities/guild.dart';
 import 'package:guilt_flutter/application/guild/domain/repositories/guild_remote_repository.dart';
 import 'package:guilt_flutter/commons/failures.dart';
 import 'package:guilt_flutter/commons/request_result.dart';
-import 'package:guilt_flutter/features/profile/domain/entities/gender_type.dart';
-import 'package:guilt_flutter/features/profile/domain/entities/user_info.dart';
 
 class GuildMain {
   final GuildRemoteRepository guildRemoteRepository;

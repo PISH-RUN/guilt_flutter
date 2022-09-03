@@ -5,7 +5,6 @@ import 'package:guilt_flutter/application/constants.dart';
 import 'package:guilt_flutter/commons/data/data_source/remote_data_source.dart';
 import 'package:guilt_flutter/commons/data/model/server_failure.dart';
 import 'package:guilt_flutter/commons/failures.dart';
-import 'package:logger/logger.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 
 import '../../domain/entities/login.dart';
@@ -40,7 +39,7 @@ class LoginRepositoryImpl implements LoginRepository {
     setUserId(nationalCode);
     String appNumber = (await PackageInfo.fromPlatform()).buildNumber;
     Either<ServerFailure, Login> result = await dataSource.postToServer<Login>(
-      url: '${BASE_URL_API}/api/v1/otp/verify',
+      url: '$BASE_URL_API/api/v1/otp/verify',
       params: {'nationalcode': nationalCode, 'otp': otp},
       mapSuccess: (Map<String, dynamic> data) => LoginModel.fromJson(data),
     );

@@ -190,7 +190,7 @@ String _dateSplitter = "/";
 
 String convertJalaliToString(Jalali input) {
   final inputFormatter = input.formatter;
-  return "${inputFormatter.yyyy}${_dateSplitter}${inputFormatter.mm}${_dateSplitter}${inputFormatter.dd}";
+  return "${inputFormatter.yyyy}$_dateSplitter${inputFormatter.mm}$_dateSplitter${inputFormatter.dd}";
 }
 
 Jalali convertStringToJalali(String input) {
@@ -200,7 +200,7 @@ Jalali convertStringToJalali(String input) {
 
 String convertGregorianToString(Gregorian input) {
   final inputFormatter = input.formatter;
-  return "${inputFormatter.yyyy}${_dateSplitter}${inputFormatter.mm}${_dateSplitter}${inputFormatter.dd}";
+  return "${inputFormatter.yyyy}$_dateSplitter${inputFormatter.mm}$_dateSplitter${inputFormatter.dd}";
 }
 
 Gregorian convertStringToGregorian(String input) {
