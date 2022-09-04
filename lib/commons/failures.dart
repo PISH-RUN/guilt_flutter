@@ -1,6 +1,6 @@
 import 'package:equatable/equatable.dart';
 
-enum FailureType { authentication, noInternet, other, serverError, payment, somethingWentWrong, haveNoGuild, first_fill_profile }
+enum FailureType { authentication, noInternet, other, serverError, payment, somethingWentWrong, haveNoGuildAndProfile, first_fill_profile }
 
 class Failure extends Equatable {
   final FailureType failureType;
@@ -16,8 +16,8 @@ class Failure extends Equatable {
     return Failure(convertMessageToPersian(message), failureType: failureType);
   }
 
-  factory Failure.haveNoGuild() {
-    return Failure('شما هیچ صنفی ندارید', failureType: FailureType.haveNoGuild);
+  factory Failure.haveNoGuildAndProfile() {
+    return Failure('شما هیچ صنفی ندارید', failureType: FailureType.haveNoGuildAndProfile);
   }
 
   @override

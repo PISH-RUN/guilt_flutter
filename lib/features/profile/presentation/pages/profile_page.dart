@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:guilt_flutter/commons/failures.dart';
 import 'package:guilt_flutter/commons/fix_rtl_flutter_bug.dart';
 import 'package:guilt_flutter/commons/text_style.dart';
@@ -53,7 +54,7 @@ class _ProfilePageState extends State<ProfilePage> {
         return state.when(
           loading: () => LoadingWidget(),
           error: (failure) {
-            if (failure.failureType == FailureType.haveNoGuild) {
+            if (failure.failureType == FailureType.haveNoGuildAndProfile) {
               user = UserInfo.empty();
               return FormWidget(user: user, isEditable: true);
             }
@@ -158,7 +159,9 @@ class _FormWidgetState extends State<FormWidget> {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   const SizedBox(height: 6.0),
-                  QR.currentPath.contains('signIn/profile') || isEditable ? const SizedBox(height: 15.0) : avatarWidget(context),
+                  QR.currentPath.contains('signIn/profile') || isEditable || GetStorage().hasData('profileTemp')
+                      ? const SizedBox(height: 15.0)
+                      : avatarWidget(context),
                   const SizedBox(height: 6.0),
                   baseInformationWidget(context),
                 ],

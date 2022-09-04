@@ -23,7 +23,6 @@ class ProfileRepositoryImpl implements ProfileRepository {
 
   @override
   Future<RequestResult> changeAvatar(String nationalCode, XFile avatar) async {
-    Logger().i("info=> ${nationalCode} ");
     final output = await remoteDataSource.postMultipartToServer(
       url: '$BASE_URL_API/api/v1/users/record/$nationalCode/image',
       attachName: 'image',
@@ -47,7 +46,7 @@ class ProfileRepositoryImpl implements ProfileRepository {
         if (GetStorage().hasData('profileTemp')) {
           return Right(UserInfoModel.fromJson(jsonDecode(GetStorage().read('profileTemp'))));
         }
-        return Left(Failure.haveNoGuild());
+        return Left(Failure.haveNoGuildAndProfile());
       }
       GetStorage().remove('profileTemp');
       return Right(UserInfo(
