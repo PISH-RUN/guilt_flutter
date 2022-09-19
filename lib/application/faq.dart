@@ -64,7 +64,7 @@ class Faq extends StatelessWidget {
                         child: Text(
                           questionList[index].answer,
                           textAlign: TextAlign.justify,
-                          style: defaultTextStyle(context, headline: 5).c(Colors.black54),
+                          style: defaultTextStyle(context, headline: 5).c(Colors.black54).h(2.1),
                         ),
                       ),
                     ),

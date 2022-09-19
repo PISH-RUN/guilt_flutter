@@ -2,6 +2,7 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:guilt_flutter/application/colors.dart';
 import 'package:guilt_flutter/application/guild/domain/entities/guild.dart';
 import 'package:guilt_flutter/application/guild/presentation/manager/guild_list_cubit.dart';
@@ -12,6 +13,7 @@ import 'package:guilt_flutter/commons/text_style.dart';
 import 'package:guilt_flutter/commons/utils.dart';
 import 'package:guilt_flutter/commons/widgets/loading_widget.dart';
 import 'package:guilt_flutter/commons/widgets/our_button.dart';
+import 'package:guilt_flutter/features/login/api/login_api.dart';
 import 'package:qlevar_router/qlevar_router.dart';
 
 class GuildPage extends StatelessWidget {
@@ -35,18 +37,11 @@ class GuildPage extends StatelessWidget {
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       const SizedBox(height: 15.0),
-                      const Image(
-                        image: AssetImage('images/empty.webp'),
-                        height: 150,
-                        width: 150,
-                      ),
+                      const Image(image: AssetImage('images/empty.webp'), height: 150, width: 150),
                       const SizedBox(height: 10.0),
                       Text("شما هنوز کسب و کاری ثبت نکرده اید", style: defaultTextStyle(context)),
                       const SizedBox(height: 30.0),
-                      SizedBox(
-                        width: 140,
-                        child: OurButton(onTap: () => QR.to('/guild/add'), title: 'افزودن کسب و کار', isLoading: false),
-                      )
+                      SizedBox(width: 140, child: OurButton(onTap: () => QR.to('/guild/add'), title: 'افزودن کسب و کار', isLoading: false))
                     ],
                   )),
                 ],
@@ -143,29 +138,22 @@ class _GuildListPageState extends State<GuildListPage> {
                           ),
                           Padding(
                             padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
-                            child: guild.isCouponRequested
-                                ? GestureDetector(
-                              onTap: ()async{
-                                final g = guild.copyWith(isCouponRequested: false);
-                                await BlocProvider.of<GuildListCubit>(context).saveGuild(g);
-                                BlocProvider.of<GuildListCubit>(context).initialPage(context);
-                              },
-                                  child: Container(
-                                      width: double.infinity,
-                                      height: 45,
-                                      alignment: Alignment.center,
-                                      decoration: BoxDecoration(
-                                        color: Colors.white,
-                                        shape: BoxShape.rectangle,
-                                        border: Border.all(color: Colors.green, width: 2),
-                                        borderRadius: const BorderRadius.all(Radius.circular(6)),
-                                      ),
-                                      child: Text(
-                                        "درخواست کالا برگ شما ثبت شد",
-                                        style: defaultTextStyle(context, headline: 4).c(Colors.green).w(FontWeight.w600),
-                                      ),
+                            child: BlocProvider.of<GuildListCubit>(context).hasRequestForCoupon(guildId: guild.id)
+                                ? Container(
+                                    width: double.infinity,
+                                    height: 45,
+                                    alignment: Alignment.center,
+                                    decoration: BoxDecoration(
+                                      color: Colors.white,
+                                      shape: BoxShape.rectangle,
+                                      border: Border.all(color: Colors.green, width: 2),
+                                      borderRadius: const BorderRadius.all(Radius.circular(6)),
                                     ),
-                                )
+                                    child: Text(
+                                      "درخواست کالا برگ شما ثبت شد",
+                                      style: defaultTextStyle(context, headline: 4).c(Colors.green).w(FontWeight.w600),
+                                    ),
+                                  )
                                 : OurButton(
                                     onTap: () async {
                                       isDialogOpen = true;
@@ -175,7 +163,8 @@ class _GuildListPageState extends State<GuildListPage> {
                                           shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(12.0))),
                                           title: Text("درخواست کالابرگ", style: defaultTextStyle(context, headline: 3)),
                                           contentPadding: const EdgeInsets.symmetric(horizontal: 24, vertical: 8),
-                                          content: Text("اینجانب ضمن تایید اطلاعات خود، توافق خود را جهت استفاده از کالابرگ و رعایت شرایط مربوطه اعلام می دارم.",
+                                          content: Text(
+                                              "اینجانب ضمن تایید اطلاعات خود، توافق خود را جهت استفاده از کالابرگ و رعایت شرایط مربوطه اعلام می دارم.",
                                               style: defaultTextStyle(context, headline: 5).c(Colors.black.withOpacity(0.7))),
                                           actions: <Widget>[
                                             TextButton(
@@ -197,8 +186,7 @@ class _GuildListPageState extends State<GuildListPage> {
                                       ) as bool;
                                       isDialogOpen = false;
                                       if (isOK) {
-                                        final g = guild.copyWith(isCouponRequested: true);
-                                        await BlocProvider.of<GuildListCubit>(context).saveGuild(g);
+                                        BlocProvider.of<GuildListCubit>(context).sendRequestForCoupon(guildId: guild.id);
                                         BlocProvider.of<GuildListCubit>(context).initialPage(context);
                                       }
                                     },

@@ -111,6 +111,12 @@ class Guild extends Equatable {
     );
   }
 
+
+  @override
+  String toString() {
+    return '{firstName: $firstName, lastName: $lastName, organName: $organName}';
+  }
+
   @override
   List<Object> get props => [id];
 }

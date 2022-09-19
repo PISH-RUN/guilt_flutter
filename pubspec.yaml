@@ -2,7 +2,7 @@ name: guilt_flutter
 description: an app for manage guilds
 
 publish_to: 'none'
-version: 1.0.1+3
+version: 1.0.3+5
 
 environment:
   sdk: ">=2.17.3 <3.0.0"
@@ -13,6 +13,7 @@ dependencies:
   cupertino_icons: ^1.0.5
   get_it: ^7.2.0
   collection: ^1.16.0
+  cached_network_image: ^3.2.2
   flutter_svg: ^1.1.1+1
   flutter_bloc: ^8.0.1
   equatable: ^2.0.3

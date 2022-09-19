@@ -362,12 +362,12 @@ class _GuildFormWidgetState extends State<GuildFormWidget> {
                       SizedBox(height: paddingBetweenTextFiled),
                       if (widget.isAddNew || isEditable || pinLocation != null)
                         GestureDetector(
-                          onTap: () {
+                          onTap: () async {
                             if (!isEditable && !widget.isAddNew) {
                               return;
                             }
                             isDialogOpen = true;
-                            showDialog(
+                            await showDialog(
                               context: context,
                               builder: (_) => WillPopScope(
                                 onWillPop: () async {
@@ -466,123 +466,126 @@ class _GuildFormWidgetState extends State<GuildFormWidget> {
   }
 
   Widget addPoseButton(BuildContext context) {
-    return DottedBorder(
-      color: const Color(0xff4ADE80),
-      strokeWidth: 2,
-      padding: EdgeInsets.zero,
-      dashPattern: const [6, 6],
-      borderType: BorderType.RRect,
-      radius: const Radius.circular(10),
-      child: GestureDetector(
-        onTap: () async {
-          GlobalKey<FormState> formKeyDialog = GlobalKey();
-          TextEditingController pspController = TextEditingController();
-          TextEditingController terminalController = TextEditingController();
-          TextEditingController accountController = TextEditingController();
-          isDialogOpen = true;
-          await showDialog(
-            context: context,
-            builder: (context) => BlocProvider(
-              create: (context) => GetIt.instance<GuildCubit>(),
-              child: Builder(builder: (context) {
-                return AlertDialog(
-                  shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(12.0))),
-                  content: Form(
-                    key: formKeyDialog,
-                    onWillPop: () async => true,
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        TextFormField(
-                          style: defaultTextStyle(context),
-                          controller: terminalController,
-                          keyboardType: TextInputType.name,
-                          textAlign: TextAlign.end,
-                          decoration: defaultInputDecoration().copyWith(labelText: "شماره ترمینال:"),
-                          validator: (value) => posValidatorCheck(value),
-                          maxLines: 1,
-                        ),
-                        const SizedBox(height: 10.0),
-                        TextFormField(
-                          style: defaultTextStyle(context),
-                          controller: pspController,
-                          keyboardType: TextInputType.name,
-                          textAlign: TextAlign.end,
-                          decoration: defaultInputDecoration().copyWith(labelText: "psp:"),
-                          validator: (value) => posValidatorCheck(value),
-                          maxLines: 1,
-                        ),
-                        const SizedBox(height: 10.0),
-                        TextFormField(
-                          style: defaultTextStyle(context),
-                          controller: accountController,
-                          keyboardType: TextInputType.name,
-                          textAlign: TextAlign.end,
-                          decoration: defaultInputDecoration().copyWith(labelText: "شماره حساب:"),
-                          validator: (value) => posValidatorCheck(value),
-                          maxLines: 1,
-                        ),
-                        const SizedBox(height: 16.0),
-                        Row(
-                          children: [
-                            Expanded(
-                                child: OurButton(
-                              onTap: () {
-                                isDialogOpen = false;
-                                Navigator.pop(context);
-                              },
-                              title: "انصراف",
-                              isLoading: false,
-                              color: Colors.grey,
-                            )),
-                            const SizedBox(width: 12.0),
-                            Expanded(
-                                child: OurButton(
-                              onTap: () async {
-                                isDialogOpen = false;
-                                if (!formKeyDialog.currentState!.validate()) {
-                                  return;
-                                }
-                                final pos = Pos(
-                                  terminalId: terminalController.text,
-                                  accountNumber: accountController.text,
-                                  psp: pspController.text,
-                                );
-                                guild = guild.copyWith(poses: [...guild.poses, pos]);
-                                await BlocProvider.of<GuildCubit>(context).saveGuild(guild);
-                                Navigator.pop(context);
-                              },
-                              title: "ثبت",
-                              isLoading: false,
-                            )),
-                          ],
-                        ),
-                      ],
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 2.0),
+      child: DottedBorder(
+        color: const Color(0xff4ADE80),
+        strokeWidth: 2,
+        padding: EdgeInsets.zero,
+        dashPattern: const [6, 6],
+        borderType: BorderType.RRect,
+        radius: const Radius.circular(10),
+        child: GestureDetector(
+          onTap: () async {
+            GlobalKey<FormState> formKeyDialog = GlobalKey();
+            TextEditingController pspController = TextEditingController();
+            TextEditingController terminalController = TextEditingController();
+            TextEditingController accountController = TextEditingController();
+            isDialogOpen = true;
+            await showDialog(
+              context: context,
+              builder: (context) => BlocProvider(
+                create: (context) => GetIt.instance<GuildCubit>(),
+                child: Builder(builder: (context) {
+                  return AlertDialog(
+                    shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(12.0))),
+                    content: Form(
+                      key: formKeyDialog,
+                      onWillPop: () async => true,
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          TextFormField(
+                            style: defaultTextStyle(context),
+                            controller: terminalController,
+                            keyboardType: TextInputType.name,
+                            textAlign: TextAlign.end,
+                            decoration: defaultInputDecoration().copyWith(labelText: "شماره ترمینال:"),
+                            validator: (value) => posValidatorCheck(value),
+                            maxLines: 1,
+                          ),
+                          const SizedBox(height: 10.0),
+                          TextFormField(
+                            style: defaultTextStyle(context),
+                            controller: pspController,
+                            keyboardType: TextInputType.name,
+                            textAlign: TextAlign.end,
+                            decoration: defaultInputDecoration().copyWith(labelText: "psp:"),
+                            validator: (value) => posValidatorCheck(value),
+                            maxLines: 1,
+                          ),
+                          const SizedBox(height: 10.0),
+                          TextFormField(
+                            style: defaultTextStyle(context),
+                            controller: accountController,
+                            keyboardType: TextInputType.name,
+                            textAlign: TextAlign.end,
+                            decoration: defaultInputDecoration().copyWith(labelText: "شماره حساب:"),
+                            validator: (value) => posValidatorCheck(value),
+                            maxLines: 1,
+                          ),
+                          const SizedBox(height: 16.0),
+                          Row(
+                            children: [
+                              Expanded(
+                                  child: OurButton(
+                                onTap: () {
+                                  isDialogOpen = false;
+                                  Navigator.pop(context);
+                                },
+                                title: "انصراف",
+                                isLoading: false,
+                                color: Colors.grey,
+                              )),
+                              const SizedBox(width: 12.0),
+                              Expanded(
+                                  child: OurButton(
+                                onTap: () async {
+                                  isDialogOpen = false;
+                                  if (!formKeyDialog.currentState!.validate()) {
+                                    return;
+                                  }
+                                  final pos = Pos(
+                                    terminalId: terminalController.text,
+                                    accountNumber: accountController.text,
+                                    psp: pspController.text,
+                                  );
+                                  guild = guild.copyWith(poses: [...guild.poses, pos]);
+                                  await BlocProvider.of<GuildCubit>(context).saveGuild(guild);
+                                  Navigator.pop(context);
+                                },
+                                title: "ثبت",
+                                isLoading: false,
+                              )),
+                            ],
+                          ),
+                        ],
+                      ),
                     ),
-                  ),
-                );
-              }),
+                  );
+                }),
+              ),
+            );
+            isDialogOpen = false;
+            setState(() {});
+          },
+          child: Container(
+            width: double.infinity,
+            padding: const EdgeInsets.all(18),
+            decoration: const BoxDecoration(
+              color: Color(0xffDCFCE7),
+              shape: BoxShape.rectangle,
+              borderRadius: BorderRadius.all(Radius.circular(10)),
             ),
-          );
-          isDialogOpen = false;
-          setState(() {});
-        },
-        child: Container(
-          width: double.infinity,
-          padding: const EdgeInsets.all(18),
-          decoration: const BoxDecoration(
-            color: Color(0xffDCFCE7),
-            shape: BoxShape.rectangle,
-            borderRadius: BorderRadius.all(Radius.circular(10)),
-          ),
-          child: Row(
-            mainAxisSize: MainAxisSize.max,
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              const Icon(Icons.add, color: Color(0xff166534), size: 25.0),
-              const SizedBox(width: 10.0),
-              Text("افزودن دستگاه پوز", style: defaultTextStyle(context, headline: 4).c(const Color(0xff166534)))
-            ],
+            child: Row(
+              mainAxisSize: MainAxisSize.max,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                const Icon(Icons.add, color: Color(0xff166534), size: 25.0),
+                const SizedBox(width: 10.0),
+                Text("افزودن دستگاه پوز", style: defaultTextStyle(context, headline: 4).c(const Color(0xff166534)))
+              ],
+            ),
           ),
         ),
       ),

@@ -1,25 +1,29 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
 import 'package:get_storage/get_storage.dart';
-import 'package:guilt_flutter/commons/failures.dart';
-import 'package:guilt_flutter/commons/fix_rtl_flutter_bug.dart';
-import 'package:guilt_flutter/commons/text_style.dart';
-import 'package:guilt_flutter/commons/utils.dart';
-import 'package:guilt_flutter/commons/widgets/loading_widget.dart';
-import 'package:guilt_flutter/commons/widgets/simple_snake_bar.dart';
-import 'package:guilt_flutter/commons/widgets/warning_dialog.dart';
-import 'package:guilt_flutter/features/login/api/login_api.dart';
-import 'package:guilt_flutter/features/profile/domain/entities/gender_type.dart';
-import 'package:guilt_flutter/features/profile/domain/entities/user_info.dart';
-import 'package:guilt_flutter/features/profile/presentation/manager/get_user_cubit.dart';
-import 'package:guilt_flutter/features/profile/presentation/manager/get_user_state.dart';
-import 'package:guilt_flutter/features/profile/presentation/manager/update_user_cubit.dart';
-import 'package:guilt_flutter/features/profile/presentation/manager/update_user_state.dart';
-import 'package:guilt_flutter/main.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:logger/logger.dart';
 import 'package:qlevar_router/qlevar_router.dart';
 import 'package:toggle_switch/toggle_switch.dart';
+
+import '../../../../application/colors.dart';
+import '../../../../commons/failures.dart';
+import '../../../../commons/fix_rtl_flutter_bug.dart';
+import '../../../../commons/text_style.dart';
+import '../../../../commons/utils.dart';
+import '../../../../commons/widgets/loading_widget.dart';
+import '../../../../commons/widgets/simple_snake_bar.dart';
+import '../../../../commons/widgets/warning_dialog.dart';
+import '../../../../main.dart';
+import '../../../login/api/login_api.dart';
+import '../../domain/entities/gender_type.dart';
+import '../../domain/entities/user_info.dart';
+import '../manager/get_user_cubit.dart';
+import '../manager/get_user_state.dart';
+import '../manager/update_user_cubit.dart';
+import '../manager/update_user_state.dart';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({Key? key}) : super(key: key);
@@ -174,6 +178,7 @@ class _FormWidgetState extends State<FormWidget> {
   }
 
   Widget avatarWidget(BuildContext context) {
+    Logger().i("info=> ${user.avatar} ");
     return GestureDetector(
       onTap: () async {
         final ImagePicker picker = ImagePicker();
@@ -196,7 +201,12 @@ class _FormWidgetState extends State<FormWidget> {
                       ? const Image(image: AssetImage('images/avatar.png'))
                       : ClipRRect(
                           borderRadius: const BorderRadius.all(Radius.circular(100)),
-                          child: Image(image: NetworkImage(user.avatar!), fit: BoxFit.cover),
+                          child: CachedNetworkImage(
+                            imageUrl: user.avatar!,
+                            placeholder: (_, __) => LoadingWidget(size: 50,color: AppColor.blue),
+                            errorWidget: (_, __, ___) => const Text("something error"),
+                            fit: BoxFit.cover,
+                          ),
                         ),
                 ),
               ),

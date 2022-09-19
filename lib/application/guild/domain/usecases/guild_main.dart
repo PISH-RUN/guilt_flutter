@@ -13,10 +13,9 @@ class GuildMain {
   GuildMain(this.guildRemoteRepository);
 
   Future<RequestResult> updateGuild({required String nationalCode, required Guild guild}) async {
-    List<GuildModel> localGuildList = guildList.map((e) => GuildModel.fromSuper(e)).toList();
-    localGuildList = [GuildModel.fromSuper(guild), ...(guildList.map((e) => GuildModel.fromSuper(e)).toList())].toSet().toList();
-    // guildLocalRepository.upsertGuildInLocal(nationalCode, localGuildList);
+    List<GuildModel> localGuildList = guildList.map((e) => guild.id == e.id ? GuildModel.fromSuper(guild) : GuildModel.fromSuper(e)).toList();
     guildRemoteRepository.updateAllData(nationalCode, localGuildList);
+    getListOfMyGuilds(nationalCode: nationalCode);
     return RequestResult.success();
   }
 
@@ -27,12 +26,14 @@ class GuildMain {
       return RequestResult.fromEither(response);
     }
     guildList.add(GuildModel.fromSuper(guild));
-    // guildLocalRepository.upsertGuildInLocal(nationalCode, guildList);
     return RequestResult.fromEither(response);
   }
 
   Future<Either<Failure, List<Guild>>> getListOfMyGuilds({required String nationalCode, bool isForceRefresh = false}) async {
-    return guildRemoteRepository.getListOfMyGuilds(nationalCode,isForceRefresh);
+    return (await guildRemoteRepository.getListOfMyGuilds(nationalCode, isForceRefresh)).fold((l) => left(l), (r) {
+      guildList = r;
+      return Right(r);
+    });
   }
 
   Future<Either<Failure, Guild>> getFullDetailOfOneGuild({required String nationalCode, required int guildId, bool isForceFromServer = false}) async {
