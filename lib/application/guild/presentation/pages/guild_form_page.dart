@@ -1,24 +1,24 @@
 import 'package:dotted_border/dotted_border.dart';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
-import 'package:guilt_flutter/application/guild/domain/entities/guild.dart';
-import 'package:guilt_flutter/application/guild/domain/entities/pos.dart';
-import 'package:guilt_flutter/application/guild/presentation/manager/guild_cubit.dart';
-import 'package:guilt_flutter/application/guild/presentation/manager/guild_state.dart';
-import 'package:guilt_flutter/application/guild/presentation/widgets/map_widget.dart';
-import 'package:guilt_flutter/application/guild/presentation/widgets/pos_item.dart';
-import 'package:guilt_flutter/commons/fix_rtl_flutter_bug.dart';
-import 'package:guilt_flutter/commons/text_style.dart';
-import 'package:guilt_flutter/commons/utils.dart';
-import 'package:guilt_flutter/commons/widgets/loading_widget.dart';
-import 'package:guilt_flutter/commons/widgets/our_button.dart';
-import 'package:guilt_flutter/commons/widgets/our_item_picker.dart';
-import 'package:guilt_flutter/commons/widgets/warning_dialog.dart';
-import 'package:guilt_flutter/main.dart';
 import 'package:latlong2/latlong.dart' as lat_lng;
 import 'package:qlevar_router/qlevar_router.dart';
+
+import '../../../../commons/fix_rtl_flutter_bug.dart';
+import '../../../../commons/text_style.dart';
+import '../../../../commons/utils.dart';
+import '../../../../commons/widgets/loading_widget.dart';
+import '../../../../commons/widgets/our_button.dart';
+import '../../../../commons/widgets/our_item_picker.dart';
+import '../../../../commons/widgets/warning_dialog.dart';
+import '../../../../main.dart';
+import '../../domain/entities/guild.dart';
+import '../../domain/entities/pos.dart';
+import '../manager/guild_cubit.dart';
+import '../manager/guild_state.dart';
+import '../widgets/map_widget.dart';
+import '../widgets/pos_item.dart';
 
 bool isLoading = false;
 bool isDialogOpen = false;
@@ -132,7 +132,7 @@ class _GuildFormWidgetState extends State<GuildFormWidget> {
                           const SizedBox(height: 40.0),
                           baseInformationWidget(context),
                           const SizedBox(height: 20.0),
-                          if (!isEditable)
+                          if (!widget.isAddNew && !isEditable)
                             guild.poses.isEmpty
                                 ? Padding(
                                     padding: const EdgeInsets.symmetric(horizontal: 20.0),
@@ -267,7 +267,7 @@ class _GuildFormWidgetState extends State<GuildFormWidget> {
                       isEditable || widget.isAddNew
                           ? TextFormField(
                               style: defaultTextStyle(context),
-                              decoration: defaultInputDecoration().copyWith(labelText: "شماره تلفن", prefixIcon: const Icon(Icons.phone)),
+                              decoration: defaultInputDecoration().copyWith(labelText: "شماره تلفن صنف", prefixIcon: const Icon(Icons.phone)),
                               textAlign: TextAlign.end,
                               keyboardType: TextInputType.number,
                               controller: homeTelephoneController,
@@ -502,7 +502,7 @@ class _GuildFormWidgetState extends State<GuildFormWidget> {
                           validator: (value) => posValidatorCheck(value),
                           maxLines: 1,
                         ),
-                        const SizedBox(width: 10.0),
+                        const SizedBox(height: 10.0),
                         TextFormField(
                           style: defaultTextStyle(context),
                           controller: pspController,
@@ -512,7 +512,7 @@ class _GuildFormWidgetState extends State<GuildFormWidget> {
                           validator: (value) => posValidatorCheck(value),
                           maxLines: 1,
                         ),
-                        const SizedBox(width: 10.0),
+                        const SizedBox(height: 10.0),
                         TextFormField(
                           style: defaultTextStyle(context),
                           controller: accountController,
@@ -522,7 +522,7 @@ class _GuildFormWidgetState extends State<GuildFormWidget> {
                           validator: (value) => posValidatorCheck(value),
                           maxLines: 1,
                         ),
-                        const SizedBox(width: 10.0),
+                        const SizedBox(height: 16.0),
                         Row(
                           children: [
                             Expanded(

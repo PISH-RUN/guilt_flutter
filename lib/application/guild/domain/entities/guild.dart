@@ -91,7 +91,7 @@ class Guild extends Equatable {
   factory Guild.fromEmpty() {
     return Guild(
       nationalCode: GetIt.instance<LoginApi>().getUserId(),
-      phoneNumber: '',
+      phoneNumber: GetIt.instance<LoginApi>().getUserPhone(),
       firstName: '',
       lastName: '',
       city: '',

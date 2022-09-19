@@ -93,6 +93,8 @@ class _LoginPageState extends State<LoginPage> {
                                 const SizedBox(height: 10.0),
                                 Text("لطفا کد تایید را وارد کنید", style: Theme.of(context).textTheme.headline4),
                                 const SizedBox(height: 16.0),
+                                Text(LoginCubit.phoneNumber, style: Theme.of(context).textTheme.headline4),
+                                const SizedBox(height: 4.0),
                                 GestureDetector(
                                   onTap: () => QR.back(),
                                   child: Text("تغییر شماره تلفن",
