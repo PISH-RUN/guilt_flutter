@@ -131,7 +131,7 @@ class _GuildFormWidgetState extends State<GuildFormWidget> {
                         children: [
                           const SizedBox(height: 40.0),
                           baseInformationWidget(context),
-                          const SizedBox(height: 20.0),
+                          const SizedBox(height: 10.0),
                           if (!widget.isAddNew && !isEditable)
                             guild.poses.isEmpty
                                 ? Padding(

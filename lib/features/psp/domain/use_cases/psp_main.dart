@@ -1,8 +1,8 @@
 import 'package:dartz/dartz.dart';
-import 'package:guilt_flutter/application/guild/domain/entities/guild.dart';
+import 'package:guilt_flutter/commons/data/model/paginate_list.dart';
 import 'package:guilt_flutter/commons/failures.dart';
 import 'package:guilt_flutter/commons/request_result.dart';
-import 'package:guilt_flutter/features/psp/domain/entities/guild_psp.dart';
+import '/features/psp/domain/entities/guild_psp.dart';
 import '../repositories/psp_repository.dart';
 
 class PspMain {
@@ -10,8 +10,8 @@ class PspMain {
 
   PspMain(this.repository);
 
-  Future<Either<Failure, List<GuildPsp>>> getAllGuildsByCities(List<String> cities, int page) {
-    return repository.getAllGuildsByCities(cities, page);
+  Future<Either<Failure, PaginateList<GuildPsp>>> getAllGuildsByCities(List<String> cities, int page, String searchText) {
+    return repository.getAllGuildsByCities(cities, page, searchText);
   }
 
   Future<RequestResult> updateStateOfSpecialGuild(GuildPsp guildPsp) {

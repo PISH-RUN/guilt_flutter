@@ -1,5 +1,6 @@
 import 'package:get_it/get_it.dart';
 import 'package:guilt_flutter/application/error_page.dart';
+import 'package:guilt_flutter/features/psp/presentation/pages/all_guild_list_page.dart';
 import 'package:qlevar_router/qlevar_router.dart';
 
 import 'application/faq.dart';
@@ -17,6 +18,18 @@ import 'features/profile/presentation/pages/profile_page.dart';
 
 class AppRoutes {
   final routes = [
+    QRoute.withChild(
+      path: '/psp',
+      builderChild: (p0) => p0,
+      middleware: [],
+      children: [
+        QRoute(
+          path: '/guildList',
+          builder: () => AllGuildsListPage.wrappedRoute(),
+          middleware: [AuthGuard()],
+        ),
+      ],
+    ),
     QRoute.withChild(
       path: '/guild',
       builderChild: (p0) => p0,

@@ -14,6 +14,7 @@ import 'package:qlevar_router/qlevar_router.dart';
 import 'application/guild/guild_injection_container.dart' as di_guild;
 import 'features/login/login_injection_container.dart' as di_login;
 import 'features/profile/profile_injection_container.dart' as di_profile;
+import 'features/psp/psp_injection_container.dart' as di_psp;
 
 void main() async {
   await GetStorage.init();
@@ -33,6 +34,7 @@ void prepareGetIt() {
   di_login.init();
   di_guild.init();
   di_profile.init();
+  di_psp.init();
 }
 
 String initPath = 'guild/dashboard';
@@ -49,7 +51,7 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       routeInformationParser: const QRouteInformationParser(),
       builder: (context, child) => child == null ? const SizedBox() : SafeArea(child: Directionality(textDirection: TextDirection.rtl, child: child)),
-      routerDelegate: QRouterDelegate(AppRoutes().routes, withWebBar: false, initPath: initPath),
+      routerDelegate: QRouterDelegate(AppRoutes().routes, withWebBar: false, initPath: '/psp/guildList'),
     );
   }
 }

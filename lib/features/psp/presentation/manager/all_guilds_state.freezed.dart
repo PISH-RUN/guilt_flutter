@@ -21,7 +21,7 @@ mixin _$AllGuildsState {
     required TResult Function() loading,
     required TResult Function() empty,
     required TResult Function(Failure failure) error,
-    required TResult Function(List<GuildPsp> guildList) loaded,
+    required TResult Function(PaginateList<GuildPsp> guildList) loaded,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
@@ -29,7 +29,7 @@ mixin _$AllGuildsState {
     TResult Function()? loading,
     TResult Function()? empty,
     TResult Function(Failure failure)? error,
-    TResult Function(List<GuildPsp> guildList)? loaded,
+    TResult Function(PaginateList<GuildPsp> guildList)? loaded,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
@@ -37,7 +37,7 @@ mixin _$AllGuildsState {
     TResult Function()? loading,
     TResult Function()? empty,
     TResult Function(Failure failure)? error,
-    TResult Function(List<GuildPsp> guildList)? loaded,
+    TResult Function(PaginateList<GuildPsp> guildList)? loaded,
     required TResult orElse(),
   }) =>
       throw _privateConstructorUsedError;
@@ -126,7 +126,7 @@ class _$Loading implements Loading {
     required TResult Function() loading,
     required TResult Function() empty,
     required TResult Function(Failure failure) error,
-    required TResult Function(List<GuildPsp> guildList) loaded,
+    required TResult Function(PaginateList<GuildPsp> guildList) loaded,
   }) {
     return loading();
   }
@@ -137,7 +137,7 @@ class _$Loading implements Loading {
     TResult Function()? loading,
     TResult Function()? empty,
     TResult Function(Failure failure)? error,
-    TResult Function(List<GuildPsp> guildList)? loaded,
+    TResult Function(PaginateList<GuildPsp> guildList)? loaded,
   }) {
     return loading?.call();
   }
@@ -148,7 +148,7 @@ class _$Loading implements Loading {
     TResult Function()? loading,
     TResult Function()? empty,
     TResult Function(Failure failure)? error,
-    TResult Function(List<GuildPsp> guildList)? loaded,
+    TResult Function(PaginateList<GuildPsp> guildList)? loaded,
     required TResult orElse(),
   }) {
     if (loading != null) {
@@ -240,7 +240,7 @@ class _$Empty implements Empty {
     required TResult Function() loading,
     required TResult Function() empty,
     required TResult Function(Failure failure) error,
-    required TResult Function(List<GuildPsp> guildList) loaded,
+    required TResult Function(PaginateList<GuildPsp> guildList) loaded,
   }) {
     return empty();
   }
@@ -251,7 +251,7 @@ class _$Empty implements Empty {
     TResult Function()? loading,
     TResult Function()? empty,
     TResult Function(Failure failure)? error,
-    TResult Function(List<GuildPsp> guildList)? loaded,
+    TResult Function(PaginateList<GuildPsp> guildList)? loaded,
   }) {
     return empty?.call();
   }
@@ -262,7 +262,7 @@ class _$Empty implements Empty {
     TResult Function()? loading,
     TResult Function()? empty,
     TResult Function(Failure failure)? error,
-    TResult Function(List<GuildPsp> guildList)? loaded,
+    TResult Function(PaginateList<GuildPsp> guildList)? loaded,
     required TResult orElse(),
   }) {
     if (empty != null) {
@@ -378,7 +378,7 @@ class _$Error implements Error {
     required TResult Function() loading,
     required TResult Function() empty,
     required TResult Function(Failure failure) error,
-    required TResult Function(List<GuildPsp> guildList) loaded,
+    required TResult Function(PaginateList<GuildPsp> guildList) loaded,
   }) {
     return error(failure);
   }
@@ -389,7 +389,7 @@ class _$Error implements Error {
     TResult Function()? loading,
     TResult Function()? empty,
     TResult Function(Failure failure)? error,
-    TResult Function(List<GuildPsp> guildList)? loaded,
+    TResult Function(PaginateList<GuildPsp> guildList)? loaded,
   }) {
     return error?.call(failure);
   }
@@ -400,7 +400,7 @@ class _$Error implements Error {
     TResult Function()? loading,
     TResult Function()? empty,
     TResult Function(Failure failure)? error,
-    TResult Function(List<GuildPsp> guildList)? loaded,
+    TResult Function(PaginateList<GuildPsp> guildList)? loaded,
     required TResult orElse(),
   }) {
     if (error != null) {
@@ -459,7 +459,7 @@ abstract class Error implements AllGuildsState {
 abstract class _$$LoadedCopyWith<$Res> {
   factory _$$LoadedCopyWith(_$Loaded value, $Res Function(_$Loaded) then) =
       __$$LoadedCopyWithImpl<$Res>;
-  $Res call({List<GuildPsp> guildList});
+  $Res call({PaginateList<GuildPsp> guildList});
 }
 
 /// @nodoc
@@ -477,9 +477,9 @@ class __$$LoadedCopyWithImpl<$Res> extends _$AllGuildsStateCopyWithImpl<$Res>
   }) {
     return _then(_$Loaded(
       guildList: guildList == freezed
-          ? _value._guildList
+          ? _value.guildList
           : guildList // ignore: cast_nullable_to_non_nullable
-              as List<GuildPsp>,
+              as PaginateList<GuildPsp>,
     ));
   }
 }
@@ -487,15 +487,10 @@ class __$$LoadedCopyWithImpl<$Res> extends _$AllGuildsStateCopyWithImpl<$Res>
 /// @nodoc
 
 class _$Loaded implements Loaded {
-  const _$Loaded({required final List<GuildPsp> guildList})
-      : _guildList = guildList;
+  const _$Loaded({required this.guildList});
 
-  final List<GuildPsp> _guildList;
   @override
-  List<GuildPsp> get guildList {
-    // ignore: implicit_dynamic_type
-    return EqualUnmodifiableListView(_guildList);
-  }
+  final PaginateList<GuildPsp> guildList;
 
   @override
   String toString() {
@@ -507,13 +502,12 @@ class _$Loaded implements Loaded {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _$Loaded &&
-            const DeepCollectionEquality()
-                .equals(other._guildList, _guildList));
+            const DeepCollectionEquality().equals(other.guildList, guildList));
   }
 
   @override
   int get hashCode =>
-      Object.hash(runtimeType, const DeepCollectionEquality().hash(_guildList));
+      Object.hash(runtimeType, const DeepCollectionEquality().hash(guildList));
 
   @JsonKey(ignore: true)
   @override
@@ -526,7 +520,7 @@ class _$Loaded implements Loaded {
     required TResult Function() loading,
     required TResult Function() empty,
     required TResult Function(Failure failure) error,
-    required TResult Function(List<GuildPsp> guildList) loaded,
+    required TResult Function(PaginateList<GuildPsp> guildList) loaded,
   }) {
     return loaded(guildList);
   }
@@ -537,7 +531,7 @@ class _$Loaded implements Loaded {
     TResult Function()? loading,
     TResult Function()? empty,
     TResult Function(Failure failure)? error,
-    TResult Function(List<GuildPsp> guildList)? loaded,
+    TResult Function(PaginateList<GuildPsp> guildList)? loaded,
   }) {
     return loaded?.call(guildList);
   }
@@ -548,7 +542,7 @@ class _$Loaded implements Loaded {
     TResult Function()? loading,
     TResult Function()? empty,
     TResult Function(Failure failure)? error,
-    TResult Function(List<GuildPsp> guildList)? loaded,
+    TResult Function(PaginateList<GuildPsp> guildList)? loaded,
     required TResult orElse(),
   }) {
     if (loaded != null) {
@@ -596,9 +590,10 @@ class _$Loaded implements Loaded {
 }
 
 abstract class Loaded implements AllGuildsState {
-  const factory Loaded({required final List<GuildPsp> guildList}) = _$Loaded;
+  const factory Loaded({required final PaginateList<GuildPsp> guildList}) =
+      _$Loaded;
 
-  List<GuildPsp> get guildList;
+  PaginateList<GuildPsp> get guildList;
   @JsonKey(ignore: true)
   _$$LoadedCopyWith<_$Loaded> get copyWith =>
       throw _privateConstructorUsedError;

@@ -23,9 +23,22 @@ class RegisterPage extends StatefulWidget {
 }
 
 class _RegisterPageState extends State<RegisterPage> {
+  final GlobalKey<FormState> formKey = GlobalKey();
+  bool isLockedTextFields = false;
   final TextEditingController phoneController = TextEditingController();
   final TextEditingController nationalCodeController = TextEditingController();
-  final GlobalKey<FormState> formKey = GlobalKey();
+
+  @override
+  void initState() {
+    final phoneNumber = QR.params['phoneNumber'].toString();
+    final nationalCode = QR.params['nationalCode'].toString();
+    if (nationalCode.isNotEmpty) {
+      isLockedTextFields = true;
+      phoneController.text = phoneNumber;
+      nationalCodeController.text = nationalCode;
+    }
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -55,43 +68,52 @@ class _RegisterPageState extends State<RegisterPage> {
                                 const SizedBox(height: 10.0),
                                 Text("لطفا اطلاعات خود را وارد کنید", style: Theme.of(context).textTheme.headline4),
                                 const SizedBox(height: 20.0),
-                                Directionality(
-                                  textDirection: TextDirection.ltr,
-                                  child: TextFormField(
-                                    decoration: const InputDecoration(
-                                      labelText: "شماره تلفن",
-                                      helperText: "",
-                                      prefixIcon: Icon(Icons.phone, color: AppColor.blue, size: 22.0),
-                                    ),
-                                    onFieldSubmitted: (value) => onSubmitButton(),
-                                    keyboardType: TextInputType.number,
-                                    controller: phoneController,
-                                    validator: (value) {
-                                      if (value == null) return null;
-                                      if (value.isEmpty) return "وارد کردن شماره تلفن ضروری است";
-                                      if (!validatePhoneNumber(value)) return "شماره تلفن معتبر نیست";
-                                      return null;
-                                    },
-                                  ),
-                                ),
-                                const SizedBox(height: 16.0),
-                                Directionality(
-                                  textDirection: TextDirection.ltr,
-                                  child: TextFormField(
-                                    decoration: const InputDecoration(
-                                      labelText: "کد ملی",
-                                      helperText: "",
-                                      prefixIcon: Icon(Icons.pin, color: AppColor.blue, size: 22.0),
-                                    ),
-                                    onFieldSubmitted: (value) => onSubmitButton(),
-                                    keyboardType: TextInputType.number,
-                                    controller: nationalCodeController,
-                                    validator: (value) {
-                                      if (value == null) return null;
-                                      if (value.isEmpty) return "وارد کردن کد ملی ضروری است";
-                                      if (value.length != 10) return "کد ملی نامعتبر نیست";
-                                      return null;
-                                    },
+                                AbsorbPointer(
+                                  absorbing: isLockedTextFields,
+                                  child: Column(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      Directionality(
+                                        textDirection: TextDirection.ltr,
+                                        child: TextFormField(
+                                          decoration: InputDecoration(
+                                            labelText: "شماره تلفن",
+                                            helperText: "",
+                                            prefixIcon: const Icon(Icons.phone, color: AppColor.blue, size: 22.0),
+                                            fillColor: isLockedTextFields ? const Color(0xffcbcbcb) : const Color(0xffffffff),
+                                          ),
+                                          onFieldSubmitted: (value) => onSubmitButton(),
+                                          keyboardType: TextInputType.number,
+                                          controller: phoneController,
+                                          validator: (value) {
+                                            if (value == null) return null;
+                                            if (value.isEmpty) return "وارد کردن شماره تلفن ضروری است";
+                                            if (!validatePhoneNumber(value)) return "شماره تلفن معتبر نیست";
+                                            return null;
+                                          },
+                                        ),
+                                      ),
+                                      const SizedBox(height: 16.0),
+                                      Directionality(
+                                        textDirection: TextDirection.ltr,
+                                        child: TextFormField(
+                                          decoration: const InputDecoration(
+                                            labelText: "کد ملی",
+                                            helperText: "",
+                                            prefixIcon: Icon(Icons.pin, color: AppColor.blue, size: 22.0),
+                                          ),
+                                          onFieldSubmitted: (value) => onSubmitButton(),
+                                          keyboardType: TextInputType.number,
+                                          controller: nationalCodeController,
+                                          validator: (value) {
+                                            if (value == null) return null;
+                                            if (value.isEmpty) return "وارد کردن کد ملی ضروری است";
+                                            if (value.length != 10) return "کد ملی نامعتبر نیست";
+                                            return null;
+                                          },
+                                        ),
+                                      ),
+                                    ],
                                   ),
                                 ),
                                 const SizedBox(height: 14.0),
@@ -102,7 +124,10 @@ class _RegisterPageState extends State<RegisterPage> {
                                 ),
                                 const SizedBox(height: 6.0),
                                 Text(
-                                  state.maybeWhen(error: (failure) =>failure.failureType == FailureType.authentication ? "اطلاعات شما نادرست است" : failure.message, orElse: () => ""),
+                                  state.maybeWhen(
+                                      error: (failure) =>
+                                          failure.failureType == FailureType.authentication ? "اطلاعات شما نادرست است" : failure.message,
+                                      orElse: () => ""),
                                   textAlign: TextAlign.center,
                                   style: defaultTextStyle(context, headline: 4).c(Colors.red),
                                 ),

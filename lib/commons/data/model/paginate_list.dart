@@ -24,6 +24,22 @@ class PaginateList<T> extends Equatable {
     return output;
   }
 
+  PaginateList<T> copyWith({
+    List<T>? list,
+    int? currentPage,
+    int? totalPage,
+    int? perPage,
+  }) {
+    return PaginateList(
+      list: list ?? this.list,
+      currentPage: currentPage ?? this.currentPage,
+      totalPage: totalPage ?? this.totalPage,
+      perPage: perPage ?? this.perPage,
+    );
+  }
+
+  bool get isLastPage => currentPage >= totalPage;
+
   @override
   List<Object> get props => [currentPage, totalPage, perPage, list];
 }

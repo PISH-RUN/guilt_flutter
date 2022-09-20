@@ -2,27 +2,54 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:guilt_flutter/commons/text_style.dart';
 import 'package:guilt_flutter/commons/widgets/loading_widget.dart';
+import 'package:guilt_flutter/features/psp/domain/entities/guild_psp.dart';
 import 'package:guilt_flutter/features/psp/presentation/widgets/guild_item.dart';
+import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
+import 'package:logger/logger.dart';
 
 import '../manager/all_guilds_cubit.dart';
 import '../manager/all_guilds_state.dart';
 
 class AllGuildsListWidget extends StatefulWidget {
   final List<String> cities;
+  final String searchText;
 
-  const AllGuildsListWidget({required this.cities, Key? key}) : super(key: key);
+  const AllGuildsListWidget({required this.cities, required this.searchText, Key? key}) : super(key: key);
 
   @override
   State<AllGuildsListWidget> createState() => _AllGuildsListWidgetState();
 }
 
 class _AllGuildsListWidgetState extends State<AllGuildsListWidget> {
+  final PagingController<int, GuildPsp> _pagingController = PagingController(firstPageKey: 0);
+
+  @override
+  void initState() {
+    _retry(context);
+    _pagingController.addPageRequestListener((pageKey) {
+      BlocProvider.of<AllGuildsCubit>(context).getMoreItem();
+    });
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
-    _retry(context);
     return Scaffold(
       body: SafeArea(
-        child: BlocBuilder<AllGuildsCubit, AllGuildsState>(
+        child: BlocConsumer<AllGuildsCubit, AllGuildsState>(
+          listener: (context, state) {
+            state.maybeWhen(
+              loaded: (data) {
+                if (data.isLastPage) {
+                  _pagingController.appendLastPage(data.list);
+                } else {
+                  final nextPageKey = ((data.currentPage - 1) * data.perPage) + data.list.length;
+                  _pagingController.appendPage(data.list, nextPageKey);
+                }
+              },
+              orElse: () => null,
+            );
+          },
           builder: (context, state) {
             return state.when(
               loading: () => LoadingWidget(),
@@ -41,14 +68,12 @@ class _AllGuildsListWidgetState extends State<AllGuildsListWidget> {
                   ),
                 ],
               ),
-              loaded: (guildList) {
-                return ListView.builder(
-                  padding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 8.0),
-                  scrollDirection: Axis.vertical,
-                  itemCount: guildList.length,
-                  itemBuilder: (BuildContext context, int index) {
-                    return GuildItem(guild: guildList[index]);
-                  },
+              loaded: (_) {
+                return PagedListView<int, GuildPsp>(
+                  pagingController: _pagingController,
+                  builderDelegate: PagedChildBuilderDelegate<GuildPsp>(
+                    itemBuilder: (context, item, index) => GuildItem(guild: item),
+                  ),
                 );
               },
             );
@@ -59,6 +84,6 @@ class _AllGuildsListWidgetState extends State<AllGuildsListWidget> {
   }
 
   void _retry(BuildContext context) {
-    BlocProvider.of<AllGuildsCubit>(context).initialPage(widget.cities, 1);
+    BlocProvider.of<AllGuildsCubit>(context).initialPage(widget.cities, searchText: widget.searchText);
   }
 }

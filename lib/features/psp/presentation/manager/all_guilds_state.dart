@@ -1,4 +1,5 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:guilt_flutter/commons/data/model/paginate_list.dart';
 import 'package:guilt_flutter/commons/failures.dart';
 import 'package:guilt_flutter/features/psp/domain/entities/guild_psp.dart';
 
@@ -12,5 +13,5 @@ class AllGuildsState with _$AllGuildsState {
 
   const factory AllGuildsState.error({required Failure failure}) = Error;
 
-  const factory AllGuildsState.loaded({required List<GuildPsp> guildList}) = Loaded;
+  const factory AllGuildsState.loaded({required PaginateList<GuildPsp> guildList}) = Loaded;
 }
