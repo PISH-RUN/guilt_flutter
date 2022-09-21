@@ -11,9 +11,9 @@ class UpdateStateOfGuildCubit extends Cubit<UpdateStateOfGuildState> {
   })  : _main = main,
         super(const UpdateStateOfGuildState.readyToInput());
 
-  Future<void> updateStateOfSpecialGuild(GuildPsp guild) async {
+  Future<void> updateStateOfSpecialGuild(GuildPsp guild, String token) async {
     emit(const UpdateStateOfGuildState.loading());
-    final response = await _main.updateStateOfSpecialGuild(guild);
+    final response = await _main.updateStateOfSpecialGuild(guild, token);
     response.fold(
       (failure) => emit(UpdateStateOfGuildState.error(failure: failure)),
       () => emit(const UpdateStateOfGuildState.success()),

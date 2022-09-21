@@ -15,7 +15,6 @@ import 'package:guilt_flutter/commons/request_result.dart';
 import 'package:guilt_flutter/features/login/api/login_api.dart';
 import 'package:guilt_flutter/features/profile/api/profile_api.dart';
 import 'package:http/http.dart' as http;
-import 'package:logger/logger.dart';
 
 class GuildRemoteRepositoryImpl implements GuildRemoteRepository {
   final RemoteDataSource remoteDataSource;

@@ -2,6 +2,7 @@ import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
+import 'package:guilt_flutter/commons/widgets/our_text_field.dart';
 import 'package:latlong2/latlong.dart' as lat_lng;
 import 'package:qlevar_router/qlevar_router.dart';
 
@@ -25,8 +26,9 @@ bool isDialogOpen = false;
 
 class GuildFormPage extends StatelessWidget {
   final bool isAddNew;
+  final bool isEditable;
 
-  const GuildFormPage({required this.isAddNew, Key? key}) : super(key: key);
+  const GuildFormPage({required this.isAddNew, this.isEditable = false, Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -45,7 +47,7 @@ class GuildFormPage extends StatelessWidget {
                       QR.navigator.replaceAll(initPath);
                     }
                   },
-                  child: GuildFormWidget(isAddNew: true, guild: Guild.fromEmpty()),
+                  child: GuildFormWidget(isAddNew: true, guild: Guild.fromEmpty(), isEditable: isEditable),
                 )
               : BlocBuilder<GuildCubit, GuildState>(
                   builder: (context, state) {
@@ -53,7 +55,7 @@ class GuildFormPage extends StatelessWidget {
                       loading: () => LoadingWidget(),
                       error: (failure) => Center(child: Text(failure.message)),
                       loaded: (guild) {
-                        return GuildFormWidget(isAddNew: false, guild: guild);
+                        return GuildFormWidget(isAddNew: false, guild: guild, isEditable: isEditable);
                       },
                     );
                   },
@@ -63,16 +65,17 @@ class GuildFormPage extends StatelessWidget {
     );
   }
 
-  static Widget wrappedRoute({required bool isAddNew}) {
-    return BlocProvider(create: (ctx) => GetIt.instance<GuildCubit>(), child: GuildFormPage(isAddNew: isAddNew));
+  static Widget wrappedRoute({required bool isAddNew, bool isEditable = false}) {
+    return BlocProvider(create: (ctx) => GetIt.instance<GuildCubit>(), child: GuildFormPage(isAddNew: isAddNew, isEditable: isEditable));
   }
 }
 
 class GuildFormWidget extends StatefulWidget {
   final Guild guild;
   final bool isAddNew;
+  final bool isEditable;
 
-  const GuildFormWidget({required this.guild, required this.isAddNew, Key? key}) : super(key: key);
+  const GuildFormWidget({required this.guild, required this.isAddNew, required this.isEditable, Key? key}) : super(key: key);
 
   @override
   _GuildFormWidgetState createState() => _GuildFormWidgetState();
@@ -97,6 +100,7 @@ class _GuildFormWidgetState extends State<GuildFormWidget> {
 
   @override
   void initState() {
+    isEditable = widget.isEditable;
     guild = widget.guild;
     organController = TextEditingController(text: guild.organName);
     guildNameController = TextEditingController(text: guild.title);
@@ -233,52 +237,71 @@ class _GuildFormWidgetState extends State<GuildFormWidget> {
                     mainAxisSize: MainAxisSize.min,
                     children: <Widget>[
                       isEditable || widget.isAddNew
-                          ? TextFormField(
-                              style: defaultTextStyle(context),
-                              controller: guildNameController,
-                              keyboardType: TextInputType.name,
-                              onTap: () => setState(() => fixRtlFlutterBug(guildNameController)),
-                              decoration: defaultInputDecoration().copyWith(labelText: "نام کسب و کار", prefixIcon: const Icon(Icons.store)),
-                              validator: (value) {
-                                if (value == null) return null;
-                                if (value.isEmpty) return "این فیلد الزامی است";
-                                return null;
-                              },
-                              onSaved: (value) => guild = guild.copyWith(title: value),
+                          ? OurTextField(
+                              title: "نام کسب و کار",
+                              textFormField: TextFormField(
+                                style: defaultTextStyle(context).c(const Color(0xff2F3135)),
+                                controller: guildNameController,
+                                keyboardType: TextInputType.name,
+                                onTap: () => setState(() => fixRtlFlutterBug(guildNameController)),
+                                decoration: defaultInputDecoration(context).copyWith(
+                                  hintText: 'نام کسب و کار',
+                                  prefixIcon: const Icon(Icons.store, color: Color(0xffA0A8B1), size: 25.0),
+                                ),
+                                validator: (value) {
+                                  if (value == null) return null;
+                                  if (value.isEmpty) return "این فیلد الزامی است";
+                                  return null;
+                                },
+                                onSaved: (value) => guild = guild.copyWith(title: value),
+                              ),
                             )
                           : labelWidget(Icons.store, "نام کسب و کار", guildNameController.text),
                       SizedBox(height: paddingBetweenTextFiled),
                       isEditable || widget.isAddNew
-                          ? TextFormField(
-                              style: defaultTextStyle(context),
-                              controller: organController,
-                              keyboardType: TextInputType.name,
-                              onTap: () => setState(() => fixRtlFlutterBug(organController)),
-                              decoration: defaultInputDecoration().copyWith(labelText: "نام ارگان", prefixIcon: const Icon(Icons.store)),
-                              validator: (value) {
-                                if (value == null) return null;
-                                if (value.isEmpty) return "این فیلد الزامی است";
-                                return null;
-                              },
-                              onSaved: (value) => guild = guild.copyWith(organName: value),
+                          ? OurTextField(
+                              title: "نام ارگان",
+                              textFormField: TextFormField(
+                                style: defaultTextStyle(context).c(const Color(0xff2F3135)),
+                                controller: organController,
+                                keyboardType: TextInputType.name,
+                                onTap: () => setState(() => fixRtlFlutterBug(organController)),
+                                decoration: defaultInputDecoration(context).copyWith(
+                                  hintText: 'نام ارگان',
+                                  prefixIcon: const Icon(Icons.store, color: Color(0xffA0A8B1), size: 25.0),
+                                ),
+                                validator: (value) {
+                                  if (value == null) return null;
+                                  if (value.isEmpty) return "این فیلد الزامی است";
+                                  return null;
+                                },
+                                onSaved: (value) => guild = guild.copyWith(organName: value),
+                              ),
                             )
                           : labelWidget(Icons.store, "نام ارگان", organController.text),
                       SizedBox(height: paddingBetweenTextFiled),
                       isEditable || widget.isAddNew
-                          ? TextFormField(
-                              style: defaultTextStyle(context),
-                              decoration: defaultInputDecoration().copyWith(labelText: "شماره تلفن صنف", prefixIcon: const Icon(Icons.phone)),
-                              textAlign: TextAlign.end,
-                              keyboardType: TextInputType.number,
-                              controller: homeTelephoneController,
-                              validator: (value) {
-                                if (value == null) return null;
-                                if (value.isEmpty) return "وارد کردن شماره تلفن ضروری است";
-                                return null;
-                              },
-                              onSaved: (value) => guild = guild.copyWith(homeTelephone: value),
+                          ? OurTextField(
+                              title: "شماره تلفن صنف",
+                              textFormField: TextFormField(
+                                style: defaultTextStyle(context).c(const Color(0xff2F3135)),
+                                controller: homeTelephoneController,
+                                keyboardType: TextInputType.number,
+                                textAlign: TextAlign.end,
+                                decoration: defaultInputDecoration(context).copyWith(
+                                  hintText: 'شماره تلفن صنف',
+                                  contentPadding: const EdgeInsets.only(left: 8.0, right: 8.0, top: 20.0, bottom: 20.0),
+                                  prefixIcon: const Icon(Icons.phone, color: Color(0xffA0A8B1), size: 25.0),
+                                ),
+                                validator: (value) {
+                                  if (value == null) return null;
+                                  if (value.isEmpty) return "وارد کردن شماره تلفن ضروری است";
+                                  return null;
+                                },
+                                onSaved: (value) => guild = guild.copyWith(organName: value),
+                              ),
                             )
-                          : labelWidget(Icons.phone, "شماره تلفن", homeTelephoneController.text),
+                          : labelWidget(Icons.phone, "شماره تلفن صنف", homeTelephoneController.text),
                       SizedBox(height: paddingBetweenTextFiled),
                       isEditable || widget.isAddNew
                           ? OurItemPicker(
@@ -327,36 +350,45 @@ class _GuildFormWidgetState extends State<GuildFormWidget> {
                           : labelWidget(Icons.pin_drop_outlined, "شهر محل سکونت", cityController.text),
                       SizedBox(height: paddingBetweenTextFiled),
                       isEditable || widget.isAddNew
-                          ? TextFormField(
-                              style: defaultTextStyle(context),
-                              decoration: defaultInputDecoration().copyWith(labelText: "کد پستی", prefixIcon: const Icon(Icons.map)),
-                              textAlign: TextAlign.end,
-                              keyboardType: TextInputType.number,
-                              controller: postalCodeController,
-                              validator: (value) {
-                                if (value == null) return null;
-                                if (value.isEmpty) return "وارد کردن کد پستی ضروری است";
-                                if (value.length != 10) return "کد پستی باید ده رقم باشد";
-                                return null;
-                              },
-                              onSaved: (value) => guild = guild.copyWith(postalCode: value),
+                          ? OurTextField(
+                              title: "کد پستی",
+                              textFormField: TextFormField(
+                                style: defaultTextStyle(context).c(const Color(0xff2F3135)),
+                                controller: postalCodeController,
+                                keyboardType: TextInputType.number,
+                                textAlign: TextAlign.end,
+                                decoration: defaultInputDecoration(context).copyWith(
+                                  hintText: 'کد پستی',
+                                  contentPadding: const EdgeInsets.only(left: 8.0, right: 8.0, top: 20.0, bottom: 20.0),
+                                  prefixIcon: const Icon(Icons.map, color: Color(0xffA0A8B1), size: 25.0),
+                                ),
+                                validator: (value) {
+                                  if (value == null) return null;
+                                  if (value.isEmpty) return "وارد کردن کد پستی ضروری است";
+                                  if (value.length != 10) return "کد پستی باید ده رقم باشد";
+                                  return null;
+                                },
+                                onSaved: (value) => guild = guild.copyWith(postalCode: value),
+                              ),
                             )
                           : labelWidget(Icons.map, "کد پستی", postalCodeController.text),
                       SizedBox(height: paddingBetweenTextFiled),
                       isEditable || widget.isAddNew
-                          ? TextFormField(
-                              style: defaultTextStyle(context),
-                              controller: addressController,
-                              keyboardType: TextInputType.streetAddress,
-                              onTap: () => setState(() => fixRtlFlutterBug(addressController)),
-                              decoration: defaultInputDecoration().copyWith(
-                                labelText: "نشانی کامل",
-                                prefixIcon: const Icon(Icons.pin_drop_rounded),
-                                contentPadding: const EdgeInsets.symmetric(vertical: 16.0),
+                          ? OurTextField(
+                              title: "نشانی کامل",
+                              textFormField: TextFormField(
+                                style: defaultTextStyle(context).c(const Color(0xff2F3135)),
+                                controller: addressController,
+                                keyboardType: TextInputType.streetAddress,
+                                decoration: defaultInputDecoration(context).copyWith(
+                                  hintText: 'نشانی کامل',
+                                  contentPadding: const EdgeInsets.symmetric(vertical: 16.0),
+                                  prefixIcon: const Icon(Icons.pin_drop_outlined, color: Color(0xffA0A8B1), size: 25.0),
+                                ),
+                                onSaved: (value) => guild = guild.copyWith(address: value),
+                                minLines: 4,
+                                maxLines: 4,
                               ),
-                              onSaved: (value) => guild = guild.copyWith(address: value),
-                              minLines: 4,
-                              maxLines: 4,
                             )
                           : labelWidget(Icons.pin_drop_outlined, "نشانی کامل", addressController.text),
                       SizedBox(height: paddingBetweenTextFiled),
@@ -500,7 +532,7 @@ class _GuildFormWidgetState extends State<GuildFormWidget> {
                             controller: terminalController,
                             keyboardType: TextInputType.name,
                             textAlign: TextAlign.end,
-                            decoration: defaultInputDecoration().copyWith(labelText: "شماره ترمینال:"),
+                            decoration: defaultInputDecoration(context).copyWith(labelText: "شماره ترمینال:"),
                             validator: (value) => posValidatorCheck(value),
                             maxLines: 1,
                           ),
@@ -510,7 +542,7 @@ class _GuildFormWidgetState extends State<GuildFormWidget> {
                             controller: pspController,
                             keyboardType: TextInputType.name,
                             textAlign: TextAlign.end,
-                            decoration: defaultInputDecoration().copyWith(labelText: "psp:"),
+                            decoration: defaultInputDecoration(context).copyWith(labelText: "psp:"),
                             validator: (value) => posValidatorCheck(value),
                             maxLines: 1,
                           ),
@@ -520,7 +552,7 @@ class _GuildFormWidgetState extends State<GuildFormWidget> {
                             controller: accountController,
                             keyboardType: TextInputType.name,
                             textAlign: TextAlign.end,
-                            decoration: defaultInputDecoration().copyWith(labelText: "شماره حساب:"),
+                            decoration: defaultInputDecoration(context).copyWith(labelText: "شماره حساب:"),
                             validator: (value) => posValidatorCheck(value),
                             maxLines: 1,
                           ),
@@ -598,16 +630,7 @@ class _GuildFormWidgetState extends State<GuildFormWidget> {
     return null;
   }
 
-  InputDecoration defaultInputDecoration() {
-    return const InputDecoration().copyWith(
-      helperText: '',
-      helperMaxLines: 1,
-      enabledBorder: const OutlineInputBorder(
-        borderRadius: BorderRadius.all(Radius.circular(4)),
-        borderSide: BorderSide(width: 1.2, color: Color(0xd9848484)),
-      ),
-    );
-  }
+
 
   Widget labelWidget(IconData icon, String label, String value) {
     return Padding(
@@ -618,15 +641,9 @@ class _GuildFormWidgetState extends State<GuildFormWidget> {
         children: <Widget>[
           Row(
             children: [
-              Padding(
-                padding: const EdgeInsets.only(bottom: 4.0),
-                child: Icon(icon, color: Colors.grey),
-              ),
+              Padding(padding: const EdgeInsets.only(bottom: 4.0), child: Icon(icon, color: Colors.grey)),
               const SizedBox(width: 8.0),
-              Text(
-                "$label:",
-                style: defaultTextStyle(context, headline: 4).c(Colors.grey),
-              ),
+              Text("$label:", style: defaultTextStyle(context, headline: 4).c(Colors.grey)),
             ],
           ),
           const SizedBox(height: 0.0),
@@ -641,4 +658,23 @@ class _GuildFormWidgetState extends State<GuildFormWidget> {
       ),
     );
   }
+}
+
+InputDecoration defaultInputDecoration(BuildContext context) {
+  return const InputDecoration().copyWith(
+    helperText: '',
+    helperMaxLines: 1,
+    filled: true,
+    fillColor: const Color(0xffF2F4F5),
+    contentPadding: const EdgeInsets.symmetric(vertical: 20.0),
+    hintStyle: defaultTextStyle(context).c(const Color(0xffA0A8B1)),
+    enabledBorder: const OutlineInputBorder(
+      borderRadius: BorderRadius.all(Radius.circular(8)),
+      borderSide: BorderSide(width: 0.0, color: Colors.transparent),
+    ),
+    focusedBorder: const OutlineInputBorder(
+      borderRadius: BorderRadius.all(Radius.circular(8)),
+      borderSide: BorderSide(width: 1.3, color: Color(0xffA0A8B1)),
+    ),
+  );
 }

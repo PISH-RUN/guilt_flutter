@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:guilt_flutter/application/colors.dart';
 import 'package:guilt_flutter/application/guild/presentation/pages/guild_form_page.dart';
 import 'package:guilt_flutter/commons/text_style.dart';
+import 'package:guilt_flutter/commons/widgets/our_text_field.dart';
 
 class OurItemPicker extends StatefulWidget {
   final IconData? icon;
@@ -71,13 +72,27 @@ class _OurItemPickerState extends State<OurItemPicker> {
         );
       },
       child: AbsorbPointer(
-        child: TextField(
-          style: defaultTextStyle(context),
+          child: OurTextField(
+        title: widget.hint,
+        textFormField: TextFormField(
+          style: defaultTextStyle(context).c(const Color(0xff2F3135)),
           controller: widget.controller,
+          keyboardType: TextInputType.number,
           focusNode: focusNode,
-          decoration: InputDecoration(labelText: widget.hint, prefixIcon: widget.icon == null ? null : Icon(widget.icon), helperText: ''),
+          decoration: defaultInputDecoration(context).copyWith(
+            hintText: widget.hint,
+            contentPadding: const EdgeInsets.only(left: 8.0, right: 8.0, top: 20.0, bottom: 20.0),
+            prefixIcon: widget.icon == null ? null : Icon(widget.icon),
+            helperText: '',
+          ),
+          validator: (value) {
+            if (value == null) return null;
+            if (value.isEmpty) return "وارد کردن کد پستی ضروری است";
+            if (value.length != 10) return "کد پستی باید ده رقم باشد";
+            return null;
+          },
         ),
-      ),
+      )),
     );
   }
 }
@@ -151,8 +166,8 @@ class _ShowAlertDialogWithButtonsState extends State<ShowAlertDialogWithButtons>
                             maxLines: 1,
                             minLines: 1,
                             decoration: InputDecoration(
-                              enabledBorder: const OutlineInputBorder(borderSide: BorderSide(width: 0, color: Colors.transparent)),
-                              focusedBorder: const OutlineInputBorder(borderSide: BorderSide(width: 0, color: Colors.transparent)),
+                              // enabledBorder: const OutlineInputBorder(borderSide: BorderSide(width: 0, color: Colors.transparent)),
+                              // focusedBorder: const OutlineInputBorder(borderSide: BorderSide(width: 0, color: Colors.transparent)),
                               hintText: 'جستجو ...',
                               hintStyle: Theme.of(context).textTheme.headline4!.copyWith(color: Colors.grey),
                             ),

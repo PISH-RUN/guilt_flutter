@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:guilt_flutter/application/guild/domain/entities/pos.dart';
 import 'package:guilt_flutter/commons/text_style.dart';
+import 'package:guilt_flutter/commons/widgets/pair_text_row.dart';
 
 class PosItem extends StatelessWidget {
   final Pos pos;
@@ -23,9 +24,13 @@ class PosItem extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
-                  pairTextRow(context, "شماره ترمینال", pos.terminalId),
-                  pairTextRow(context, "psp", pos.psp),
-                  pairTextRow(context, "شماره حساب", pos.accountNumber),
+                  const SizedBox(height: 6.0),
+                  PairTextRow(title: "شماره ترمینال", value: pos.terminalId),
+                  const SizedBox(height: 12.0),
+                  PairTextRow(title: "psp", value: pos.psp),
+                  const SizedBox(height: 12.0),
+                  PairTextRow(title: "شماره حساب", value: pos.accountNumber),
+                  const SizedBox(height: 6.0),
                 ],
               ),
             ),
@@ -51,28 +56,6 @@ class PosItem extends StatelessWidget {
           ],
         ),
       ],
-    );
-  }
-
-  Widget pairTextRow(BuildContext context, String title, String value) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 6.0),
-      child: Row(
-        // mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Text(
-            "$title:",
-            textAlign: TextAlign.center,
-            style: defaultTextStyle(context, headline: 4).c(Colors.black54),
-          ),
-          const SizedBox(width: 8.0),
-          Text(
-            value,
-            textAlign: TextAlign.center,
-            style: defaultTextStyle(context, headline: 4),
-          ),
-        ],
-      ),
     );
   }
 }

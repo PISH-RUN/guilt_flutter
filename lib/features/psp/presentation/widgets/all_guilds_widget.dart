@@ -5,7 +5,6 @@ import 'package:guilt_flutter/commons/widgets/loading_widget.dart';
 import 'package:guilt_flutter/features/psp/domain/entities/guild_psp.dart';
 import 'package:guilt_flutter/features/psp/presentation/widgets/guild_item.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
-import 'package:logger/logger.dart';
 
 import '../manager/all_guilds_cubit.dart';
 import '../manager/all_guilds_state.dart';
@@ -13,8 +12,9 @@ import '../manager/all_guilds_state.dart';
 class AllGuildsListWidget extends StatefulWidget {
   final List<String> cities;
   final String searchText;
+  final bool isJustMine;
 
-  const AllGuildsListWidget({required this.cities, required this.searchText, Key? key}) : super(key: key);
+  const AllGuildsListWidget({required this.cities, required this.isJustMine, required this.searchText, Key? key}) : super(key: key);
 
   @override
   State<AllGuildsListWidget> createState() => _AllGuildsListWidgetState();
@@ -68,14 +68,12 @@ class _AllGuildsListWidgetState extends State<AllGuildsListWidget> {
                   ),
                 ],
               ),
-              loaded: (_) {
-                return PagedListView<int, GuildPsp>(
+              loaded: (_) => PagedListView<int, GuildPsp>(
                   pagingController: _pagingController,
                   builderDelegate: PagedChildBuilderDelegate<GuildPsp>(
                     itemBuilder: (context, item, index) => GuildItem(guild: item),
                   ),
-                );
-              },
+                ),
             );
           },
         ),
@@ -84,6 +82,6 @@ class _AllGuildsListWidgetState extends State<AllGuildsListWidget> {
   }
 
   void _retry(BuildContext context) {
-    BlocProvider.of<AllGuildsCubit>(context).initialPage(widget.cities, searchText: widget.searchText);
+    BlocProvider.of<AllGuildsCubit>(context).initialPage(widget.cities, widget.isJustMine, searchText: widget.searchText);
   }
 }

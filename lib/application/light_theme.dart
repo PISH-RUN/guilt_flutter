@@ -20,19 +20,19 @@ ThemeData lightThemeData() {
     textSelectionTheme: const TextSelectionThemeData(cursorColor: Colors.black87),
     inputDecorationTheme: const InputDecorationTheme(
       focusedBorder: OutlineInputBorder(
-        borderRadius: BorderRadius.all(Radius.circular(4)),
+        borderRadius: BorderRadius.all(Radius.circular(8)),
         borderSide: BorderSide(width: 2, color: AppColor.blue),
       ),
       enabledBorder: OutlineInputBorder(
-        borderRadius: BorderRadius.all(Radius.circular(4)),
+        borderRadius: BorderRadius.all(Radius.circular(8)),
         borderSide: BorderSide(width: 1.2, color: Color(0xd9848484)),
       ),
       errorBorder: OutlineInputBorder(
-        borderRadius: BorderRadius.all(Radius.circular(4)),
+        borderRadius: BorderRadius.all(Radius.circular(8)),
         borderSide: BorderSide(width: 1.5, color: Colors.red),
       ),
       focusedErrorBorder: OutlineInputBorder(
-        borderRadius: BorderRadius.all(Radius.circular(4)),
+        borderRadius: BorderRadius.all(Radius.circular(8)),
         borderSide: BorderSide(width: 2, color: Colors.red),
       ),
       labelStyle: TextStyle(fontSize: 16.0, color: Colors.grey),

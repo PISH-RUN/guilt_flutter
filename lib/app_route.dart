@@ -1,6 +1,7 @@
 import 'package:get_it/get_it.dart';
 import 'package:guilt_flutter/application/error_page.dart';
 import 'package:guilt_flutter/features/psp/presentation/pages/all_guild_list_page.dart';
+import 'package:guilt_flutter/features/psp/presentation/pages/psp_panel.dart';
 import 'package:qlevar_router/qlevar_router.dart';
 
 import 'application/faq.dart';
@@ -25,8 +26,18 @@ class AppRoutes {
       children: [
         QRoute(
           path: '/guildList',
-          builder: () => AllGuildsListPage.wrappedRoute(),
-          middleware: [AuthGuard()],
+          builder: () => PspPanel(currentIndexBottomNavigation: 0, child: AllGuildsListPage.wrappedRoute(false)),
+          middleware: [],
+        ),
+        QRoute(
+          path: '/edit/:token/:guildId((^[0-9]*\$))',
+          builder: () => GuildFormPage.wrappedRoute(isAddNew: false, isEditable: true),
+          middleware: [],
+        ),
+        QRoute(
+          path: '/myGuildList',
+          builder: () => PspPanel(currentIndexBottomNavigation: 0, child: AllGuildsListPage.wrappedRoute(true)),
+          middleware: [],
         ),
       ],
     ),

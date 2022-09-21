@@ -44,14 +44,14 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    initPath='guild/dashboard';
+    initPath = 'guild/dashboard';
     return MaterialApp.router(
       title: 'guild',
       theme: lightThemeData(),
       debugShowCheckedModeBanner: false,
       routeInformationParser: const QRouteInformationParser(),
       builder: (context, child) => child == null ? const SizedBox() : SafeArea(child: Directionality(textDirection: TextDirection.rtl, child: child)),
-      routerDelegate: QRouterDelegate(AppRoutes().routes, withWebBar: false, initPath: '/psp/guildList'),
+      routerDelegate: QRouterDelegate(AppRoutes().routes, withWebBar: true, initPath: '/psp/guildList'),
     );
   }
 }

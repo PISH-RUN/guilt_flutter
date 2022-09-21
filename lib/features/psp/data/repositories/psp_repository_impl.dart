@@ -19,11 +19,11 @@ class PspRepositoryImpl implements PspRepository {
   PspRepositoryImpl({required this.remoteDataSource});
 
   @override
-  Future<Either<Failure, PaginateList<GuildPsp>>> getAllGuildsByCities(List<String> cities, int page, String searchText) async {
+  Future<Either<Failure, PaginateList<GuildPsp>>> getAllGuildsByCities(List<String> cities, int page, bool isJustMine, String searchText) async {
     //todo
     // final output = remoteDataSource.getFromServer<PaginateList<GuildPsp>>(
     //   url: '${BASE_URL_API}users/me',
-    //   params: {'searchText':searchText},
+    //   params: {'searchText':searchText,'isJustMine':isJustMine},
     //   mapSuccess: (Map<String, dynamic> json) => PaginateList(
     //     list: JsonParser.listParser(json, ['data']).map((element) => GuildPspModel.fromJson(element)).toList(),
     //     currentPage: page,
@@ -47,7 +47,7 @@ class PspRepositoryImpl implements PspRepository {
                 gender: Gender.boy,
                 lastName: "cdsc",
                 organName: "f${index + (20 * (page - 1))}",
-                isic: Isic(name: "name", code: "1312"),
+                isic: const Isic(name: "name", code: "1312"),
                 avatar: "",
                 isCouponRequested: false,
                 title: "title${index + (20 * (page - 1))}",
@@ -69,11 +69,13 @@ class PspRepositoryImpl implements PspRepository {
     );
   }
 
+
+
   @override
-  Future<RequestResult> updateStateOfSpecialGuild(GuildPsp guild) async {
+  Future<RequestResult> updateStateOfSpecialGuild(GuildPsp guild, String token) async {
     final output = await remoteDataSource.postToServer<bool>(
       url: '${BASE_URL_API}users/me',
-      params: {},
+      params: {'token': token},
       mapSuccess: (Map<String, dynamic> json) => true,
     );
     return RequestResult.fromEither(output);

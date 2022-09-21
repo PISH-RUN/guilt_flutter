@@ -16,8 +16,10 @@ class AllGuildsCubit extends Cubit<AllGuildsState> {
   List<String> currentCities = [];
   List<GuildPsp> guildPspList = [];
   String currentSearchText = "";
+  bool isJustMine = false;
 
-  Future<void> initialPage(List<String> cities, {String? searchText}) async {
+  Future<void> initialPage(List<String> cities, bool isJustMine, {String? searchText}) async {
+    this.isJustMine = isJustMine;
     if (searchText != null) {
       currentPage = 1;
       guildPspList = [];
@@ -25,7 +27,7 @@ class AllGuildsCubit extends Cubit<AllGuildsState> {
     }
     currentCities = cities;
     emit(const AllGuildsState.loading());
-    final response = await _main.getAllGuildsByCities(cities, currentPage,  currentSearchText);
+    final response = await _main.getAllGuildsByCities(cities, currentPage, isJustMine, currentSearchText);
     response.fold((failure) => emit(AllGuildsState.error(failure: failure)), (guildList) {
       totalPage = guildList.totalPage;
       currentPage = guildList.currentPage;
@@ -40,6 +42,6 @@ class AllGuildsCubit extends Cubit<AllGuildsState> {
     }
     await Future.delayed(const Duration(seconds: 5));
     currentPage++;
-    initialPage(currentCities);
+    initialPage(currentCities, isJustMine);
   }
 }

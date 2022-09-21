@@ -7,27 +7,33 @@ import 'package:guilt_flutter/commons/text_style.dart';
 import 'package:guilt_flutter/commons/utils.dart';
 import 'package:guilt_flutter/features/psp/presentation/manager/update_state_of_guild_cubit.dart';
 import 'package:guilt_flutter/features/psp/presentation/widgets/all_guilds_widget.dart';
+import 'package:multi_select_flutter/multi_select_flutter.dart';
+
 import '../manager/all_guilds_cubit.dart';
 
 class AllGuildsListPage extends StatefulWidget {
-  const AllGuildsListPage({Key? key}) : super(key: key);
+  final bool isJustMine;
+
+  const AllGuildsListPage({required this.isJustMine, Key? key}) : super(key: key);
 
   @override
   State<AllGuildsListPage> createState() => _AllGuildsListPageState();
 
-  static Widget wrappedRoute() {
+  static Widget wrappedRoute(bool isJustMine) {
     return MultiBlocProvider(
       providers: [
         BlocProvider(create: (ctx) => GetIt.instance<AllGuildsCubit>()),
         BlocProvider(create: (ctx) => GetIt.instance<UpdateStateOfGuildCubit>()),
       ],
-      child: const AllGuildsListPage(),
+      child: AllGuildsListPage(isJustMine: isJustMine),
     );
   }
 }
 
 class _AllGuildsListPageState extends State<AllGuildsListPage> {
   TextEditingController controller = TextEditingController(text: '');
+
+  List<String> selectedCity = [];
 
   @override
   Widget build(BuildContext context) {
@@ -67,9 +73,70 @@ class _AllGuildsListPageState extends State<AllGuildsListPage> {
               ],
             ),
           ),
-          Expanded(child: AllGuildsListWidget(cities: ["یاسوج"], searchText: controller.text)),
+          Container(
+            margin: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              shape: BoxShape.rectangle,
+              borderRadius: const BorderRadius.all(Radius.circular(9)),
+              boxShadow: simpleShadow(),
+            ),
+            padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 2.0),
+            child: GestureDetector(
+              onTap: () => _showMultiSelect(context),
+              child: AbsorbPointer(
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Row(
+                    children: [
+                      const Icon(Icons.location_city, size: 25.0),
+                      const SizedBox(width: 10.0),
+                      Text(selectedCity.isEmpty ? "شهری انتخاب نشده است" : "${selectedCity.length} شهر انتخاب شده"),
+                      const Spacer(),
+                      const RotatedBox(quarterTurns: 1, child: Icon(Icons.arrow_back_ios_rounded, size: 15.0)),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ),
+          Expanded(
+              child: AllGuildsListWidget(
+                  cities: selectedCity.isNotEmpty ? selectedCity : ["یاسوج"], isJustMine: widget.isJustMine, searchText: controller.text)),
         ],
       )),
+    );
+  }
+
+  void _showMultiSelect(BuildContext context) async {
+    final cities = await getCitiesOfOneProvince(context, 'یزد');
+    await showModalBottomSheet(
+      isScrollControlled: true,
+      context: context,
+      shape: const RoundedRectangleBorder(borderRadius: BorderRadius.only(topRight: Radius.circular(18.0),topLeft: Radius.circular(18.0))),
+      builder: (ctx) {
+        return Padding(
+          padding: const EdgeInsets.only(bottom: 8.0),
+          child: MultiSelectBottomSheet(
+            initialValue: selectedCity,
+            searchable: true,
+            itemsTextStyle: defaultTextStyle(context),
+            selectedItemsTextStyle: defaultTextStyle(context),
+            cancelText: Text("لغو", style: defaultTextStyle(context, headline: 4).c(AppColor.blue)),
+            searchHint: "جستجو",
+            confirmText: Text("تایید", style: defaultTextStyle(context, headline: 4).c(AppColor.blue)),
+            title: Text("انتخاب شهر", style: defaultTextStyle(context, headline: 4)),
+            items: cities.map((e) => MultiSelectItem(e, e)).toList(),
+            onConfirm: (values) {
+              selectedCity = values.map((e) => e.toString()).toList();
+              setState(() {});
+            },
+            maxChildSize: 0.7,
+            minChildSize: 0.4,
+            initialChildSize: 0.4,
+          ),
+        );
+      },
     );
   }
 

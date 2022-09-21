@@ -9,6 +9,7 @@ import 'package:guilt_flutter/commons/widgets/icon_name_widget.dart';
 import 'package:guilt_flutter/commons/widgets/our_button.dart';
 import 'package:guilt_flutter/features/login/presentation/manager/login_state.dart';
 import 'package:guilt_flutter/features/login/presentation/manager/register_cubit.dart';
+import 'package:logger/logger.dart';
 import 'package:qlevar_router/qlevar_router.dart';
 
 class RegisterPage extends StatefulWidget {
@@ -32,7 +33,7 @@ class _RegisterPageState extends State<RegisterPage> {
   void initState() {
     final phoneNumber = QR.params['phoneNumber'].toString();
     final nationalCode = QR.params['nationalCode'].toString();
-    if (nationalCode.isNotEmpty) {
+    if (QR.params['nationalCode']!=null) {
       isLockedTextFields = true;
       phoneController.text = phoneNumber;
       nationalCodeController.text = nationalCode;
