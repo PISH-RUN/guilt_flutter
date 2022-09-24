@@ -1,5 +1,6 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:guilt_flutter/features/psp/domain/entities/guild_psp.dart';
+import 'package:logger/logger.dart';
 import 'all_guilds_state.dart';
 import '../../domain/use_cases/psp_main.dart';
 
@@ -14,7 +15,7 @@ class AllGuildsCubit extends Cubit<AllGuildsState> {
   int currentPage = 1;
   int totalPage = 100;
   List<String> currentCities = [];
-  List<GuildPsp> guildPspList = [];
+  static List<GuildPsp> guildPspList = [];
   String currentSearchText = "";
   bool isJustMine = false;
 
@@ -34,6 +35,11 @@ class AllGuildsCubit extends Cubit<AllGuildsState> {
       guildPspList = [...guildPspList, ...guildList.list];
       emit(AllGuildsState.loaded(guildList: guildList.copyWith(list: guildList.list)));
     });
+  }
+
+  GuildPsp getGuildBuId(int guildId) {
+    Logger().i("info=> ${guildPspList.length}       ${guildId} ");
+    return guildPspList.firstWhere((element) => element.guild.id == guildId);
   }
 
   Future<void> getMoreItem() async {

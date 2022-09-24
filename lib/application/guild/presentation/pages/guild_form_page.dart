@@ -74,8 +74,9 @@ class GuildFormWidget extends StatefulWidget {
   final Guild guild;
   final bool isAddNew;
   final bool isEditable;
+  final bool isPsp;
 
-  const GuildFormWidget({required this.guild, required this.isAddNew, required this.isEditable, Key? key}) : super(key: key);
+  const GuildFormWidget({required this.guild, required this.isAddNew, required this.isEditable, this.isPsp = false, Key? key}) : super(key: key);
 
   @override
   _GuildFormWidgetState createState() => _GuildFormWidgetState();
@@ -121,60 +122,60 @@ class _GuildFormWidgetState extends State<GuildFormWidget> {
       onWillPop: () async {
         return false;
       },
-      child: Scaffold(
-        body: Stack(
-          children: [
-            Form(
-              key: formKey,
-              child: Column(
+      child: widget.isPsp
+          ? formWidget(context)
+          : Scaffold(
+              body: Stack(
                 children: [
-                  Expanded(
-                    child: SingleChildScrollView(
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          const SizedBox(height: 40.0),
-                          baseInformationWidget(context),
-                          const SizedBox(height: 10.0),
-                          if (!widget.isAddNew && !isEditable)
-                            guild.poses.isEmpty
-                                ? Padding(
-                                    padding: const EdgeInsets.symmetric(horizontal: 20.0),
-                                    child: addPoseButton(context),
-                                  )
-                                : posesList(context),
-                          const SizedBox(height: 20.0),
-                        ],
-                      ),
-                    ),
-                  ),
+                  formWidget(context),
                 ],
               ),
+              floatingActionButton: isEditable || widget.isAddNew
+                  ? FloatingActionButton(
+                      onPressed: () async {
+                        if (!formKey.currentState!.validate()) {
+                          return;
+                        }
+                        isLoading = true;
+                        setState(() {});
+                        formKey.currentState!.save();
+                        widget.isAddNew
+                            ? BlocProvider.of<GuildCubit>(context).addGuild(guild)
+                            : await BlocProvider.of<GuildCubit>(context).saveGuild(guild);
+                        if (isEditable) {
+                          isLoading = false;
+                          QR.navigator.replaceAll(initPath);
+                        }
+                      },
+                      backgroundColor: Theme.of(context).primaryColor,
+                      foregroundColor: Colors.white,
+                      child: isLoading ? LoadingWidget(size: 16, color: Colors.white) : const Icon(Icons.save),
+                    )
+                  : null,
             ),
+    );
+  }
+
+  Form formWidget(BuildContext context) {
+    return Form(
+      key: formKey,
+      child: SingleChildScrollView(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const SizedBox(height: 40.0),
+            baseInformationWidget(context),
+            const SizedBox(height: 10.0),
+            if (!widget.isAddNew && !isEditable)
+              guild.poses.isEmpty
+                  ? Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                      child: addPoseButton(context),
+                    )
+                  : posesList(context),
+            const SizedBox(height: 10.0),
           ],
         ),
-        floatingActionButton: isEditable || widget.isAddNew
-            ? FloatingActionButton(
-                onPressed: () async {
-                  if (!formKey.currentState!.validate()) {
-                    return;
-                  }
-                  isLoading = true;
-                  setState(() {});
-                  formKey.currentState!.save();
-                  widget.isAddNew
-                      ? BlocProvider.of<GuildCubit>(context).addGuild(guild)
-                      : await BlocProvider.of<GuildCubit>(context).saveGuild(guild);
-                  if (isEditable) {
-                    isLoading = false;
-                    QR.navigator.replaceAll(initPath);
-                  }
-                },
-                backgroundColor: Theme.of(context).primaryColor,
-                foregroundColor: Colors.white,
-                child: isLoading ? LoadingWidget(size: 16, color: Colors.white) : const Icon(Icons.save),
-              )
-            : null,
       ),
     );
   }
@@ -629,8 +630,6 @@ class _GuildFormWidgetState extends State<GuildFormWidget> {
     if (value.isEmpty) return 'این فیلد خالی است';
     return null;
   }
-
-
 
   Widget labelWidget(IconData icon, String label, String value) {
     return Padding(

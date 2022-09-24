@@ -1,6 +1,7 @@
 import 'package:get_it/get_it.dart';
 import 'package:guilt_flutter/application/error_page.dart';
 import 'package:guilt_flutter/features/psp/presentation/pages/all_guild_list_page.dart';
+import 'package:guilt_flutter/features/psp/presentation/pages/psp_form_page.dart';
 import 'package:guilt_flutter/features/psp/presentation/pages/psp_panel.dart';
 import 'package:qlevar_router/qlevar_router.dart';
 
@@ -31,7 +32,7 @@ class AppRoutes {
         ),
         QRoute(
           path: '/edit/:token/:guildId((^[0-9]*\$))',
-          builder: () => GuildFormPage.wrappedRoute(isAddNew: false, isEditable: true),
+          builder: () => PspFormPage.wrappedRoute(),
           middleware: [],
         ),
         QRoute(

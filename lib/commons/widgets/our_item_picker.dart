@@ -10,21 +10,19 @@ class OurItemPicker extends StatefulWidget {
   final String currentText;
   final TextEditingController controller;
   final List<String>? items;
-  final bool isColorBlue;
   final void Function(String value)? onChanged;
   final Future<List<String>> Function()? onFillParams;
 
-  const OurItemPicker(
-      {required this.hint,
-      this.icon,
-      this.isColorBlue = false,
-      this.onChanged,
-      this.onFillParams,
-      required this.controller,
-      this.currentText = "",
-      required this.items,
-      Key? key})
-      : super(key: key);
+  const OurItemPicker({
+    required this.hint,
+    this.icon,
+    this.onChanged,
+    this.onFillParams,
+    required this.controller,
+    this.currentText = "",
+    required this.items,
+    Key? key,
+  }) : super(key: key);
 
   @override
   State<OurItemPicker> createState() => _OurItemPickerState();
@@ -64,7 +62,6 @@ class _OurItemPickerState extends State<OurItemPicker> {
                 onChanged: widget.onChanged,
                 currentText: widget.currentText,
                 icon: widget.icon,
-                isColorBlue: widget.isColorBlue,
                 onFillParams: widget.onFillParams,
               ),
             );
@@ -86,9 +83,12 @@ class _OurItemPickerState extends State<OurItemPicker> {
             helperText: '',
           ),
           validator: (value) {
-            if (value == null) return null;
-            if (value.isEmpty) return "وارد کردن کد پستی ضروری است";
-            if (value.length != 10) return "کد پستی باید ده رقم باشد";
+            if (value == null) {
+              return null;
+            }
+            if (value.isEmpty) {
+              return "این فیلد نباید خالی باشد";
+            }
             return null;
           },
         ),
