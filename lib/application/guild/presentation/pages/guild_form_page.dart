@@ -318,8 +318,10 @@ class _GuildFormWidgetState extends State<GuildFormWidget> {
                             )
                           : labelWidget(Icons.store, "رسته صنفی", isic),
                       SizedBox(height: paddingBetweenTextFiled),
-                      isEditable || widget.isAddNew
-                          ? OurItemPicker(
+                      Row(
+                        children: <Widget>[
+                          Expanded(
+                            child: OurItemPicker(
                               hint: "استان محل سکونت",
                               icon: Icons.pin_drop_outlined,
                               items: null,
@@ -330,11 +332,11 @@ class _GuildFormWidgetState extends State<GuildFormWidget> {
                               },
                               currentText: provinceController.text,
                               controller: provinceController,
-                            )
-                          : labelWidget(Icons.pin_drop_outlined, "استان محل سکونت", provinceController.text),
-                      SizedBox(height: paddingBetweenTextFiled),
-                      isEditable || widget.isAddNew
-                          ? OurItemPicker(
+                            ),
+                          ),
+                          SizedBox(height: paddingBetweenTextFiled),
+                          Expanded(
+                            child: OurItemPicker(
                               key: UniqueKey(),
                               hint: "شهر محل سکونت",
                               icon: Icons.pin_drop_outlined,
@@ -347,32 +349,36 @@ class _GuildFormWidgetState extends State<GuildFormWidget> {
                               onFillParams: () => getCitiesOfOneProvince(context, provinceController.text.trim()),
                               currentText: cityController.text,
                               controller: cityController,
-                            )
-                          : labelWidget(Icons.pin_drop_outlined, "شهر محل سکونت", cityController.text),
+                            ),
+                          ),
+                        ],
+                      ),
                       SizedBox(height: paddingBetweenTextFiled),
-                      isEditable || widget.isAddNew
-                          ? OurTextField(
-                              title: "کد پستی",
-                              textFormField: TextFormField(
-                                style: defaultTextStyle(context).c(const Color(0xff2F3135)),
-                                controller: postalCodeController,
-                                keyboardType: TextInputType.number,
-                                textAlign: TextAlign.end,
-                                decoration: defaultInputDecoration(context).copyWith(
-                                  hintText: 'کد پستی',
-                                  contentPadding: const EdgeInsets.only(left: 8.0, right: 8.0, top: 20.0, bottom: 20.0),
-                                  prefixIcon: const Icon(Icons.map, color: Color(0xffA0A8B1), size: 25.0),
+                      Expanded(
+                        child: isEditable || widget.isAddNew
+                            ? OurTextField(
+                                title: "کد پستی",
+                                textFormField: TextFormField(
+                                  style: defaultTextStyle(context).c(const Color(0xff2F3135)),
+                                  controller: postalCodeController,
+                                  keyboardType: TextInputType.number,
+                                  textAlign: TextAlign.end,
+                                  decoration: defaultInputDecoration(context).copyWith(
+                                    hintText: 'کد پستی',
+                                    contentPadding: const EdgeInsets.only(left: 8.0, right: 8.0, top: 20.0, bottom: 20.0),
+                                    prefixIcon: const Icon(Icons.map, color: Color(0xffA0A8B1), size: 25.0),
+                                  ),
+                                  validator: (value) {
+                                    if (value == null) return null;
+                                    if (value.isEmpty) return "وارد کردن کد پستی ضروری است";
+                                    if (value.length != 10) return "کد پستی باید ده رقم باشد";
+                                    return null;
+                                  },
+                                  onSaved: (value) => guild = guild.copyWith(postalCode: value),
                                 ),
-                                validator: (value) {
-                                  if (value == null) return null;
-                                  if (value.isEmpty) return "وارد کردن کد پستی ضروری است";
-                                  if (value.length != 10) return "کد پستی باید ده رقم باشد";
-                                  return null;
-                                },
-                                onSaved: (value) => guild = guild.copyWith(postalCode: value),
-                              ),
-                            )
-                          : labelWidget(Icons.map, "کد پستی", postalCodeController.text),
+                              )
+                            : labelWidget(Icons.map, "کد پستی", postalCodeController.text),
+                      ),
                       SizedBox(height: paddingBetweenTextFiled),
                       isEditable || widget.isAddNew
                           ? OurTextField(
