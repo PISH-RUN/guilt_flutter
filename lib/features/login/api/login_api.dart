@@ -1,4 +1,5 @@
 import 'package:get_storage/get_storage.dart';
+import 'package:guilt_flutter/features/login/domain/entities/user_data.dart';
 
 import '../domain/repositories/login_repository.dart';
 
@@ -7,9 +8,7 @@ abstract class LoginApi {
 
   Future<void> signOut();
 
-  String getUserId();
-
-  String getUserPhone();
+  UserData getUserData();
 }
 
 class LoginApiImpl extends LoginApi {
@@ -18,13 +17,10 @@ class LoginApiImpl extends LoginApi {
   LoginApiImpl(this.loginRepository);
 
   @override
-  bool isUserRegistered() => loginRepository.getToken().isNotEmpty;
+  bool isUserRegistered() => loginRepository.getUserData().token.isNotEmpty;
 
   @override
-  String getUserId() => loginRepository.getUserId();
-
-  @override
-  String getUserPhone() => loginRepository.getUserPhone();
+  UserData getUserData() => loginRepository.getUserData();
 
   @override
   Future<void> signOut() async => await GetStorage().erase();

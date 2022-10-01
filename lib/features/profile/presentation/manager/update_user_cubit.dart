@@ -14,7 +14,7 @@ class UpdateUserCubit extends Cubit<UpdateUserState> {
 
   Future<void> updateUserInfo(UserInfo user) async {
     emit(const UpdateUserState.loading());
-    final response = await _main.updateUserInfo(user.nationalCode, user);
+    final response = await _main.updateUserInfo(user);
     response.fold(
       (failure) => emit(UpdateUserState.error(failure: failure)),
       () => emit(const UpdateUserState.success()),
@@ -23,7 +23,7 @@ class UpdateUserCubit extends Cubit<UpdateUserState> {
 
   Future<void> changeAvatar(UserInfo user, XFile avatar) async {
     emit(const UpdateUserState.loading());
-    final response = await _main.changeAvatar(user.nationalCode, avatar);
+    final response = await _main.changeAvatar( avatar);
     response.fold(
       (failure) => emit(UpdateUserState.error(failure: failure)),
       () => emit(const UpdateUserState.success()),

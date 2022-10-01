@@ -98,7 +98,7 @@ class AuthGuard extends QMiddleware {
 class ProfileGuard extends QMiddleware {
   @override
   Future<String?> redirectGuard(String path) async {
-    final response = await GetIt.instance<ProfileApi>().hasProfile(nationalCode: GetIt.instance<LoginApi>().getUserId());
+    final response = await GetIt.instance<ProfileApi>().hasProfile(nationalCode: GetIt.instance<LoginApi>().getUserData().nationalCode);
     return response.fold(
       (l) => l.failureType == FailureType.authentication ? '/register' : '/error',
       (hasProfile) => hasProfile ? null : '/signIn/profile',

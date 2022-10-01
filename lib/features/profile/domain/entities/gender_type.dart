@@ -1,8 +1,9 @@
 enum Gender {
-  boy("آقا"),
-  girl("خانم");
+  boy("آقا", 1),
+  girl("خانم", 0);
 
   final String persianName;
+  final int code;
 
-  const Gender(this.persianName);
+  const Gender(this.persianName, this.code);
 }

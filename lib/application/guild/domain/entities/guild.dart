@@ -90,8 +90,8 @@ class Guild extends Equatable {
 
   factory Guild.fromEmpty() {
     return Guild(
-      nationalCode: GetIt.instance<LoginApi>().getUserId(),
-      phoneNumber: GetIt.instance<LoginApi>().getUserPhone(),
+      nationalCode: GetIt.instance<LoginApi>().getUserData().nationalCode,
+      phoneNumber: GetIt.instance<LoginApi>().getUserData().phoneNumber,
       firstName: '',
       lastName: '',
       city: '',
@@ -110,7 +110,6 @@ class Guild extends Equatable {
       id: 0,
     );
   }
-
 
   @override
   String toString() {

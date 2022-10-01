@@ -7,7 +7,7 @@ import 'package:image_picker/image_picker.dart';
 abstract class ProfileRepository {
   Future<Either<Failure, UserInfo>> getProfile(String nationalCode);
 
-  Future<RequestResult> updateProfile(String nationalCode, UserInfo userInfo);
+  Future<RequestResult> updateProfile( UserInfo userInfo);
 
-  Future<RequestResult> changeAvatar(String nationalCode, XFile avatar);
+  Future<RequestResult> changeAvatar( XFile avatar);
 }

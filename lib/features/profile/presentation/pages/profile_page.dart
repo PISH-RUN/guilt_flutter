@@ -3,8 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
 import 'package:get_storage/get_storage.dart';
+import 'package:guilt_flutter/commons/widgets/our_text_field.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:logger/logger.dart';
+import 'package:persian_datetime_picker/persian_datetime_picker.dart';
 import 'package:qlevar_router/qlevar_router.dart';
 import 'package:toggle_switch/toggle_switch.dart';
 
@@ -24,6 +25,21 @@ import '../manager/get_user_cubit.dart';
 import '../manager/get_user_state.dart';
 import '../manager/update_user_cubit.dart';
 import '../manager/update_user_state.dart';
+
+final List<String> monthNames = [
+  "فروردین",
+  "اردیبهشت",
+  "خرداد",
+  "تیر",
+  "مرداد",
+  "شهریور",
+  "مهر",
+  "آبان",
+  "آذر",
+  "دی",
+  "بهمن",
+  "اسفند",
+];
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({Key? key}) : super(key: key);
@@ -66,7 +82,7 @@ class _ProfilePageState extends State<ProfilePage> {
           },
           loaded: (userInfo) {
             user = userInfo;
-            return FormWidget(user: user, isEditable: false);
+            return FormWidget(user: user, isEditable: QR.currentPath.contains('signIn/profile'));
           },
         );
       },
@@ -87,6 +103,7 @@ class FormWidget extends StatefulWidget {
 class _FormWidgetState extends State<FormWidget> {
   late TextEditingController firstNameController;
   late TextEditingController lastNameController;
+  late TextEditingController fatherNameController;
   late TextEditingController phoneController;
   late TextEditingController nationalCodeController;
   late Gender gender;
@@ -147,8 +164,9 @@ class _FormWidgetState extends State<FormWidget> {
   void initialTextEditingController() {
     firstNameController = TextEditingController(text: widget.user.firstName);
     lastNameController = TextEditingController(text: widget.user.lastName);
-    phoneController = TextEditingController(text: widget.user.phoneNumber);
-    nationalCodeController = TextEditingController(text: widget.user.nationalCode);
+    fatherNameController = TextEditingController(text: widget.user.fatherName);
+    phoneController = TextEditingController(text: GetIt.instance<LoginApi>().getUserData().phoneNumber);
+    nationalCodeController = TextEditingController(text: GetIt.instance<LoginApi>().getUserData().nationalCode);
     gender = widget.user.gender;
   }
 
@@ -178,7 +196,6 @@ class _FormWidgetState extends State<FormWidget> {
   }
 
   Widget avatarWidget(BuildContext context) {
-    Logger().i("info=> ${user.avatar} ");
     return GestureDetector(
       onTap: () async {
         final ImagePicker picker = ImagePicker();
@@ -203,7 +220,7 @@ class _FormWidgetState extends State<FormWidget> {
                           borderRadius: const BorderRadius.all(Radius.circular(100)),
                           child: CachedNetworkImage(
                             imageUrl: user.avatar!,
-                            placeholder: (_, __) => LoadingWidget(size: 50,color: AppColor.blue),
+                            placeholder: (_, __) => LoadingWidget(size: 50, color: AppColor.blue),
                             errorWidget: (_, __, ___) => const Text("something error"),
                             fit: BoxFit.cover,
                           ),
@@ -269,71 +286,160 @@ class _FormWidgetState extends State<FormWidget> {
                       mainAxisSize: MainAxisSize.min,
                       children: <Widget>[
                         isEditable
-                            ? TextFormField(
-                                style: defaultTextStyle(context),
-                                controller: firstNameController,
-                                keyboardType: TextInputType.name,
-                                onTap: () => setState(() => fixRtlFlutterBug(firstNameController)),
-                                decoration: defaultInputDecoration().copyWith(labelText: "نام", prefixIcon: const Icon(Icons.person_outline)),
-                                validator: (value) {
-                                  if (value == null) return null;
-                                  if (value.isEmpty) return "این فیلد الزامی است";
-                                  if (value.length < 2) return "نام کوتاه است";
-                                  return null;
-                                },
-                                onSaved: (value) => user = user.copyWith(firstName: value),
+                            ? OurTextField(
+                                title: "نام",
+                                textFormField: TextFormField(
+                                  style: defaultTextStyle(context).c(const Color(0xff2F3135)),
+                                  controller: firstNameController,
+                                  keyboardType: TextInputType.name,
+                                  onTap: () => setState(() => fixRtlFlutterBug(firstNameController)),
+                                  decoration: defaultInputDecoration(context).copyWith(
+                                    hintText: "نام",
+                                    prefixIcon: const Icon(Icons.person_outline, color: Color(0xffA0A8B1), size: 25.0),
+                                  ),
+                                  validator: (value) {
+                                    if (value == null) return null;
+                                    if (value.isEmpty) return "این فیلد الزامی است";
+                                    if (value.length < 2) return "نام کوتاه است";
+                                    return null;
+                                  },
+                                  onSaved: (value) => user = user.copyWith(firstName: value),
+                                ),
                               )
                             : labelWidget(Icons.person_outline, "نام", firstNameController.text),
                         SizedBox(height: paddingBetweenTextFiled),
                         isEditable
-                            ? TextFormField(
-                                style: defaultTextStyle(context),
-                                controller: lastNameController,
-                                keyboardType: TextInputType.name,
-                                onTap: () => setState(() => fixRtlFlutterBug(lastNameController)),
-                                decoration:
-                                    defaultInputDecoration().copyWith(labelText: "نام خانوادگی", prefixIcon: const Icon(Icons.person_outline)),
-                                validator: (value) {
-                                  if (value == null) return null;
-                                  if (value.isEmpty) return "این فیلد الزامی است";
-                                  if (value.length < 2) return "نام خانوادگی کوتاه است";
-                                  return null;
-                                },
-                                onSaved: (value) => user = user.copyWith(lastName: value),
+                            ? OurTextField(
+                                title: "نام خانوادگی",
+                                textFormField: TextFormField(
+                                  style: defaultTextStyle(context).c(const Color(0xff2F3135)),
+                                  controller: lastNameController,
+                                  keyboardType: TextInputType.name,
+                                  onTap: () => setState(() => fixRtlFlutterBug(lastNameController)),
+                                  decoration: defaultInputDecoration(context).copyWith(
+                                    hintText: "نام خانوادگی",
+                                    prefixIcon: const Icon(Icons.person_outline, color: Color(0xffA0A8B1), size: 25.0),
+                                  ),
+                                  validator: (value) {
+                                    if (value == null) return null;
+                                    if (value.isEmpty) return "این فیلد الزامی است";
+                                    if (value.length < 2) return "نام خانوادگی کوتاه است";
+                                    return null;
+                                  },
+                                  onSaved: (value) => user = user.copyWith(lastName: value),
+                                ),
                               )
                             : labelWidget(Icons.person_outline, "نام خانوادگی", lastNameController.text),
                         SizedBox(height: paddingBetweenTextFiled),
                         isEditable
-                            ? TextFormField(
-                                style: defaultTextStyle(context),
-                                decoration: defaultInputDecoration().copyWith(
-                                  labelText: "شماره تلفن",
-                                  prefixIcon: const Icon(Icons.phone),
+                            ? OurTextField(
+                                title: "نام پدر",
+                                textFormField: TextFormField(
+                                  style: defaultTextStyle(context).c(const Color(0xff2F3135)),
+                                  controller: fatherNameController,
+                                  keyboardType: TextInputType.name,
+                                  onTap: () => setState(() => fixRtlFlutterBug(fatherNameController)),
+                                  decoration: defaultInputDecoration(context).copyWith(
+                                    hintText: "نام پدر",
+                                    prefixIcon: const Icon(Icons.person_outline, color: Color(0xffA0A8B1), size: 25.0),
+                                  ),
+                                  validator: (value) {
+                                    if (value == null) return null;
+                                    if (value.isEmpty) return "این فیلد الزامی است";
+                                    if (value.length < 2) return "نام پدر کوتاه است";
+                                    return null;
+                                  },
+                                  onSaved: (value) => user = user.copyWith(fatherName: value),
                                 ),
-                                textAlign: TextAlign.end,
-                                keyboardType: TextInputType.number,
-                                controller: phoneController,
-                                validator: (value) {
-                                  if (value == null) return null;
-                                  if (value.isEmpty) return "وارد کردن شماره تلفن ضروری است";
-                                  if (!validatePhoneNumber(value)) return "شماره تلفن معتبر نیست";
-                                  return null;
-                                },
-                                onSaved: (value) => user = user.copyWith(phoneNumber: value),
                               )
-                            : labelWidget(Icons.phone, "شماره تلفن", phoneController.text),
+                            : labelWidget(Icons.person_outline, "نام پدر", fatherNameController.text),
+                        isEditable
+                            ? Column(
+                                mainAxisSize: MainAxisSize.min,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  const SizedBox(height: 12.0),
+                                  Text(
+                                    "تاریخ تولد",
+                                    style: defaultTextStyle(context, headline: 5),
+                                  ),
+                                  const SizedBox(height: 8.0),
+                                  GestureDetector(
+                                    onTap: () async {
+                                      Jalali? picked = await showPersianDatePicker(
+                                        context: context,
+                                        initialDate: Jalali.now(),
+                                        firstDate: Jalali(1385, 8),
+                                        lastDate: Jalali(1450, 9),
+                                      );
+                                      if (picked == null) return;
+                                      user = user.copyWith(birthDate: picked);
+                                      setState(() {});
+                                    },
+                                    child: AbsorbPointer(
+                                      child: Container(
+                                        width: double.infinity,
+                                        height: 60,
+                                        decoration: const BoxDecoration(
+                                          color: Color(0xffF2F4F5),
+                                          shape: BoxShape.rectangle,
+                                          borderRadius: BorderRadius.all(Radius.circular(8)),
+                                        ),
+                                        child: Row(
+                                          children: <Widget>[
+                                            const SizedBox(width: 10.0),
+                                            const Icon(Icons.calendar_month, color: Color(0xffA0A8B1), size: 25.0),
+                                            const SizedBox(width: 10.0),
+                                            user.birthDate == null
+                                                ? Text(
+                                                    "تاریخ تولد",
+                                                    style:
+                                                        defaultTextStyle(context, headline: 4).c(user.birthDate == null ? Colors.grey : Colors.black),
+                                                  )
+                                                : Row(
+                                                    children: [
+                                                      Text(
+                                                        user.birthDate!.day.toString(),
+                                                        style: defaultTextStyle(context, headline: 4)
+                                                            .c(user.birthDate == null ? Colors.grey : Colors.black),
+                                                      ),
+                                                      const SizedBox(width: 10.0),
+                                                      Text(
+                                                        monthNames[user.birthDate!.month - 1],
+                                                        style: defaultTextStyle(context, headline: 4)
+                                                            .c(user.birthDate == null ? Colors.grey : Colors.black),
+                                                      ),
+                                                      const SizedBox(width: 10.0),
+                                                      Text(
+                                                        user.birthDate!.year.toString(),
+                                                        style: defaultTextStyle(context, headline: 4)
+                                                            .c(user.birthDate == null ? Colors.grey : Colors.black),
+                                                      ),
+                                                    ],
+                                                  ),
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              )
+                            : labelWidgetRow(Icons.calendar_month, "تاریخ تولد",
+                                [user.birthDate!.day.toString(), monthNames[user.birthDate!.month - 1], user.birthDate!.year.toString()]),
                         SizedBox(height: paddingBetweenTextFiled),
                         isEditable ? const SizedBox() : labelWidget(Icons.pin, "کد ملی", nationalCodeController.text),
                         SizedBox(height: paddingBetweenTextFiled),
+                        isEditable ? const SizedBox() : labelWidget(Icons.pin, "شماره تلفن", phoneController.text),
+                        SizedBox(height: paddingBetweenTextFiled),
                         isEditable
                             ? ToggleSwitch(
-                                minWidth: 120,
+                                minWidth: 130,
                                 minHeight: 55.0,
                                 fontSize: 16.0,
                                 initialLabelIndex: Gender.values.indexWhere((element) => element == gender),
                                 activeBgColor: [Theme.of(context).primaryColor],
                                 activeFgColor: Colors.white,
-                                inactiveBgColor: Colors.grey[300],
+                                inactiveBgColor: const Color(0xffF2F4F5),
                                 inactiveFgColor: Colors.grey[0],
                                 totalSwitches: Gender.values.length,
                                 labels: Gender.values.map((e) => e.persianName).toList(),
@@ -387,17 +493,30 @@ class _FormWidgetState extends State<FormWidget> {
     );
   }
 
-  InputDecoration defaultInputDecoration() {
+  InputDecoration defaultInputDecoration(BuildContext context) {
     return const InputDecoration().copyWith(
       helperText: '',
-      enabledBorder: OutlineInputBorder(
-        borderRadius: const BorderRadius.all(Radius.circular(4)),
-        borderSide: BorderSide(width: 1.2, color: isEditable ? const Color(0xd9848484) : Colors.transparent),
+      helperMaxLines: 1,
+      filled: true,
+      fillColor: const Color(0xffF2F4F5),
+      contentPadding: const EdgeInsets.symmetric(vertical: 20.0),
+      hintStyle: defaultTextStyle(context).c(const Color(0xffA0A8B1)),
+      enabledBorder: const OutlineInputBorder(
+        borderRadius: BorderRadius.all(Radius.circular(8)),
+        borderSide: BorderSide(width: 0.0, color: Colors.transparent),
+      ),
+      focusedBorder: const OutlineInputBorder(
+        borderRadius: BorderRadius.all(Radius.circular(8)),
+        borderSide: BorderSide(width: 1.3, color: Color(0xffA0A8B1)),
       ),
     );
   }
 
   Widget labelWidget(IconData icon, String label, String value) {
+    return labelWidgetRow(icon, label, [value]);
+  }
+
+  Widget labelWidgetRow(IconData icon, String label, List<String> values) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 12.0),
       child: Column(
@@ -417,12 +536,19 @@ class _FormWidgetState extends State<FormWidget> {
               ),
             ],
           ),
-          const SizedBox(height: 0.0),
+          const SizedBox(height: 2.0),
           Padding(
             padding: const EdgeInsets.only(right: 30.0),
-            child: Text(
-              value.isEmpty ? "هنوز وارد نکردید" : value,
-              style: defaultTextStyle(context, headline: 3).c(value.isNotEmpty ? Colors.black : Colors.black54),
+            child: Row(
+              children: values
+                  .map((value) => Padding(
+                        padding: const EdgeInsets.only(left: 8.0),
+                        child: Text(
+                          value.isEmpty ? "هنوز وارد نکردید" : value,
+                          style: defaultTextStyle(context, headline: 3).c(value.isNotEmpty ? Colors.black : Colors.black54),
+                        ),
+                      ))
+                  .toList(),
             ),
           ),
         ],

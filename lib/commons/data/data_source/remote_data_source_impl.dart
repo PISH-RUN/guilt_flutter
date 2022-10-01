@@ -1,14 +1,18 @@
 import 'dart:convert';
+
 import 'package:dartz/dartz.dart';
+import 'package:dio/dio.dart' as dio;
+import 'package:get_it/get_it.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:guilt_flutter/application/constants.dart';
 import 'package:guilt_flutter/commons/failures.dart';
 import 'package:guilt_flutter/commons/request_result.dart';
+import 'package:guilt_flutter/features/login/api/login_api.dart';
 import 'package:http/http.dart' as http;
-import 'package:dio/dio.dart' as dio;
-import 'package:image_picker/image_picker.dart';
 import 'package:http_parser/http_parser.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:logger/logger.dart';
+
 import '../../utils.dart';
 import '../model/server_failure.dart';
 import 'remote_data_source.dart';
@@ -21,12 +25,16 @@ class RemoteDataSourceImpl implements RemoteDataSource {
 
   RemoteDataSourceImpl({required this.client, required this.isInternetEnable, required this.readDataFromLocal, required this.writeDataToLocal});
 
-  Map<String, String> get defaultHeader {
-    var output = {
+  Map<String, String> get publicHeader {
+    return {
       'Content-Type': 'application/json',
       'Accept': 'application/json',
     };
-    String token = readDataFromLocal(LocalKeys.token.name);
+  }
+
+  Map<String, String> get authenticateHeader {
+    var output = publicHeader;
+    String token = GetIt.instance<LoginApi>().getUserData().token;
     if (token.isNotEmpty) {
       String preFix = "Bearer";
       output['Authorization'] = '$preFix $token';
@@ -34,27 +42,37 @@ class RemoteDataSourceImpl implements RemoteDataSource {
     return output;
   }
 
+  Map<String, String> getHeader(bool isTokenNeed) => isTokenNeed ? authenticateHeader : publicHeader;
+
   @override
   Future<Either<ServerFailure, List<T>>> getListFromServer<T>({
     required String url,
     required Map<String, dynamic> params,
     required List<T> Function(List<dynamic> success) mapSuccess,
     String? localKey,
+    Duration? expireDateLocalKey,
+    bool isTokenNeed = true,
     bool isForceRefresh = false,
   }) async {
     String methodName = "getList";
     if (localKey != null && GetStorage().hasData(localKey) && !isForceRefresh) {
-      return Right(mapSuccess((jsonDecode(GetStorage().read(localKey)) as List)));
+      if (expireDateLocalKey != null && isExpireDateArrived(expireDateLocalKey, localKey)) {
+        GetStorage().remove(localKey);
+        GetStorage().remove("modifyAt-$localKey");
+      } else {
+        return Right(mapSuccess((jsonDecode(GetStorage().read(localKey)) as List)));
+      }
     }
     try {
-      Logger().v("$methodName===> url ===> $url \n\nbodyParameters ===> $params\n\ndefaultHeader ===> $defaultHeader");
+      Logger().v("$methodName===> url ===> $url \n\nbodyParameters ===> $params\n\ndefaultHeader ===> ${getHeader(isTokenNeed)}");
       final finalUri = Uri.parse(url).replace(queryParameters: params);
-      http.Response finalResponse = await client.get(finalUri, headers: defaultHeader);
+      http.Response finalResponse = await client.get(finalUri, headers: getHeader(isTokenNeed));
       Logger().d("$methodName===> response.statusCode==> ${finalResponse.statusCode}  for  $url");
       if (isSuccessfulHttp(finalResponse)) {
         Logger().i("$methodName===>$url response is===>${finalResponse.body}");
         if (localKey != null) {
           GetStorage().write(localKey, finalResponse.body);
+          GetStorage().write("modifyAt-$localKey", DateTime.now().millisecondsSinceEpoch);
         }
         return Right(mapSuccess((jsonDecode(finalResponse.body) as List)));
       } else {
@@ -73,13 +91,21 @@ class RemoteDataSourceImpl implements RemoteDataSource {
   }
 
   @override
-  Future<Either<ServerFailure, T>> getFromServer<T>(
-      {required String url,
-      required Map<String, dynamic> params,
-      required T Function(Map<String, dynamic> success) mapSuccess,
-      String? localKey}) async {
+  Future<Either<ServerFailure, T>> getFromServer<T>({
+    required String url,
+    required Map<String, dynamic> params,
+    required T Function(Map<String, dynamic> success) mapSuccess,
+    String? localKey,
+    bool isTokenNeed = true,
+    Duration? expireDateLocalKey = const Duration(hours: 1),
+  }) async {
     if (localKey != null && GetStorage().hasData(localKey)) {
-      return Right(convertStringToSuccessData(GetStorage().read<String>(localKey)!, (success) => mapSuccess(success)));
+      if (expireDateLocalKey != null && isExpireDateArrived(expireDateLocalKey, localKey)) {
+        GetStorage().remove(localKey);
+        GetStorage().remove("modifyAt-$localKey");
+      } else {
+        return Right(convertStringToSuccessData(GetStorage().read<String>(localKey)!, (success) => mapSuccess(success)));
+      }
     }
     if (!await isInternetEnable()) return Left(ServerFailure.noInternet());
     String paramsString = params.entries.map((entry) => "${entry.key}=${entry.value}").toList().join('&');
@@ -88,9 +114,10 @@ class RemoteDataSourceImpl implements RemoteDataSource {
     }
     final finalUri = Uri.parse('$url$paramsString');
     final response = await _callFunctionOfServer(
-      response: client.get(finalUri, headers: url.contains("dapi") ? {'Accept': 'application/json'} : defaultHeader),
+      response: client.get(finalUri, headers: url.contains("dapi") ? {'Accept': 'application/json'} : getHeader(isTokenNeed)),
       params: params,
       url: url,
+      isTokenNeed: isTokenNeed,
       methodName: "get",
     );
     return response.fold(
@@ -98,20 +125,34 @@ class RemoteDataSourceImpl implements RemoteDataSource {
       (data) {
         if (localKey != null) {
           GetStorage().write(localKey, data);
+          GetStorage().write("modifyAt-$localKey", DateTime.now().millisecondsSinceEpoch);
         }
         return Right(convertStringToSuccessData(data, (success) => mapSuccess(success)));
       },
     );
   }
 
+  bool isExpireDateArrived(Duration expireDateLocalKey, String localKey) =>
+      expireDateLocalKey.inSeconds <
+      (DateTime.now().millisecondsSinceEpoch - (GetStorage().read<int>("modifyAt-$localKey") ?? 0) / 1000);
+
   @override
-  Future<Either<ServerFailure, T>> postToServer<T>(
-      {required String url, required dynamic params, required T Function(Map<String, dynamic> success) mapSuccess, String? localKey}) async {
-    if (!await isInternetEnable()) return Left(ServerFailure.noInternet());
+  Future<Either<ServerFailure, T>> postToServer<T>({
+    required String url,
+    required dynamic params,
+    required T Function(Map<String, dynamic> success) mapSuccess,
+    bool isTokenNeed = true,
+    String? localKey,
+  }) async {
+    if (!await isInternetEnable()) {
+      Logger().e("info=> internet is disable");
+      return Left(ServerFailure.noInternet());
+    }
     final response = await _callFunctionOfServer(
-      response: client.post(Uri.parse(url), body: jsonEncode(params), headers: defaultHeader),
+      response: client.post(Uri.parse(url), body: jsonEncode(params), headers: getHeader(isTokenNeed)),
       params: params,
       url: url,
+      isTokenNeed: isTokenNeed,
       methodName: "post",
     );
     return response.fold(
@@ -119,6 +160,7 @@ class RemoteDataSourceImpl implements RemoteDataSource {
       (data) {
         if (localKey != null) {
           GetStorage().write(localKey, data);
+          GetStorage().write("modifyAt-$localKey", DateTime.now().millisecondsSinceEpoch);
         }
         return Right(convertStringToSuccessData(data, (success) => mapSuccess(success)));
       },
@@ -130,12 +172,14 @@ class RemoteDataSourceImpl implements RemoteDataSource {
       {required String url,
       required Map<String, dynamic> params,
       required T Function(Map<String, dynamic> success) mapSuccess,
+      bool isTokenNeed = true,
       String? localKey}) async {
     if (!await isInternetEnable()) return Left(ServerFailure.noInternet());
     final response = await _callFunctionOfServer(
-      response: client.put(Uri.parse(url), body: jsonEncode(params), headers: defaultHeader),
+      response: client.put(Uri.parse(url), body: jsonEncode(params), headers: getHeader(isTokenNeed)),
       params: params,
       url: url,
+      isTokenNeed: isTokenNeed,
       methodName: "put",
     );
     return response.fold(
@@ -143,6 +187,7 @@ class RemoteDataSourceImpl implements RemoteDataSource {
       (data) {
         if (localKey != null) {
           GetStorage().write(localKey, data);
+          GetStorage().write("modifyAt-$localKey", DateTime.now().millisecondsSinceEpoch);
         }
         return Right(convertStringToSuccessData(data, (success) => mapSuccess(success)));
       },
@@ -154,9 +199,10 @@ class RemoteDataSourceImpl implements RemoteDataSource {
     required Future<http.Response> response,
     required String url,
     required dynamic params,
+    required isTokenNeed,
   }) async {
     try {
-      Logger().v("$methodName===> url ===> $url \n\nbodyParameters ===> $params\n\ndefaultHeader ===> $defaultHeader");
+      Logger().v("$methodName===> url ===> $url \n\nbodyParameters ===> $params\n\ndefaultHeader ===> ${getHeader(isTokenNeed)}");
       http.Response finalResponse = await response;
       Logger().d("$methodName===> response.statusCode==> ${finalResponse.statusCode}  for  $url");
       if (isSuccessfulHttp(finalResponse)) {
@@ -194,12 +240,14 @@ class RemoteDataSourceImpl implements RemoteDataSource {
     required String url,
     required Map<String, dynamic> params,
     required T Function(Map<String, dynamic> success) mapSuccess,
+    bool isTokenNeed = true,
   }) async {
     if (!await isInternetEnable()) return Left(ServerFailure.noInternet());
     final response = await _callFunctionOfServer(
-      response: client.delete(Uri.parse(url), body: jsonEncode(params), headers: defaultHeader),
+      response: client.delete(Uri.parse(url), body: jsonEncode(params), headers: getHeader(isTokenNeed)),
       params: params,
       url: url,
+      isTokenNeed: isTokenNeed,
       methodName: "delete",
     );
     return response.fold(
@@ -215,13 +263,14 @@ class RemoteDataSourceImpl implements RemoteDataSource {
     required XFile image,
     required String attachName,
     required Map<String, dynamic> bodyParameters,
+    bool isTokenNeed = true,
     String? localKey,
   }) async {
     if (!await isInternetEnable()) return RequestResult.failure(ServerFailure.noInternet());
     try {
       var dioRequest = dio.Dio();
       dioRequest.options.baseUrl = url;
-      dioRequest.options.headers = defaultHeader;
+      dioRequest.options.headers = getHeader(isTokenNeed);
       var formData = dio.FormData.fromMap({
         imageName: await dio.MultipartFile.fromFile(
           image.path,
@@ -243,6 +292,7 @@ class RemoteDataSourceImpl implements RemoteDataSource {
         Logger().i("data=> ${response.data.toString()} ");
         if (localKey != null) {
           GetStorage().write(localKey, response.data.toString());
+          GetStorage().write("modifyAt-$localKey", DateTime.now().millisecondsSinceEpoch);
         }
         return RequestResult.success();
       } else {

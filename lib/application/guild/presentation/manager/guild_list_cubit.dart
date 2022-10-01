@@ -18,7 +18,7 @@ class GuildListCubit extends Cubit<GuildListState> {
   Future<void> initialPage(BuildContext context) async {
     emit(const GuildListState.loading());
     await Future.delayed(const Duration(milliseconds: 300), () => "1");
-    final response = await main.getListOfMyGuilds(nationalCode: GetIt.instance<LoginApi>().getUserId());
+    final response = await main.getListOfMyGuilds(nationalCode: GetIt.instance<LoginApi>().getUserData().nationalCode);
     response.fold(
       (failure) => emit(GuildListState.error(failure: failure)),
       (guildList) {
@@ -32,14 +32,14 @@ class GuildListCubit extends Cubit<GuildListState> {
   }
 
   Future<RequestResult> saveGuild(Guild guild) {
-    return main.updateGuild(nationalCode: GetIt.instance<LoginApi>().getUserId(), guild: guild);
+    return main.updateGuild(nationalCode: GetIt.instance<LoginApi>().getUserData().nationalCode, guild: guild);
   }
 
   bool hasRequestForCoupon({required int guildId}) {
-    return GetStorage().read<bool>('hasRequestForCoupon${GetIt.instance<LoginApi>().getUserId()}-$guildId') ?? false;
+    return GetStorage().read<bool>('hasRequestForCoupon${GetIt.instance<LoginApi>().getUserData().nationalCode}-$guildId') ?? false;
   }
 
   void sendRequestForCoupon({required int guildId}) {
-    GetStorage().write('hasRequestForCoupon${GetIt.instance<LoginApi>().getUserId()}-$guildId', true);
+    GetStorage().write('hasRequestForCoupon${GetIt.instance<LoginApi>().getUserData().nationalCode}-$guildId', true);
   }
 }

@@ -51,7 +51,7 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       routeInformationParser: const QRouteInformationParser(),
       builder: (context, child) => child == null ? const SizedBox() : SafeArea(child: Directionality(textDirection: TextDirection.rtl, child: child)),
-      routerDelegate: QRouterDelegate(AppRoutes().routes, withWebBar: true, initPath: '/psp/guildList'),
+      routerDelegate: QRouterDelegate(AppRoutes().routes, withWebBar: true, initPath: initPath),
     );
   }
 }

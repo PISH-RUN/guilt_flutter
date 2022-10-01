@@ -14,11 +14,11 @@ class ProfileMain {
     return repository.getProfile(nationalCode);
   }
 
-  Future<RequestResult> updateUserInfo(String nationalCode, UserInfo user) {
-    return repository.updateProfile(nationalCode, user);
+  Future<RequestResult> updateUserInfo(UserInfo user) {
+    return repository.updateProfile(user);
   }
 
-  Future<RequestResult> changeAvatar(String nationalCode, XFile avatar) {
-    return repository.changeAvatar(nationalCode, avatar);
+  Future<RequestResult> changeAvatar(XFile avatar) {
+    return repository.changeAvatar(avatar);
   }
 }

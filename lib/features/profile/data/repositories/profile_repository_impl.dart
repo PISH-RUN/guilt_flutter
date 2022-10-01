@@ -1,10 +1,7 @@
-import 'dart:convert';
-
 import 'package:dartz/dartz.dart';
 import 'package:get_it/get_it.dart';
-import 'package:get_storage/get_storage.dart';
+import 'package:guilt_flutter/features/login/api/login_api.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:logger/logger.dart';
 
 import '../../../../application/constants.dart';
 import '../../../../application/get_local_key_of_user.dart';
@@ -22,61 +19,39 @@ class ProfileRepositoryImpl implements ProfileRepository {
   ProfileRepositoryImpl({required this.remoteDataSource});
 
   @override
-  Future<RequestResult> changeAvatar(String nationalCode, XFile avatar) async {
+  Future<RequestResult> changeAvatar(XFile avatar) async {
     final output = await remoteDataSource.postMultipartToServer(
-      url: '$BASE_URL_API/api/v1/users/record/$nationalCode/image',
+      url: '${BASE_URL_API1}users/record/image',
       attachName: 'image',
       imageName: 'image',
       image: avatar,
-      localKey: getLocalKeyOfUser(nationalCode),
+      localKey: getLocalKeyOfUser(GetIt.instance<LoginApi>().getUserData().nationalCode),
       bodyParameters: {},
     );
     if (!output.isSuccess) {
       return output;
     }
-    await GetIt.instance<GuildApi>().getMyGuildList(nationalCode: nationalCode, isForceRefresh: true);
+    await GetIt.instance<GuildApi>().getMyGuildList(nationalCode: GetIt.instance<LoginApi>().getUserData().nationalCode, isForceRefresh: true);
     return RequestResult.success();
   }
 
   @override
   Future<Either<Failure, UserInfo>> getProfile(String nationalCode) async {
-    final response = await GetIt.instance<GuildApi>().getMyGuildList(nationalCode: nationalCode);
-    return response.fold((failure) => Left(failure), (guilds) {
-      if (guilds.isEmpty) {
-        if (GetStorage().hasData('profileTemp')) {
-          return Right(UserInfoModel.fromJson(jsonDecode(GetStorage().read('profileTemp'))));
-        }
-        return Left(Failure.haveNoGuildAndProfile());
-      }
-      GetStorage().remove('profileTemp');
-      return Right(UserInfo(
-        avatar: guilds[0].avatar,
-        firstName: guilds[0].firstName,
-        lastName: guilds[0].lastName,
-        phoneNumber: guilds[0].phoneNumber,
-        nationalCode: guilds[0].nationalCode,
-        gender: guilds[0].gender,
-      ));
-    });
+    return remoteDataSource.getFromServer<UserInfo>(
+      url: '${BASE_URL_API1}users',
+      localKey: getLocalKeyOfUser(nationalCode),
+      params: {},
+      mapSuccess: (data) => UserInfoModel.fromJson(data['data']),
+    );
   }
 
   @override
-  Future<RequestResult> updateProfile(String nationalCode, UserInfo userInfo) async {
-    final response = await GetIt.instance<GuildApi>().getMyGuildList(nationalCode: nationalCode);
-    return response.fold((l) => RequestResult.failure(l), (guildList) {
-      if (guildList.isEmpty) {
-        GetStorage().write('profileTemp', jsonEncode(UserInfoModel.fromSuper(userInfo).toJson()));
-        return RequestResult.success();
-      }
-      guildList = guildList
-          .map((guild) => guild.copyWith(
-                firstName: userInfo.firstName,
-                lastName: userInfo.lastName,
-                phoneNumber: userInfo.phoneNumber,
-                gender: userInfo.gender,
-              ))
-          .toList();
-      return GetIt.instance<GuildApi>().updateGuildList(nationalCode: nationalCode, guildList: guildList);
-    });
+  Future<RequestResult> updateProfile(UserInfo userInfo) async {
+    return RequestResult.fromEither(await remoteDataSource.postToServer(
+      url: '${BASE_URL_API1}users',
+      localKey: getLocalKeyOfUser(GetIt.instance<LoginApi>().getUserData().nationalCode),
+      params: UserInfoModel.fromSuper(userInfo).toJson(),
+      mapSuccess: (data) => UserInfoModel.fromJson(data['data']),
+    ));
   }
 }

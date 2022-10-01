@@ -14,7 +14,7 @@ class GuildCubit extends Cubit<GuildState> {
 
   Future<void> initialPage(int guildId) async {
     emit(const GuildState.loading());
-    final response = await main.getFullDetailOfOneGuild(nationalCode: GetIt.instance<LoginApi>().getUserId(), guildId: guildId);
+    final response = await main.getFullDetailOfOneGuild(nationalCode: GetIt.instance<LoginApi>().getUserData().nationalCode, guildId: guildId);
     response.fold(
       (failure) => emit(GuildState.error(failure: failure)),
       (guild) => emit(GuildState.loaded(guild: guild)),
@@ -22,7 +22,7 @@ class GuildCubit extends Cubit<GuildState> {
   }
 
   Future<void> saveGuild(Guild guild) async {
-    final response = await main.updateGuild(nationalCode: GetIt.instance<LoginApi>().getUserId(), guild: guild);
+    final response = await main.updateGuild(nationalCode: GetIt.instance<LoginApi>().getUserData().nationalCode, guild: guild);
     response.fold(
       (failure) => emit(GuildState.error(failure: failure)),
       () => emit(GuildState.loaded(guild: guild)),
@@ -30,7 +30,7 @@ class GuildCubit extends Cubit<GuildState> {
   }
 
   Future<void> addGuild(Guild guild) async {
-    final response = await main.addGuild(nationalCode: GetIt.instance<LoginApi>().getUserId(), guild: guild);
+    final response = await main.addGuild(nationalCode: GetIt.instance<LoginApi>().getUserData().nationalCode, guild: guild);
     response.fold(
       (failure) => emit(GuildState.error(failure: failure)),
       () => emit(GuildState.loaded(guild: guild)),

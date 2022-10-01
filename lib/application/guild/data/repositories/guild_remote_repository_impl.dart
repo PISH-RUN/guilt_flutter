@@ -24,7 +24,7 @@ class GuildRemoteRepositoryImpl implements GuildRemoteRepository {
   @override
   Future<Either<Failure, List<Guild>>> getListOfMyGuilds(String nationalCode, bool isForceRefresh) {
     return remoteDataSource.getListFromServer<Guild>(
-      url: '$BASE_URL_API/api/v1/users/record/$nationalCode',
+      url: '${BASE_URL_API}users/record/$nationalCode',
       params: {},
       isForceRefresh: isForceRefresh,
       localKey: getLocalKeyOfUser(nationalCode),
@@ -38,7 +38,7 @@ class GuildRemoteRepositoryImpl implements GuildRemoteRepository {
     GetStorage().write(getLocalKeyOfUser(nationalCode), jsonEncode(json));
     return RequestResult.fromEither(
       await remoteDataSource.postToServer(
-        url: '$BASE_URL_API/api/v1/users/record/$nationalCode/upsert',
+        url: '${BASE_URL_API}users/record/$nationalCode/upsert',
         params: json,
         mapSuccess: (_) {
           GetStorage().write(getLocalKeyOfUser(nationalCode), jsonEncode(guildList.map((guild) => GuildModel.fromSuper(guild).toJson()).toList()));
@@ -54,19 +54,13 @@ class GuildRemoteRepositoryImpl implements GuildRemoteRepository {
 
   @override
   Future<Either<Failure, Guild>> addGuild(String nationalCode, Guild guild) async {
-    final profileResponse = await GetIt.instance<ProfileApi>().getProfile(nationalCode: nationalCode);
-    if (profileResponse.isLeft()) {
-      return Left(profileResponse.swap().getOrElse(() => throw UnimplementedError()));
-    }
-    final user = profileResponse.getOrElse(() => throw UnimplementedError());
-    guild = guild.copyWith(firstName: user.firstName, lastName: user.lastName, gender: user.gender, phoneNumber: user.phoneNumber);
     final response = await remoteDataSource.postToServer(
-      url: '$BASE_URL_API/api/v1/users/record/$nationalCode',
+      url: '${BASE_URL_API}users/record/$nationalCode',
       params: GuildModel.fromSuper(guild).toJson(),
       mapSuccess: (date) => guild,
     );
     if (response.isRight()) {
-      final listJson = jsonDecode(GetStorage().read<String>(getLocalKeyOfUser(nationalCode))??"[]") as List;
+      final listJson = jsonDecode(GetStorage().read<String>(getLocalKeyOfUser(nationalCode)) ?? "[]") as List;
       listJson.add(GuildModel.fromSuper(guild).toJson());
       GetStorage().write(getLocalKeyOfUser(nationalCode), jsonEncode(listJson));
     }
