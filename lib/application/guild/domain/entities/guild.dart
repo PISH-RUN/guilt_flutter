@@ -1,19 +1,20 @@
 import 'package:equatable/equatable.dart';
-import 'package:get_it/get_it.dart';
 import 'package:guilt_flutter/application/guild/domain/entities/icis.dart';
 import 'package:guilt_flutter/application/guild/domain/entities/pos.dart';
-import 'package:guilt_flutter/features/login/api/login_api.dart';
 import 'package:guilt_flutter/features/profile/domain/entities/gender_type.dart';
 import 'package:latlong2/latlong.dart' as lat_lng;
 
 class Guild extends Equatable {
   final int id;
-  final Gender gender;
-  final String nationalCode;
-  final String? avatar;
-  final String phoneNumber;
-  final String firstName;
-  final String lastName;
+  final int userId;
+  final String image;
+  final String status;
+  final String issueDate;
+  final String licenseNumber;
+  final String uuid;
+  final String corporateId;
+  final String boardTitle;
+  final String zoneCode;
   final String organName;
   final Isic isic;
   final bool isCouponRequested;
@@ -28,15 +29,18 @@ class Guild extends Equatable {
 
   const Guild({
     required this.id,
-    required this.nationalCode,
-    required this.phoneNumber,
+    required this.userId,
+    required this.image,
+    required this.status,
+    required this.issueDate,
+    required this.licenseNumber,
+    required this.uuid,
+    required this.corporateId,
+    required this.boardTitle,
+    required this.zoneCode,
     required this.poses,
-    required this.firstName,
-    required this.gender,
-    required this.lastName,
     required this.organName,
     required this.isic,
-    required this.avatar,
     required this.isCouponRequested,
     required this.title,
     required this.province,
@@ -49,13 +53,17 @@ class Guild extends Equatable {
 
   Guild copyWith({
     int? id,
-    String? phoneNumber,
-    String? firstName,
-    String? lastName,
+    int? userId,
+    String? image,
+    String? status,
+    String? issueDate,
+    String? licenseNumber,
+    String? uuid,
+    String? corporateId,
+    String? zoneCode,
+    String? boardTitle,
     String? organName,
-    String? avatar,
     Isic? isic,
-    Gender? gender,
     String? title,
     String? province,
     String? city,
@@ -68,12 +76,15 @@ class Guild extends Equatable {
   }) {
     return Guild(
       id: id ?? this.id,
-      nationalCode: nationalCode,
-      phoneNumber: phoneNumber ?? this.phoneNumber,
-      avatar: avatar ?? this.avatar,
-      firstName: firstName ?? this.firstName,
-      lastName: lastName ?? this.lastName,
-      gender: gender ?? this.gender,
+      userId: userId ?? this.userId,
+      image: image ?? this.image,
+      status: status ?? this.status,
+      issueDate: issueDate ?? this.issueDate,
+      licenseNumber: licenseNumber ?? this.licenseNumber,
+      uuid: uuid ?? this.uuid,
+      corporateId: corporateId ?? this.corporateId,
+      boardTitle: boardTitle ?? this.boardTitle,
+      zoneCode: zoneCode ?? this.zoneCode,
       isCouponRequested: isCouponRequested ?? this.isCouponRequested,
       organName: organName ?? this.organName,
       isic: isic ?? this.isic,
@@ -90,16 +101,19 @@ class Guild extends Equatable {
 
   factory Guild.fromEmpty() {
     return Guild(
-      nationalCode: GetIt.instance<LoginApi>().getUserData().nationalCode,
-      phoneNumber: GetIt.instance<LoginApi>().getUserData().phoneNumber,
-      firstName: '',
-      lastName: '',
       city: '',
+      boardTitle: '',
+      corporateId: '',
+      image: '',
+      issueDate: '',
+      licenseNumber: '',
+      status: '',
+      userId: 0,
+      uuid: '',
+      zoneCode: '',
       province: '',
       title: '',
-      avatar: null,
       poses: const [],
-      gender: Gender.girl,
       isCouponRequested: false,
       address: '',
       homeTelephone: '',
@@ -113,7 +127,7 @@ class Guild extends Equatable {
 
   @override
   String toString() {
-    return '{firstName: $firstName, lastName: $lastName, organName: $organName}';
+    return '{organName: $organName}';
   }
 
   @override

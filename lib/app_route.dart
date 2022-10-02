@@ -4,7 +4,6 @@ import 'package:guilt_flutter/features/psp/presentation/pages/all_guild_list_pag
 import 'package:guilt_flutter/features/psp/presentation/pages/psp_form_page.dart';
 import 'package:guilt_flutter/features/psp/presentation/pages/psp_panel.dart';
 import 'package:qlevar_router/qlevar_router.dart';
-
 import 'application/faq.dart';
 import 'application/guild/presentation/pages/guild_form_page.dart';
 import 'application/guild/presentation/pages/guild_list_page.dart';
@@ -23,20 +22,30 @@ class AppRoutes {
     QRoute.withChild(
       path: '/psp',
       builderChild: (p0) => p0,
-      middleware: [],
+      middleware: [AuthGuard()],
       children: [
         QRoute(
           path: '/guildList',
           builder: () => PspPanel(currentIndexBottomNavigation: 0, child: AllGuildsListPage.wrappedRoute(false)),
-          middleware: [],
+          middleware: [AuthGuard()],
         ),
         QRoute(
           path: '/edit/:token/:guildId((^[0-9]*\$))',
           builder: () => PspFormPage.wrappedRoute(),
-          middleware: [],
+          middleware: [AuthGuard()],
         ),
         QRoute(
           path: '/myGuildList',
+          builder: () => PspPanel(currentIndexBottomNavigation: 0, child: AllGuildsListPage.wrappedRoute(true)),
+          middleware: [AuthGuard()],
+        ),
+        QRoute(
+          path: '/register/:phoneNumber((^[0-9]*\$))/:guildId((^[0-9]*\$))',
+          builder: () => PspPanel(currentIndexBottomNavigation: 0, child: AllGuildsListPage.wrappedRoute(true)),
+          middleware: [AuthGuard()],
+        ),
+        QRoute(
+          path: '/otp/:guildId((^[0-9]*\$))',
           builder: () => PspPanel(currentIndexBottomNavigation: 0, child: AllGuildsListPage.wrappedRoute(true)),
           middleware: [],
         ),

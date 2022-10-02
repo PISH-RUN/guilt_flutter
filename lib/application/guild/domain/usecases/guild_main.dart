@@ -13,8 +13,7 @@ class GuildMain {
   GuildMain(this.guildRemoteRepository);
 
   Future<RequestResult> updateGuild({required String nationalCode, required Guild guild}) async {
-    List<GuildModel> localGuildList = guildList.map((e) => guild.id == e.id ? GuildModel.fromSuper(guild) : GuildModel.fromSuper(e)).toList();
-    guildRemoteRepository.updateAllData(nationalCode, localGuildList);
+    guildRemoteRepository.updateSpecialGuild(guild);
     getListOfMyGuilds(nationalCode: nationalCode);
     return RequestResult.success();
   }

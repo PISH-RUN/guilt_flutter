@@ -1,4 +1,3 @@
-import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
@@ -6,7 +5,7 @@ import 'package:guilt_flutter/application/colors.dart';
 import 'package:guilt_flutter/application/guild/domain/entities/guild.dart';
 import 'package:guilt_flutter/application/guild/presentation/manager/guild_list_cubit.dart';
 import 'package:guilt_flutter/application/guild/presentation/manager/guild_list_state.dart';
-import 'package:guilt_flutter/application/guild/presentation/pages/guild_form_page.dart';
+import 'package:guilt_flutter/application/guild/presentation/widgets/guild_item.dart';
 import 'package:guilt_flutter/commons/fix_rtl_flutter_bug.dart';
 import 'package:guilt_flutter/commons/text_style.dart';
 import 'package:guilt_flutter/commons/utils.dart';
@@ -118,87 +117,7 @@ class _GuildListPageState extends State<GuildListPage> {
               ),
             ),
             const SizedBox(height: 0.0),
-            Column(
-              children: guildList
-                  .map(
-                    (guild) => Card(
-                      elevation: 6,
-                      margin: const EdgeInsets.symmetric(horizontal: 14.0, vertical: 10),
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          ListTile(
-                            title: AutoSizeText(guild.title, style: defaultTextStyle(context, headline: 3), maxLines: 1, minFontSize: 2),
-                            subtitle: Text(guild.city, style: defaultTextStyle(context, headline: 5).c(Colors.grey)),
-                            onTap: () {
-                              QR.to('guild/${guild.id}').then((v) => BlocProvider.of<GuildListCubit>(context).initialPage(context));
-                            },
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
-                            child: BlocProvider.of<GuildListCubit>(context).hasRequestForCoupon(guildId: guild.id)
-                                ? Container(
-                                    width: double.infinity,
-                                    height: 45,
-                                    alignment: Alignment.center,
-                                    decoration: BoxDecoration(
-                                      color: Colors.white,
-                                      shape: BoxShape.rectangle,
-                                      border: Border.all(color: Colors.green, width: 2),
-                                      borderRadius: const BorderRadius.all(Radius.circular(6)),
-                                    ),
-                                    child: Text(
-                                      "درخواست کالا برگ شما ثبت شد",
-                                      style: defaultTextStyle(context, headline: 4).c(Colors.green).w(FontWeight.w600),
-                                    ),
-                                  )
-                                : OurButton(
-                                    onTap: () async {
-                                      isDialogOpen = true;
-                                      final isOK = await showDialog(
-                                        context: context,
-                                        builder: (dialogContext) => AlertDialog(
-                                          shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(12.0))),
-                                          title: Text("درخواست کالابرگ", style: defaultTextStyle(context, headline: 3)),
-                                          contentPadding: const EdgeInsets.symmetric(horizontal: 24, vertical: 8),
-                                          content: Text(
-                                              "اینجانب ضمن تایید اطلاعات خود، توافق خود را جهت استفاده از کالابرگ و رعایت شرایط مربوطه اعلام می دارم.",
-                                              style: defaultTextStyle(context, headline: 5).c(Colors.black.withOpacity(0.7))),
-                                          actions: <Widget>[
-                                            TextButton(
-                                              child: Text("انصراف", style: defaultTextStyle(context, headline: 5).c(Colors.grey)),
-                                              onPressed: () {
-                                                isDialogOpen = false;
-                                                Navigator.pop(dialogContext, false);
-                                              },
-                                            ),
-                                            TextButton(
-                                              child: Text("تایید", style: defaultTextStyle(context, headline: 5).c(Theme.of(context).primaryColor)),
-                                              onPressed: () async {
-                                                isDialogOpen = false;
-                                                Navigator.pop(dialogContext, true);
-                                              },
-                                            ),
-                                          ],
-                                        ),
-                                      ) as bool;
-                                      isDialogOpen = false;
-                                      if (isOK) {
-                                        BlocProvider.of<GuildListCubit>(context).sendRequestForCoupon(guildId: guild.id);
-                                        BlocProvider.of<GuildListCubit>(context).initialPage(context);
-                                      }
-                                    },
-                                    title: 'درخواست کالا برگ',
-                                    isLoading: false,
-                                  ),
-                          ),
-                          const SizedBox(height: 10.0),
-                        ],
-                      ),
-                    ),
-                  )
-                  .toList(),
-            ),
+            Column(children: guildList.map((guild) => GuildItem(guild: guild)).toList()),
           ],
         ),
       ),

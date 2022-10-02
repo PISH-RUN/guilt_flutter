@@ -29,32 +29,25 @@ class LoginRepositoryImpl implements LoginRepository {
   Future<Either<Failure, bool>> registerWithPhoneNumber({required String phoneNumber, required String nationalCode}) async {
     globalPhoneNumber = phoneNumber;
     Either<ServerFailure, bool> result = await dataSource.postToServer<bool>(
-      url: "${BASE_URL_API1}users/otp",
+      url: "${BASE_URL_API}users/otp",
       isTokenNeed: false,
-      params: {'mobile': "0$phoneNumber", 'nationalcode': nationalCode},
+      params: {'mobile': "0$phoneNumber", 'national_code': nationalCode},
       mapSuccess: (Map<String, dynamic> data) => true,
     );
     return result.fold((l) => Left(l), (r) => const Right(true));
   }
 
   @override
-  Future<Either<Failure, bool>> loginWithOtp(String nationalCode, String otp) async {
+  Future<Either<Failure, UserData>> loginWithOtp(String nationalCode, String otp) async {
     Either<ServerFailure, UserData> result = await dataSource.postToServer<UserData>(
-      url: '${BASE_URL_API1}users/verify',
-      params: {'nationalcode': nationalCode, 'otp': otp},
+      url: '${BASE_URL_API}users/verify',
+      params: {'national_code': nationalCode, 'otp': otp},
       isTokenNeed: false,
       mapSuccess: (Map<String, dynamic> data) =>
           UserDataModel.fromJson(nationalCode: nationalCode, phoneNumber: globalPhoneNumber, json: data['data']),
     );
-    if (result.isRight()) {
-      saveUserData(result.getOrElse(() => throw UnimplementedError()));
-    }
-    return result.fold(
-        (l) => l.statusCode == 400 ? Left(ServerFailure.fromMessage("کد تایید وارد شده اشتباه است")) : Left(l), (r) => const Right(true));
-  }
-
-  void saveUserData(UserData userData) {
-    GetStorage().write('userData', jsonEncode(userData.toJson()));
+    return result.fold((l) => l.statusCode == 400 ? Left(ServerFailure.fromMessage("کد تایید وارد شده اشتباه است")) : Left(l),
+        (r) => Right(result.getOrElse(() => throw UnimplementedError())));
   }
 
   @override

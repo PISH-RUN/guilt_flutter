@@ -38,7 +38,6 @@ class AllGuildsCubit extends Cubit<AllGuildsState> {
   }
 
   GuildPsp getGuildBuId(int guildId) {
-    Logger().i("info=> ${guildPspList.length}       ${guildId} ");
     return guildPspList.firstWhere((element) => element.guild.id == guildId);
   }
 

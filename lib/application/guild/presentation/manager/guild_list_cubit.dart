@@ -1,7 +1,6 @@
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
-import 'package:get_storage/get_storage.dart';
 import 'package:guilt_flutter/application/guild/domain/entities/guild.dart';
 import 'package:guilt_flutter/application/guild/domain/usecases/guild_main.dart';
 import 'package:guilt_flutter/application/guild/presentation/manager/guild_list_state.dart';
@@ -35,11 +34,7 @@ class GuildListCubit extends Cubit<GuildListState> {
     return main.updateGuild(nationalCode: GetIt.instance<LoginApi>().getUserData().nationalCode, guild: guild);
   }
 
-  bool hasRequestForCoupon({required int guildId}) {
-    return GetStorage().read<bool>('hasRequestForCoupon${GetIt.instance<LoginApi>().getUserData().nationalCode}-$guildId') ?? false;
-  }
-
-  void sendRequestForCoupon({required int guildId}) {
-    GetStorage().write('hasRequestForCoupon${GetIt.instance<LoginApi>().getUserData().nationalCode}-$guildId', true);
+  Future<RequestResult> sendRequestForCoupon({required Guild guild}) {
+    return saveGuild(guild.copyWith(isCouponRequested: true));
   }
 }

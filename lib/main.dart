@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:guilt_flutter/app_route.dart';
+import 'package:guilt_flutter/application/constants.dart';
 import 'package:guilt_flutter/application/light_theme.dart';
 import 'package:guilt_flutter/commons/data/data_source/remote_data_source.dart';
 import 'package:guilt_flutter/commons/data/data_source/remote_data_source_impl.dart';
@@ -44,14 +45,13 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    initPath = 'guild/dashboard';
     return MaterialApp.router(
       title: 'guild',
       theme: lightThemeData(),
       debugShowCheckedModeBanner: false,
       routeInformationParser: const QRouteInformationParser(),
       builder: (context, child) => child == null ? const SizedBox() : SafeArea(child: Directionality(textDirection: TextDirection.rtl, child: child)),
-      routerDelegate: QRouterDelegate(AppRoutes().routes, withWebBar: true, initPath: initPath),
+      routerDelegate: QRouterDelegate(AppRoutes().routes, withWebBar: true, initPath: appMode.initPath),
     );
   }
 }

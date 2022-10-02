@@ -1,41 +1,51 @@
+import 'dart:convert';
+
 import 'package:guilt_flutter/application/guild/data/models/pos_model.dart';
 import 'package:guilt_flutter/application/guild/domain/entities/icis.dart';
 import 'package:guilt_flutter/application/guild/domain/entities/pos.dart';
 import 'package:guilt_flutter/commons/data/model/json_parser.dart';
 import 'package:guilt_flutter/commons/utils.dart';
-import 'package:guilt_flutter/features/profile/domain/entities/gender_type.dart';
 import 'package:latlong2/latlong.dart' as lat_lng;
+import 'package:logger/logger.dart';
+
 import '../../domain/entities/guild.dart';
 
 class GuildModel extends Guild {
   const GuildModel({
     required int id,
-    required String nationalCode,
-    required String phoneNumber,
-    required String firstName,
-    required String lastName,
+    required int userId,
+    required String image,
+    required String status,
+    required String issueDate,
+    required String licenseNumber,
+    required String uuid,
+    required String corporateId,
+    required String boardTitle,
+    required String zoneCode,
     required Isic isic,
     required String organName,
     required String guildName,
     required String province,
     required String city,
-    required String? avatar,
     required bool isCouponRequested,
     required String homeTelephone,
     required String address,
     required String postalCode,
     required List<Pos> poses,
-    required Gender gender,
     required lat_lng.LatLng? location,
   }) : super(
           id: id,
-          nationalCode: nationalCode,
-          phoneNumber: phoneNumber,
+          userId: userId,
+          image: image,
+          status: status,
+          issueDate: issueDate,
+          licenseNumber: licenseNumber,
+          uuid: uuid,
+          corporateId: corporateId,
+          boardTitle: boardTitle,
+          zoneCode: zoneCode,
           isCouponRequested: isCouponRequested,
-          firstName: firstName,
           poses: poses,
-          avatar: avatar,
-          lastName: lastName,
           isic: isic,
           organName: organName,
           title: guildName,
@@ -45,33 +55,36 @@ class GuildModel extends Guild {
           address: address,
           postalCode: postalCode,
           location: location,
-          gender: gender,
         );
 
-  factory GuildModel.fromJson(Map<String, dynamic> json, int index) {
+  factory GuildModel.fromJson(Map<String, dynamic> json) {
+    Logger().i("info=> ${json} ");
     return GuildModel(
-      id: index,
-      phoneNumber: JsonParser.stringParser(json, ['MobileNo']),
-      firstName: JsonParser.stringParser(json, ['FirstName']),
-      lastName: JsonParser.stringParser(json, ['LastName']),
-      isic: getIsicWithCode(JsonParser.stringParser(json, ['IsicCoding'])),
-      organName: JsonParser.stringParser(json, ['OrganName']),
-      guildName: JsonParser.stringParser(json, ['GuildName']),
-      avatar: JsonParser.stringTryParser(json, ['Image']),
-      poses: JsonParser.listParser(json, ['Poses']).map((pos) => PosModel.fromJson(pos)).toList(),
-      province: JsonParser.stringParser(json, ['OstanName']),
-      city: JsonParser.stringParser(json, ['ShahrestanName']),
-      isCouponRequested: JsonParser.boolParser(json, ['isCouponRequested']),
-      homeTelephone: JsonParser.stringParser(json, ['PhoneNo']),
-      gender: JsonParser.boolParser(json, ['Gender']) ? Gender.boy : Gender.girl,
-      address: JsonParser.stringParser(json, ['Address']),
-      postalCode: JsonParser.stringParser(json, ['PostalCode']),
-      nationalCode: JsonParser.stringParser(json, ['NationalCode']),
-      location: JsonParser.stringParser(json, ['Location']).isEmpty
+      id: JsonParser.intParser(json, ['id']),
+      userId: JsonParser.intParser(json, ['user_id']),
+      image: JsonParser.stringParser(json, ['image']),
+      status: JsonParser.stringParser(json, ['status']),
+      issueDate: JsonParser.stringParser(json, ['issue_date']),
+      licenseNumber: JsonParser.stringParser(json, ['license_number']),
+      uuid: JsonParser.stringParser(json, ['uuid']),
+      corporateId: JsonParser.stringParser(json, ['corporate_id']),
+      boardTitle: JsonParser.stringParser(json, ['board_title']),
+      zoneCode: JsonParser.stringParser(json, ['zone_code']),
+      isic: getIsicWithCode(JsonParser.stringParser(json, ['isic_code'])),
+      organName: JsonParser.stringParser(json, ['organ']),
+      guildName: JsonParser.stringParser(json, ['guild_name']),
+      poses: JsonParser.listParser(json, ['poses']).map((pos) => PosModel.fromJson(pos)).toList(),
+      province: JsonParser.stringParser(json, ['province']),
+      city: JsonParser.stringParser(json, ['city']),
+      isCouponRequested: JsonParser.boolParser(json, ['coupon_req']),
+      homeTelephone: JsonParser.stringParser(json, ['phone']),
+      address: JsonParser.stringParser(json, ['address']),
+      postalCode: JsonParser.stringParser(json, ['postal_code']),
+      location: JsonParser.stringParser(json, ['location']).isEmpty
           ? null
           : lat_lng.LatLng(
-              double.parse(JsonParser.listParser(json, ['Location'])[0].toString()),
-              double.parse(JsonParser.listParser(json, ['Location'])[1].toString()),
+              double.parse(JsonParser.listParser(json, ['location'])[0].toString()),
+              double.parse(JsonParser.listParser(json, ['location'])[1].toString()),
             ),
     );
   }
@@ -79,19 +92,22 @@ class GuildModel extends Guild {
   factory GuildModel.fromSuper(Guild guild) {
     return GuildModel(
       id: guild.id,
-      nationalCode: guild.nationalCode,
-      phoneNumber: guild.phoneNumber,
-      firstName: guild.firstName,
-      lastName: guild.lastName,
+      userId: guild.userId,
+      image: guild.image,
+      status: guild.status,
+      issueDate: guild.issueDate,
+      licenseNumber: guild.licenseNumber,
+      uuid: guild.uuid,
+      corporateId: guild.corporateId,
+      boardTitle: guild.boardTitle,
+      zoneCode: guild.zoneCode,
       isic: guild.isic,
       poses: guild.poses,
-      avatar: guild.avatar,
       isCouponRequested: guild.isCouponRequested,
       organName: guild.organName,
       guildName: guild.title,
       province: guild.province,
       city: guild.city,
-      gender: guild.gender,
       homeTelephone: guild.homeTelephone,
       address: guild.address,
       postalCode: guild.postalCode,
@@ -101,23 +117,34 @@ class GuildModel extends Guild {
 
   Map<String, dynamic> toJson() {
     return {
-      'MobileNo': phoneNumber,
-      'FirstName': firstName,
-      'LastName': lastName,
-      'IsicCoding': isic.code,
-      'OrganName': organName,
-      'GuildName': title,
-      'Image': avatar,
-      'OstanName': province,
-      'isCouponRequested': isCouponRequested,
-      'ShahrestanName': city,
-      'Poses': poses.map((e) => PosModel.fromSuper(e).toJson()).toList(),
-      'PhoneNo': homeTelephone,
-      'Address': address,
-      'PostalCode': postalCode,
-      'NationalCode': nationalCode,
-      'Gender': gender == Gender.boy,
-      'Location': location == null ? null : [location!.latitude, location!.longitude],
+      'id': id,
+      "user_id": userId,
+      "image": image,
+      'status': status.isEmpty ? 'waiting_confirmation' : status,
+      'license_number': licenseNumber,
+      'uuid': uuid,
+      'corporate_id': corporateId,
+      'board_title': boardTitle,
+      'zone_code': zoneCode,
+      'isic_code': isic.code,
+      'organ': organName,
+      'guild_name': title,
+      'province': province,
+      'coupon_req': isCouponRequested,
+      'city': city,
+      'poses': poses.map((e) => PosModel.fromSuper(e).toJson()).toList(),
+      'phone': homeTelephone,
+      'address': address,
+      'postal_code': postalCode,
+      'location': location == null ? null : [location!.latitude, location!.longitude],
     };
+  }
+
+  static List<Guild> convertStringToGuildList(String jsonString) => convertMapToGuildList(jsonDecode(jsonString) as List);
+
+  static List<Guild> convertMapToGuildList(List<dynamic> json) => json.map((e) => GuildModel.fromJson(e)).toList();
+
+  static String convertGuildListToString(List<Guild> guildList) {
+    return guildList.map((e) => jsonEncode(GuildModel.fromSuper(e).toJson())).toList().toString();
   }
 }

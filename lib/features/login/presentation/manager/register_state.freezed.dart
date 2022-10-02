@@ -3,7 +3,7 @@
 // ignore_for_file: type=lint
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target
 
-part of 'login_state.dart';
+part of 'register_state.dart';
 
 // **************************************************************************
 // FreezedGenerator
@@ -15,10 +15,10 @@ final _privateConstructorUsedError = UnsupportedError(
     'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#custom-getters-and-methods');
 
 /// @nodoc
-mixin _$LoginState {
+mixin _$RegisterState {
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
-    required TResult Function(UserData userData) success,
+    required TResult Function() success,
     required TResult Function() loading,
     required TResult Function() readyToInput,
     required TResult Function(Failure failure) error,
@@ -26,7 +26,7 @@ mixin _$LoginState {
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
-    TResult Function(UserData userData)? success,
+    TResult Function()? success,
     TResult Function()? loading,
     TResult Function()? readyToInput,
     TResult Function(Failure failure)? error,
@@ -34,7 +34,7 @@ mixin _$LoginState {
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
-    TResult Function(UserData userData)? success,
+    TResult Function()? success,
     TResult Function()? loading,
     TResult Function()? readyToInput,
     TResult Function(Failure failure)? error,
@@ -69,113 +69,90 @@ mixin _$LoginState {
 }
 
 /// @nodoc
-abstract class $LoginStateCopyWith<$Res> {
-  factory $LoginStateCopyWith(
-          LoginState value, $Res Function(LoginState) then) =
-      _$LoginStateCopyWithImpl<$Res>;
+abstract class $RegisterStateCopyWith<$Res> {
+  factory $RegisterStateCopyWith(
+          RegisterState value, $Res Function(RegisterState) then) =
+      _$RegisterStateCopyWithImpl<$Res>;
 }
 
 /// @nodoc
-class _$LoginStateCopyWithImpl<$Res> implements $LoginStateCopyWith<$Res> {
-  _$LoginStateCopyWithImpl(this._value, this._then);
+class _$RegisterStateCopyWithImpl<$Res>
+    implements $RegisterStateCopyWith<$Res> {
+  _$RegisterStateCopyWithImpl(this._value, this._then);
 
-  final LoginState _value;
+  final RegisterState _value;
   // ignore: unused_field
-  final $Res Function(LoginState) _then;
+  final $Res Function(RegisterState) _then;
 }
 
 /// @nodoc
 abstract class _$$SuccessCopyWith<$Res> {
   factory _$$SuccessCopyWith(_$Success value, $Res Function(_$Success) then) =
       __$$SuccessCopyWithImpl<$Res>;
-  $Res call({UserData userData});
 }
 
 /// @nodoc
-class __$$SuccessCopyWithImpl<$Res> extends _$LoginStateCopyWithImpl<$Res>
+class __$$SuccessCopyWithImpl<$Res> extends _$RegisterStateCopyWithImpl<$Res>
     implements _$$SuccessCopyWith<$Res> {
   __$$SuccessCopyWithImpl(_$Success _value, $Res Function(_$Success) _then)
       : super(_value, (v) => _then(v as _$Success));
 
   @override
   _$Success get _value => super._value as _$Success;
-
-  @override
-  $Res call({
-    Object? userData = freezed,
-  }) {
-    return _then(_$Success(
-      userData: userData == freezed
-          ? _value.userData
-          : userData // ignore: cast_nullable_to_non_nullable
-              as UserData,
-    ));
-  }
 }
 
 /// @nodoc
 
 class _$Success implements Success {
-  const _$Success({required this.userData});
-
-  @override
-  final UserData userData;
+  const _$Success();
 
   @override
   String toString() {
-    return 'LoginState.success(userData: $userData)';
+    return 'RegisterState.success()';
   }
 
   @override
   bool operator ==(dynamic other) {
     return identical(this, other) ||
-        (other.runtimeType == runtimeType &&
-            other is _$Success &&
-            const DeepCollectionEquality().equals(other.userData, userData));
+        (other.runtimeType == runtimeType && other is _$Success);
   }
 
   @override
-  int get hashCode =>
-      Object.hash(runtimeType, const DeepCollectionEquality().hash(userData));
-
-  @JsonKey(ignore: true)
-  @override
-  _$$SuccessCopyWith<_$Success> get copyWith =>
-      __$$SuccessCopyWithImpl<_$Success>(this, _$identity);
+  int get hashCode => runtimeType.hashCode;
 
   @override
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
-    required TResult Function(UserData userData) success,
+    required TResult Function() success,
     required TResult Function() loading,
     required TResult Function() readyToInput,
     required TResult Function(Failure failure) error,
   }) {
-    return success(userData);
+    return success();
   }
 
   @override
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
-    TResult Function(UserData userData)? success,
+    TResult Function()? success,
     TResult Function()? loading,
     TResult Function()? readyToInput,
     TResult Function(Failure failure)? error,
   }) {
-    return success?.call(userData);
+    return success?.call();
   }
 
   @override
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
-    TResult Function(UserData userData)? success,
+    TResult Function()? success,
     TResult Function()? loading,
     TResult Function()? readyToInput,
     TResult Function(Failure failure)? error,
     required TResult orElse(),
   }) {
     if (success != null) {
-      return success(userData);
+      return success();
     }
     return orElse();
   }
@@ -218,13 +195,8 @@ class _$Success implements Success {
   }
 }
 
-abstract class Success implements LoginState {
-  const factory Success({required final UserData userData}) = _$Success;
-
-  UserData get userData;
-  @JsonKey(ignore: true)
-  _$$SuccessCopyWith<_$Success> get copyWith =>
-      throw _privateConstructorUsedError;
+abstract class Success implements RegisterState {
+  const factory Success() = _$Success;
 }
 
 /// @nodoc
@@ -234,7 +206,7 @@ abstract class _$$LoadingCopyWith<$Res> {
 }
 
 /// @nodoc
-class __$$LoadingCopyWithImpl<$Res> extends _$LoginStateCopyWithImpl<$Res>
+class __$$LoadingCopyWithImpl<$Res> extends _$RegisterStateCopyWithImpl<$Res>
     implements _$$LoadingCopyWith<$Res> {
   __$$LoadingCopyWithImpl(_$Loading _value, $Res Function(_$Loading) _then)
       : super(_value, (v) => _then(v as _$Loading));
@@ -250,7 +222,7 @@ class _$Loading implements Loading {
 
   @override
   String toString() {
-    return 'LoginState.loading()';
+    return 'RegisterState.loading()';
   }
 
   @override
@@ -265,7 +237,7 @@ class _$Loading implements Loading {
   @override
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
-    required TResult Function(UserData userData) success,
+    required TResult Function() success,
     required TResult Function() loading,
     required TResult Function() readyToInput,
     required TResult Function(Failure failure) error,
@@ -276,7 +248,7 @@ class _$Loading implements Loading {
   @override
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
-    TResult Function(UserData userData)? success,
+    TResult Function()? success,
     TResult Function()? loading,
     TResult Function()? readyToInput,
     TResult Function(Failure failure)? error,
@@ -287,7 +259,7 @@ class _$Loading implements Loading {
   @override
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
-    TResult Function(UserData userData)? success,
+    TResult Function()? success,
     TResult Function()? loading,
     TResult Function()? readyToInput,
     TResult Function(Failure failure)? error,
@@ -337,7 +309,7 @@ class _$Loading implements Loading {
   }
 }
 
-abstract class Loading implements LoginState {
+abstract class Loading implements RegisterState {
   const factory Loading() = _$Loading;
 }
 
@@ -349,7 +321,8 @@ abstract class _$$ReadyToInputCopyWith<$Res> {
 }
 
 /// @nodoc
-class __$$ReadyToInputCopyWithImpl<$Res> extends _$LoginStateCopyWithImpl<$Res>
+class __$$ReadyToInputCopyWithImpl<$Res>
+    extends _$RegisterStateCopyWithImpl<$Res>
     implements _$$ReadyToInputCopyWith<$Res> {
   __$$ReadyToInputCopyWithImpl(
       _$ReadyToInput _value, $Res Function(_$ReadyToInput) _then)
@@ -366,7 +339,7 @@ class _$ReadyToInput implements ReadyToInput {
 
   @override
   String toString() {
-    return 'LoginState.readyToInput()';
+    return 'RegisterState.readyToInput()';
   }
 
   @override
@@ -381,7 +354,7 @@ class _$ReadyToInput implements ReadyToInput {
   @override
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
-    required TResult Function(UserData userData) success,
+    required TResult Function() success,
     required TResult Function() loading,
     required TResult Function() readyToInput,
     required TResult Function(Failure failure) error,
@@ -392,7 +365,7 @@ class _$ReadyToInput implements ReadyToInput {
   @override
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
-    TResult Function(UserData userData)? success,
+    TResult Function()? success,
     TResult Function()? loading,
     TResult Function()? readyToInput,
     TResult Function(Failure failure)? error,
@@ -403,7 +376,7 @@ class _$ReadyToInput implements ReadyToInput {
   @override
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
-    TResult Function(UserData userData)? success,
+    TResult Function()? success,
     TResult Function()? loading,
     TResult Function()? readyToInput,
     TResult Function(Failure failure)? error,
@@ -453,7 +426,7 @@ class _$ReadyToInput implements ReadyToInput {
   }
 }
 
-abstract class ReadyToInput implements LoginState {
+abstract class ReadyToInput implements RegisterState {
   const factory ReadyToInput() = _$ReadyToInput;
 }
 
@@ -465,7 +438,7 @@ abstract class _$$ErrorCopyWith<$Res> {
 }
 
 /// @nodoc
-class __$$ErrorCopyWithImpl<$Res> extends _$LoginStateCopyWithImpl<$Res>
+class __$$ErrorCopyWithImpl<$Res> extends _$RegisterStateCopyWithImpl<$Res>
     implements _$$ErrorCopyWith<$Res> {
   __$$ErrorCopyWithImpl(_$Error _value, $Res Function(_$Error) _then)
       : super(_value, (v) => _then(v as _$Error));
@@ -496,7 +469,7 @@ class _$Error implements Error {
 
   @override
   String toString() {
-    return 'LoginState.error(failure: $failure)';
+    return 'RegisterState.error(failure: $failure)';
   }
 
   @override
@@ -519,7 +492,7 @@ class _$Error implements Error {
   @override
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
-    required TResult Function(UserData userData) success,
+    required TResult Function() success,
     required TResult Function() loading,
     required TResult Function() readyToInput,
     required TResult Function(Failure failure) error,
@@ -530,7 +503,7 @@ class _$Error implements Error {
   @override
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
-    TResult Function(UserData userData)? success,
+    TResult Function()? success,
     TResult Function()? loading,
     TResult Function()? readyToInput,
     TResult Function(Failure failure)? error,
@@ -541,7 +514,7 @@ class _$Error implements Error {
   @override
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
-    TResult Function(UserData userData)? success,
+    TResult Function()? success,
     TResult Function()? loading,
     TResult Function()? readyToInput,
     TResult Function(Failure failure)? error,
@@ -591,7 +564,7 @@ class _$Error implements Error {
   }
 }
 
-abstract class Error implements LoginState {
+abstract class Error implements RegisterState {
   const factory Error({required final Failure failure}) = _$Error;
 
   Failure get failure;

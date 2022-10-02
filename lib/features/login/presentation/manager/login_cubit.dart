@@ -21,7 +21,7 @@ class LoginCubit extends Cubit<LoginState> {
     final response = await _loginMain.loginWithOtp(nationalCode: LoginCubit.nationalCode, password: replaceFarsiNumber(verifyCode));
     response.fold(
       (failure) => emit(LoginState.error(failure: failure)),
-      (_) => emit(const LoginState.success()),
+      (userData) => emit(LoginState.success(userData: userData)),
     );
   }
 

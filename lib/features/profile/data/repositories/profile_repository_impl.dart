@@ -21,7 +21,7 @@ class ProfileRepositoryImpl implements ProfileRepository {
   @override
   Future<RequestResult> changeAvatar(XFile avatar) async {
     final output = await remoteDataSource.postMultipartToServer(
-      url: '${BASE_URL_API1}users/record/image',
+      url: '${BASE_URL_API}users/record/image',
       attachName: 'image',
       imageName: 'image',
       image: avatar,
@@ -38,7 +38,7 @@ class ProfileRepositoryImpl implements ProfileRepository {
   @override
   Future<Either<Failure, UserInfo>> getProfile(String nationalCode) async {
     return remoteDataSource.getFromServer<UserInfo>(
-      url: '${BASE_URL_API1}users',
+      url: '${BASE_URL_API}users',
       localKey: getLocalKeyOfUser(nationalCode),
       params: {},
       mapSuccess: (data) => UserInfoModel.fromJson(data['data']),
@@ -48,7 +48,7 @@ class ProfileRepositoryImpl implements ProfileRepository {
   @override
   Future<RequestResult> updateProfile(UserInfo userInfo) async {
     return RequestResult.fromEither(await remoteDataSource.postToServer(
-      url: '${BASE_URL_API1}users',
+      url: '${BASE_URL_API}users',
       localKey: getLocalKeyOfUser(GetIt.instance<LoginApi>().getUserData().nationalCode),
       params: UserInfoModel.fromSuper(userInfo).toJson(),
       mapSuccess: (data) => UserInfoModel.fromJson(data['data']),

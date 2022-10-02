@@ -1,5 +1,6 @@
 import 'package:dartz/dartz.dart';
 import 'package:guilt_flutter/commons/failures.dart';
+import 'package:guilt_flutter/features/login/domain/entities/user_data.dart';
 
 import '../repositories/login_repository.dart';
 
@@ -8,7 +9,7 @@ class LoginMain {
 
   LoginMain(this.repository);
 
-  Future<Either<Failure, bool>> loginWithOtp({required String nationalCode, required String password}) {
+  Future<Either<Failure, UserData>> loginWithOtp({required String nationalCode, required String password}) {
     return repository.loginWithOtp(nationalCode, password);
   }
 

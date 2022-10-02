@@ -10,6 +10,7 @@ class OurItemPicker extends StatefulWidget {
   final String currentText;
   final TextEditingController controller;
   final List<String>? items;
+  final int headlineSize;
   final void Function(String value)? onChanged;
   final Future<List<String>> Function()? onFillParams;
 
@@ -17,6 +18,7 @@ class OurItemPicker extends StatefulWidget {
     required this.hint,
     this.icon,
     this.onChanged,
+    this.headlineSize = 4,
     this.onFillParams,
     required this.controller,
     this.currentText = "",
@@ -39,11 +41,69 @@ class _OurItemPickerState extends State<OurItemPicker> {
   @override
   Widget build(BuildContext context) {
     widget.controller.text = widget.currentText;
-    return Text(
-      "Hello",
-      textAlign: TextAlign.center,
-      style: defaultTextStyle(context, headline: 4),
+
+    return GestureDetector(
+      onTap: () async {
+        focusNode.requestFocus();
+        focusNode.unfocus();
+        final items = widget.onFillParams == null ? widget.items ?? [] : (await widget.onFillParams!());
+        isDialogOpen = true;
+        showDialog(
+          context: context,
+          barrierDismissible: true,
+          builder: (context) {
+            return WillPopScope(
+              onWillPop: () async {
+                isDialogOpen = false;
+                return true;
+              },
+              child: ShowAlertDialogWithButtons(
+                context: context,
+                controller: widget.controller,
+                hint: widget.hint,
+                items: items,
+                onChanged: widget.onChanged,
+                currentText: widget.currentText,
+                icon: widget.icon,
+                onFillParams: widget.onFillParams,
+              ),
+            );
+          },
+        );
+      },
+      child: AbsorbPointer(
+          child: OurTextField(
+        title: widget.hint,
+        textFormField: TextFormField(
+          style: defaultTextStyle(context, headline: widget.headlineSize).c(const Color(0xff2F3135)),
+          controller: widget.controller,
+          keyboardType: TextInputType.number,
+          focusNode: focusNode,
+          decoration: defaultInputDecoration(context).copyWith(
+            hintText: widget.hint,
+            hintStyle: defaultTextStyle(context, headline: widget.headlineSize).c(const Color(0xffaaadb4)),
+            contentPadding: const EdgeInsets.only(left: 8.0, right: 8.0, top: 20.0, bottom: 20.0),
+            prefixIcon: widget.icon == null ? null : Icon(widget.icon),
+            helperText: '',
+          ),
+          validator: (value) {
+            if (value == null) {
+              return null;
+            }
+            if (value.isEmpty) {
+              return "این فیلد نباید خالی باشد";
+            }
+            return null;
+          },
+        ),
+      )),
     );
+
+    // return Text(
+    //   "Hello",
+    //   textAlign: TextAlign.center,
+    //   style: defaultTextStyle(context, headline: 4),
+    // );
   }
 }
 

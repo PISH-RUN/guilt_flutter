@@ -1,5 +1,4 @@
 import 'package:collection/collection.dart';
-import 'package:logger/logger.dart';
 import 'package:persian_datetime_picker/persian_datetime_picker.dart';
 import '../../../../commons/data/model/json_parser.dart';
 import '../../domain/entities/gender_type.dart';
@@ -27,9 +26,9 @@ class UserInfoModel extends UserInfo {
   factory UserInfoModel.fromJson(Map<String, dynamic> json) {
     return UserInfoModel(
       id: JsonParser.intParser(json, ['user_id']),
-      firstName: JsonParser.stringParser(json, ['firstname']),
-      lastName: JsonParser.stringParser(json, ['lastname']),
-      fatherName: JsonParser.stringParser(json, ['fathername']),
+      firstName: JsonParser.stringParser(json, ['first_name']),
+      lastName: JsonParser.stringParser(json, ['last_name']),
+      fatherName: JsonParser.stringParser(json, ['father_name']),
       avatar: JsonParser.stringParser(json, ['Image']),
       birthDate: JsonParser.stringParser(json, ['birth_date']).isEmpty
           ? null
@@ -56,10 +55,10 @@ class UserInfoModel extends UserInfo {
 
   Map<String, dynamic> toJson() {
     return {
-      'firstname': firstName,
+      'first_name': firstName,
       'avatar': avatar,
-      'lastname': lastName,
-      'fathername': fatherName,
+      'last_name': lastName,
+      'father_name': fatherName,
       'birth_date':
           birthDate == null ? null : "${birthDate!.year}${birthDate!.month.toString().padLeft(2, '0')}${birthDate!.day.toString().padLeft(2, '0')}",
       'gender': gender.code,
