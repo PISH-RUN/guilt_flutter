@@ -5,6 +5,7 @@ import 'package:guilt_flutter/commons/widgets/loading_widget.dart';
 import 'package:guilt_flutter/features/psp/domain/entities/guild_psp.dart';
 import 'package:guilt_flutter/features/psp/presentation/widgets/guild_item.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
+import 'package:logger/logger.dart';
 
 import '../manager/all_guilds_cubit.dart';
 import '../manager/all_guilds_state.dart';
@@ -25,7 +26,6 @@ class _AllGuildsListWidgetState extends State<AllGuildsListWidget> {
 
   @override
   void initState() {
-    _retry(context);
     _pagingController.addPageRequestListener((pageKey) {
       BlocProvider.of<AllGuildsCubit>(context).getMoreItem();
     });
@@ -37,18 +37,9 @@ class _AllGuildsListWidgetState extends State<AllGuildsListWidget> {
     return Scaffold(
       body: SafeArea(
         child: BlocConsumer<AllGuildsCubit, AllGuildsState>(
-          listener: (context, state) {
-            state.maybeWhen(
-              loaded: (data) {
-                if (data.isLastPage) {
-                  _pagingController.appendLastPage(data.list);
-                } else {
-                  final nextPageKey = ((data.currentPage - 1) * data.perPage) + data.list.length;
-                  _pagingController.appendPage(data.list, nextPageKey);
-                }
-              },
-              orElse: () => null,
-            );
+          listener: (context, state) {},
+          buildWhen: (previous, current) {
+            return current.when(loading: () => false, error: (_) => false, empty: () => true, loaded: (_) => true);
           },
           builder: (context, state) {
             return state.when(
@@ -68,12 +59,20 @@ class _AllGuildsListWidgetState extends State<AllGuildsListWidget> {
                   ),
                 ],
               ),
-              loaded: (_) => PagedListView<int, GuildPsp>(
-                  pagingController: _pagingController,
-                  builderDelegate: PagedChildBuilderDelegate<GuildPsp>(
-                    itemBuilder: (context, item, index) => GuildItem(guild: item),
-                  ),
+              loaded: (data) {
+                if (data.isLastPage) {
+                  _pagingController.appendLastPage(data.list);
+                } else {
+                  final nextPageKey = ((data.currentPage - 1) * data.perPage) + data.list.length;
+                  _pagingController.appendPage(data.list, nextPageKey);
+                }
+                return PagedListView<int, GuildPsp>(
+                pagingController: _pagingController,
+                builderDelegate: PagedChildBuilderDelegate<GuildPsp>(
+                  itemBuilder: (context, item, index) => GuildItem(guild: item),
                 ),
+              );
+              },
             );
           },
         ),

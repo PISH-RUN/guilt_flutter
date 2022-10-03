@@ -7,6 +7,7 @@ import 'package:guilt_flutter/commons/request_result.dart';
 import 'package:guilt_flutter/features/psp/constants.dart';
 import 'package:guilt_flutter/features/psp/data/models/guild_psp_model.dart';
 import 'package:guilt_flutter/features/psp/domain/entities/guild_psp.dart';
+import 'package:logger/logger.dart';
 
 import '../../../../application/constants.dart';
 import '../../domain/repositories/psp_repository.dart';
@@ -18,16 +19,16 @@ class PspRepositoryImpl implements PspRepository {
 
   @override
   Future<Either<Failure, PaginateList<GuildPsp>>> getAllGuildsByCities(List<String> cities, int page, bool isJustMine, String searchText) async {
-    final output = remoteDataSource.postToServer<PaginateList<GuildPsp>>(
-      url: '${BASE_URL_API}guilds?page=0&pageSize=$perPageGuildItem',
+    final output = await remoteDataSource.postToServer<PaginateList<GuildPsp>>(
+      url: '${BASE_URL_API}guilds?page=${page - 1}&pageSize=$perPageGuildItem',
       params: {
         'cities': ['فیروزکوه']
       },
       mapSuccess: (Map<String, dynamic> json) => PaginateList(
-        list: JsonParser.listParser(json, ['data']).map((element) => GuildPspModel.fromJson(element)).toList(),
+        list: JsonParser.listParser(json, ['data', 'results']).map((element) => GuildPspModel.fromJson(element)).toList(),
         currentPage: page,
         perPage: perPageGuildItem,
-        totalPage: 3,
+        totalPage: (JsonParser.intParser(json, ['data', 'total']) ~/ perPageGuildItem),
       ),
     );
     return output;

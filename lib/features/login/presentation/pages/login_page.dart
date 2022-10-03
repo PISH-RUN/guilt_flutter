@@ -27,13 +27,15 @@ class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
     return LoginWidget(onSuccess: (userData) {
+      final path = redirectPath;
+      redirectPath = "";
       GetStorage().write('userData', jsonEncode(userData.toJson()));
       switch (userData.role) {
         case UserRole.psp:
-          QR.navigator.replaceAll(redirectPath.isNotEmpty ? redirectPath : 'psp/guildList');
+          QR.navigator.replaceAll(path.isNotEmpty ? path : 'psp/guildList');
           break;
         case UserRole.user:
-          QR.navigator.replaceAll(redirectPath.isNotEmpty ? redirectPath : initPath);
+          QR.navigator.replaceAll(path.isNotEmpty ? path : initPath);
           break;
         case UserRole.admin:
           break;
