@@ -10,7 +10,6 @@ import 'package:guilt_flutter/commons/widgets/loading_widget.dart';
 import 'package:guilt_flutter/features/psp/presentation/manager/all_guilds_state.dart';
 import 'package:guilt_flutter/features/psp/presentation/manager/update_state_of_guild_cubit.dart';
 import 'package:guilt_flutter/features/psp/presentation/widgets/all_guilds_widget.dart';
-import 'package:logger/logger.dart';
 import 'package:multi_select_flutter/multi_select_flutter.dart';
 
 import '../manager/all_guilds_cubit.dart';
@@ -41,82 +40,87 @@ class _AllGuildsListPageState extends State<AllGuildsListPage> {
 
   @override
   void initState() {
-    BlocProvider.of<AllGuildsCubit>(context).initialPage([], widget.isJustMine, searchText: "");//todo use cities of local
+    BlocProvider.of<AllGuildsCubit>(context).initialPage([], searchText: "");
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: SafeArea(
-          child: BlocBuilder<AllGuildsCubit, AllGuildsState>(
+      body: SafeArea(child: BlocBuilder<AllGuildsCubit, AllGuildsState>(
         builder: (context, state) {
-          return state.maybeWhen(loading: ()=>LoadingWidget(), error: (failure)=>ErrorPage(failure: failure), orElse: ()=>Column(
-            children: [
-              Container(
-                margin: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8),
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  shape: BoxShape.rectangle,
-                  borderRadius: const BorderRadius.all(Radius.circular(9)),
-                  boxShadow: simpleShadow(),
-                ),
-                padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 2.0),
-                child: Row(
-                  children: <Widget>[
-                    const Icon(Icons.search, color: AppColor.blue, size: 25.0),
-                    Expanded(
-                      child: TextField(
-                        controller: controller,
-                        onChanged: (value) => search(),
-                        style: defaultTextStyle(context).c(Colors.black87),
-                        onTap: () => setState(() => fixRtlFlutterBug(controller)),
-                        cursorWidth: 0.2,
-                        maxLines: 1,
-                        minLines: 1,
-                        decoration: InputDecoration(
-                          enabledBorder: const OutlineInputBorder(borderSide: BorderSide(width: 0, color: Colors.transparent)),
-                          focusedBorder: const OutlineInputBorder(borderSide: BorderSide(width: 0, color: Colors.transparent)),
-                          hintText: 'جستجو ...',
-                          hintStyle: Theme.of(context).textTheme.headline4!.copyWith(color: Colors.grey),
+          return state.maybeWhen(
+              loading: () => LoadingWidget(),
+              error: (failure) => ErrorPage(failure: failure),
+              orElse: () => Column(
+                    children: [
+                      Container(
+                        margin: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8),
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          shape: BoxShape.rectangle,
+                          borderRadius: const BorderRadius.all(Radius.circular(9)),
+                          boxShadow: simpleShadow(),
+                        ),
+                        padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 2.0),
+                        child: Row(
+                          children: <Widget>[
+                            const Icon(Icons.search, color: AppColor.blue, size: 25.0),
+                            Expanded(
+                              child: TextField(
+                                controller: controller,
+                                onChanged: (value) => search(),
+                                style: defaultTextStyle(context).c(Colors.black87),
+                                onTap: () => setState(() => fixRtlFlutterBug(controller)),
+                                cursorWidth: 0.2,
+                                maxLines: 1,
+                                minLines: 1,
+                                decoration: InputDecoration(
+                                  enabledBorder: const OutlineInputBorder(borderSide: BorderSide(width: 0, color: Colors.transparent)),
+                                  focusedBorder: const OutlineInputBorder(borderSide: BorderSide(width: 0, color: Colors.transparent)),
+                                  hintText: 'جستجو ...',
+                                  hintStyle: Theme.of(context).textTheme.headline4!.copyWith(color: Colors.grey),
+                                ),
+                              ),
+                            ),
+                          ],
                         ),
                       ),
-                    ),
-                  ],
-                ),
-              ),
-              Container(
-                margin: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8),
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  shape: BoxShape.rectangle,
-                  borderRadius: const BorderRadius.all(Radius.circular(9)),
-                  boxShadow: simpleShadow(),
-                ),
-                padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 2.0),
-                child: GestureDetector(
-                  onTap: () => _showMultiSelect(context),
-                  child: AbsorbPointer(
-                    child: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Row(
-                        children: [
-                          const Icon(Icons.location_city, size: 25.0),
-                          const SizedBox(width: 10.0),
-                          Text(selectedCity.isEmpty ? "شهری انتخاب نشده است" : "${selectedCity.length} شهر انتخاب شده"),
-                          const Spacer(),
-                          const RotatedBox(quarterTurns: 1, child: Icon(Icons.arrow_back_ios_rounded, size: 15.0)),
-                        ],
+                      Container(
+                        margin: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8),
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          shape: BoxShape.rectangle,
+                          borderRadius: const BorderRadius.all(Radius.circular(9)),
+                          boxShadow: simpleShadow(),
+                        ),
+                        padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 2.0),
+                        child: GestureDetector(
+                          onTap: () => _showMultiSelect(context),
+                          child: AbsorbPointer(
+                            child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Row(
+                                children: [
+                                  const Icon(Icons.location_city, size: 25.0),
+                                  const SizedBox(width: 10.0),
+                                  Text(selectedCity.isEmpty ? "شهری انتخاب نشده است" : "${selectedCity.length} شهر انتخاب شده"),
+                                  const Spacer(),
+                                  const RotatedBox(quarterTurns: 1, child: Icon(Icons.arrow_back_ios_rounded, size: 15.0)),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ),
                       ),
-                    ),
-                  ),
-                ),
-              ),
-              Expanded(
-                  child: AllGuildsListWidget(
-                      cities: selectedCity.isNotEmpty ? selectedCity : ["یاسوج"], isJustMine: widget.isJustMine, searchText: controller.text)),
-            ],
-          ));
+                      Expanded(
+                        child: AllGuildsListWidget(
+                          cities: selectedCity.isNotEmpty ? selectedCity : ["یاسوج"],
+                          searchText: controller.text,
+                        ),
+                      ),
+                    ],
+                  ));
         },
       )),
     );

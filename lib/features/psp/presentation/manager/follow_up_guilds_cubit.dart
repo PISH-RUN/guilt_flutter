@@ -1,16 +1,17 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:guilt_flutter/features/psp/domain/entities/guild_psp.dart';
-
-import '../../domain/use_cases/psp_main.dart';
+import 'package:guilt_flutter/features/psp/presentation/manager/follow_up_guilds_state.dart';
+import 'package:logger/logger.dart';
 import 'all_guilds_state.dart';
+import '../../domain/use_cases/psp_main.dart';
 
-class AllGuildsCubit extends Cubit<AllGuildsState> {
+class FollowUpGuildsCubit extends Cubit<FollowUpGuildsState> {
   final PspMain _main;
 
-  AllGuildsCubit({
+  FollowUpGuildsCubit({
     required PspMain main,
   })  : _main = main,
-        super(const AllGuildsState.loading());
+        super(const FollowUpGuildsState.loading());
 
   int currentPage = 1;
   int totalPage = 100;
@@ -20,20 +21,25 @@ class AllGuildsCubit extends Cubit<AllGuildsState> {
   bool isJustMine = false;
 
   Future<void> initialPage(List<String> cities, {String? searchText}) async {
+    this.isJustMine = isJustMine;
     if (searchText != null) {
       currentPage = 1;
       guildPspList = [];
       currentSearchText = searchText;
     }
     currentCities = cities;
-    emit(const AllGuildsState.loading());
-    final response = await _main.getAllGuildsByCities(cities: cities, page: currentPage, searchText: currentSearchText);
-    response.fold((failure) => emit(AllGuildsState.error(failure: failure)), (guildList) {
+    emit(const FollowUpGuildsState.loading());
+    final response = await _main.getFollowUpGuildList(cities: cities, page: currentPage, searchText: currentSearchText);
+    response.fold((failure) => emit(FollowUpGuildsState.error(failure: failure)), (guildList) {
       totalPage = guildList.totalPage;
       currentPage = guildList.currentPage;
       guildPspList = [...guildPspList, ...guildList.list];
-      emit(AllGuildsState.loaded(guildList: guildList.copyWith(list: guildList.list)));
+      emit(FollowUpGuildsState.loaded(guildList: guildList.copyWith(list: guildList.list)));
     });
+  }
+
+  GuildPsp getGuildBuId(int guildId) {
+    return guildPspList.firstWhere((element) => element.guild.id == guildId);
   }
 
   Future<void> getMoreItem() async {

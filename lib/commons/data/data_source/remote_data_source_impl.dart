@@ -145,7 +145,6 @@ class RemoteDataSourceImpl implements RemoteDataSource {
     String? localKey,
   }) async {
     if (!await isInternetEnable()) {
-      Logger().e("info=> internet is disable");
       return Left(ServerFailure.noInternet());
     }
     final response = await _callFunctionOfServer(
@@ -181,6 +180,33 @@ class RemoteDataSourceImpl implements RemoteDataSource {
       url: url,
       isTokenNeed: isTokenNeed,
       methodName: "put",
+    );
+    return response.fold(
+      (l) => Left(l),
+      (data) {
+        if (localKey != null) {
+          GetStorage().write(localKey, data);
+          GetStorage().write("modifyAt-$localKey", DateTime.now().millisecondsSinceEpoch);
+        }
+        return Right(convertStringToSuccessData(data, (success) => mapSuccess(success)));
+      },
+    );
+  }
+
+  @override
+  Future<Either<ServerFailure, T>> patchToServer<T>(
+      {required String url,
+      required Map<String, dynamic> params,
+      required T Function(Map<String, dynamic> success) mapSuccess,
+      bool isTokenNeed = true,
+      String? localKey}) async {
+    if (!await isInternetEnable()) return Left(ServerFailure.noInternet());
+    final response = await _callFunctionOfServer(
+      response: client.patch(Uri.parse(url), body: jsonEncode(params), headers: getHeader(isTokenNeed)),
+      params: params,
+      url: url,
+      isTokenNeed: isTokenNeed,
+      methodName: "patch",
     );
     return response.fold(
       (l) => Left(l),
@@ -279,7 +305,6 @@ class RemoteDataSourceImpl implements RemoteDataSource {
         ),
       });
       // final bytes = await image.readAsBytes();
-      // Logger().i("info=>1111111 ${image.path} ");
       // final dio.MultipartFile file = dio.MultipartFile.fromBytes(bytes, filename: image.path.substring(image.path.lastIndexOf('/') + 1));
       // MapEntry<String, dio.MultipartFile> entry = MapEntry(imageName, file);
       // formData.files.add(entry);

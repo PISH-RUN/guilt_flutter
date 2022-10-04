@@ -35,6 +35,7 @@ void prepareGetIt() {
   di_login.init();
   di_guild.init();
   di_profile.init();
+  //todo just for psp app
   di_psp.init();
 }
 

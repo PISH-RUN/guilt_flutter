@@ -19,6 +19,6 @@ class LoginViaUserPage extends StatefulWidget {
 class _LoginViaUserPageState extends State<LoginViaUserPage> {
   @override
   Widget build(BuildContext context) {
-    return LoginWidget(onSuccess: (userData) => QR.to('psp/edit/${QR.params['guildId'].toString()}'));
+    return LoginWidget(onSuccess: (userData) => QR.to('psp/edit/${userData.token}/${QR.params['guildId'].toString()}'.trim()));
   }
 }

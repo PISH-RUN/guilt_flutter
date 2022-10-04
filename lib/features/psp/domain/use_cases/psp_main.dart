@@ -10,11 +10,21 @@ class PspMain {
 
   PspMain(this.repository);
 
-  Future<Either<Failure, PaginateList<GuildPsp>>> getAllGuildsByCities(List<String> cities, int page, bool isJustMine, String searchText) {
-    return repository.getAllGuildsByCities(cities, page, isJustMine, searchText);
+  Future<Either<Failure, PaginateList<GuildPsp>>> getAllGuildsByCities(
+      {required List<String> cities, required int page, required String searchText}) {
+    return repository.getAllGuildsByCities(cities, page, searchText);
   }
 
-  Future<RequestResult> updateStateOfSpecialGuild(GuildPsp guildPsp, String token) {
-    return repository.updateStateOfSpecialGuild(guildPsp, token);
+  Future<Either<Failure, PaginateList<GuildPsp>>> getFollowUpGuildList(
+      {required int page, required List<String> cities, required String searchText}) {
+    return repository.getFollowUpGuildList(page, cities, searchText);
+  }
+
+  Future<RequestResult> updateStateOfSpecialGuild(GuildPsp guildPsp, {bool isJustState = true, String token = ""}) {
+    return repository.updateStateOfSpecialGuild(guildPsp, isJustState: isJustState, token: token);
+  }
+
+  Future<Either<Failure, String>> getUserPhoneNumber(int userId) {
+    return repository.getUserPhoneNumber(userId);
   }
 }

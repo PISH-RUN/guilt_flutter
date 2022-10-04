@@ -2,7 +2,10 @@ import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
+import 'package:guilt_flutter/application/colors.dart';
 import 'package:guilt_flutter/commons/widgets/our_text_field.dart';
+import 'package:guilt_flutter/commons/widgets/simple_snake_bar.dart';
+import 'package:guilt_flutter/features/psp/presentation/manager/update_state_of_guild_cubit.dart';
 import 'package:latlong2/latlong.dart' as lat_lng;
 import 'package:qlevar_router/qlevar_router.dart';
 
@@ -75,8 +78,11 @@ class GuildFormWidget extends StatefulWidget {
   final bool isAddNew;
   final bool isEditable;
   final bool isPsp;
+  final void Function(Guild guild)? onSubmitFormInPsps;
 
-  const GuildFormWidget({required this.guild, required this.isAddNew, required this.isEditable, this.isPsp = false, Key? key}) : super(key: key);
+  const GuildFormWidget(
+      {required this.guild, required this.isAddNew, required this.isEditable, this.isPsp = false, this.onSubmitFormInPsps, Key? key})
+      : super(key: key);
 
   @override
   _GuildFormWidgetState createState() => _GuildFormWidgetState();
@@ -174,8 +180,30 @@ class _GuildFormWidgetState extends State<GuildFormWidget> {
                     )
                   : posesList(context),
             const SizedBox(height: 10.0),
+            if (widget.isPsp) submitButton(context),
           ],
         ),
+      ),
+    );
+  }
+
+  Widget submitButton(BuildContext context) {
+    return GestureDetector(
+      onTap: () async {
+        if (widget.onSubmitFormInPsps == null) return;
+        if (!formKey.currentState!.validate()) {
+          return;
+        }
+        formKey.currentState!.save();
+        widget.onSubmitFormInPsps!(guild);
+      },
+      child: Container(
+        width: double.infinity,
+        margin: const EdgeInsets.symmetric(horizontal: 20.0),
+        padding: const EdgeInsets.all(18),
+        alignment: Alignment.center,
+        decoration: BoxDecoration(color: AppColor.blue, shape: BoxShape.rectangle, borderRadius: BorderRadius.circular(10)),
+        child: Text("اعمال تغییرات و تایید نهایی", style: defaultTextStyle(context, headline: 4).c(Colors.white)),
       ),
     );
   }

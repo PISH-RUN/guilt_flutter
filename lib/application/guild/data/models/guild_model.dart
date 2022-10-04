@@ -58,7 +58,6 @@ class GuildModel extends Guild {
         );
 
   factory GuildModel.fromJson(Map<String, dynamic> json) {
-    Logger().i("info=> ${json} ");
     return GuildModel(
       id: JsonParser.intParser(json, ['id']),
       userId: JsonParser.intParser(json, ['user_id']),

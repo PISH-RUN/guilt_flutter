@@ -1,4 +1,5 @@
 import 'package:dartz/dartz.dart';
+import 'package:guilt_flutter/application/guild/data/models/guild_model.dart';
 import 'package:guilt_flutter/commons/data/data_source/remote_data_source.dart';
 import 'package:guilt_flutter/commons/data/model/json_parser.dart';
 import 'package:guilt_flutter/commons/data/model/paginate_list.dart';
@@ -18,12 +19,10 @@ class PspRepositoryImpl implements PspRepository {
   PspRepositoryImpl({required this.remoteDataSource});
 
   @override
-  Future<Either<Failure, PaginateList<GuildPsp>>> getAllGuildsByCities(List<String> cities, int page, bool isJustMine, String searchText) async {
+  Future<Either<Failure, PaginateList<GuildPsp>>> getAllGuildsByCities(List<String> cities, int page, String searchText) async {
     final output = await remoteDataSource.postToServer<PaginateList<GuildPsp>>(
       url: '${BASE_URL_API}guilds?page=${page - 1}&pageSize=$perPageGuildItem',
-      params: {
-        'cities': ['فیروزکوه']
-      },
+      params: {'cities': cities},
       mapSuccess: (Map<String, dynamic> json) => PaginateList(
         list: JsonParser.listParser(json, ['data', 'results']).map((element) => GuildPspModel.fromJson(element)).toList(),
         currentPage: page,
@@ -35,12 +34,46 @@ class PspRepositoryImpl implements PspRepository {
   }
 
   @override
-  Future<RequestResult> updateStateOfSpecialGuild(GuildPsp guild, String token) async {
+  Future<RequestResult> updateStateOfSpecialGuild(GuildPsp guild, {bool isJustState = true, String token = ""}) async {
+    if (!isJustState) {
+      final output = await remoteDataSource.putToServer<bool>(
+        url: '${BASE_URL_API}guilds/${guild.guild.id}/psps',
+        params: {...GuildModel.fromSuper(guild.guild).toJson(), 'user_token': token},
+        mapSuccess: (Map<String, dynamic> json) => true,
+      );
+      if (output.isLeft()) {
+        return RequestResult.fromEither(output);
+      }
+    }
     final output = await remoteDataSource.postToServer<bool>(
       url: '${BASE_URL_API}users/psps/guilds',
-      params: {'guild_id': guild.guild.id, 'status': guild.guildPspStep.name},
+      params: {'status': guild.guildPspStep.name, 'guild_uuid': guild.guild.uuid},
       mapSuccess: (Map<String, dynamic> json) => true,
     );
     return RequestResult.fromEither(output);
+  }
+
+  @override
+  Future<Either<Failure, PaginateList<GuildPsp>>> getFollowUpGuildList(int page, List<String> cities, String searchText) async {
+    final output = await remoteDataSource.getFromServer<PaginateList<GuildPsp>>(
+      url: '${BASE_URL_API}users/psps/guilds?page=${page - 1}=0&pageSize=$perPageGuildItem',
+      params: {},
+      mapSuccess: (Map<String, dynamic> json) => PaginateList(
+        list: JsonParser.listParser(json, ['data', 'results']).map((element) => GuildPspModel.fromJson(element)).toList(),
+        currentPage: page,
+        perPage: perPageGuildItem,
+        totalPage: (JsonParser.intParser(json, ['data', 'total']) ~/ perPageGuildItem),
+      ),
+    );
+    return output;
+  }
+
+  @override
+  Future<Either<Failure, String>> getUserPhoneNumber(int userId) {
+    return remoteDataSource.getFromServer<String>(
+      url: '${BASE_URL_API}users/$userId',
+      params: {},
+      mapSuccess: (Map<String, dynamic> json) => JsonParser.stringParser(json, ['data', 'mobile']),
+    );
   }
 }

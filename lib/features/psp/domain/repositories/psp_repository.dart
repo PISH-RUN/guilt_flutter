@@ -5,7 +5,11 @@ import 'package:guilt_flutter/commons/request_result.dart';
 import 'package:guilt_flutter/features/psp/domain/entities/guild_psp.dart';
 
 abstract class PspRepository {
-  Future<Either<Failure, PaginateList<GuildPsp>>> getAllGuildsByCities(List<String> cities, int page, bool isJustMine, String searchText);
+  Future<Either<Failure, PaginateList<GuildPsp>>> getAllGuildsByCities(List<String> cities, int page, String searchText);
 
-  Future<RequestResult> updateStateOfSpecialGuild(GuildPsp guild, String token);
+  Future<Either<Failure, PaginateList<GuildPsp>>> getFollowUpGuildList(int page, List<String> cities, String searchText);
+
+  Future<RequestResult> updateStateOfSpecialGuild(GuildPsp guild, {bool isJustState = true, String token = ""});
+
+  Future<Either<Failure, String>> getUserPhoneNumber(int userId);
 }

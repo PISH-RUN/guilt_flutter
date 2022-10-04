@@ -1,15 +1,32 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:guilt_flutter/commons/text_style.dart';
 import 'package:guilt_flutter/commons/widgets/pair_text_row.dart';
+import 'package:guilt_flutter/commons/widgets/simple_snake_bar.dart';
 import 'package:guilt_flutter/features/psp/domain/entities/guild_psp.dart';
+import 'package:guilt_flutter/features/psp/domain/entities/guild_psp_step.dart';
+import 'package:guilt_flutter/features/psp/presentation/manager/update_state_of_guild_cubit.dart';
 import 'package:qlevar_router/qlevar_router.dart';
 
 const paddingSize = 6.0;
 
-class GuildItem extends StatelessWidget {
+class GuildItem extends StatefulWidget {
   final GuildPsp guild;
 
   const GuildItem({required this.guild, Key? key}) : super(key: key);
+
+  @override
+  State<GuildItem> createState() => _GuildItemState();
+}
+
+class _GuildItemState extends State<GuildItem> {
+  late GuildPsp guild;
+
+  @override
+  void initState() {
+    guild = widget.guild;
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -60,18 +77,35 @@ class GuildItem extends StatelessWidget {
           ),
           GestureDetector(
             onTap: () async {
-              QR.to('/psp/edit/1436/${guild.guild.id}');
+              if (guild.guildPspStep.isGuildEditable) {
+                final phoneResponse = await BlocProvider.of<UpdateStateOfGuildCubit>(context).getUserPhoneNumber(guild.guild.userId);
+                QR.to('psp/register/${phoneResponse.getOrElse(() => throw UnimplementedError())}/${guild.guild.id}/');
+                return;
+              }
+              if (guild.guildPspStep.isEnd) {
+                return;
+              }
+              if (guild.guildPspStep.id == 1) {
+                showSnakeBar(context, "این کسب و کار به صفحه موارد پیگیری افزوده شد");
+              }
+              guild = guild.copyWith(guildPspStep: GuildPspStep.values.firstWhere((element) => element.id == (guild.guildPspStep.id + 1)));
+              BlocProvider.of<UpdateStateOfGuildCubit>(context).updateStateOfSpecialGuild(guild);
+              setState(() {});
             },
-            child: Container(
-              width: double.infinity,
-              height: 50,
-              alignment: Alignment.center,
-              decoration: const BoxDecoration(
-                color: Color(0xffE2E8F0),
-                shape: BoxShape.rectangle,
-                borderRadius: BorderRadius.only(bottomRight: Radius.circular(16), bottomLeft: Radius.circular(16)),
+            child: Opacity(
+              opacity: guild.guildPspStep == GuildPspStep.done ? 0.4 : 1.0,
+              child: Container(
+                width: double.infinity,
+                height: 50,
+                alignment: Alignment.center,
+                decoration: const BoxDecoration(
+                  color: Color(0xffE2E8F0),
+                  shape: BoxShape.rectangle,
+                  borderRadius: BorderRadius.only(bottomRight: Radius.circular(16), bottomLeft: Radius.circular(16)),
+                ),
+                child: Text(guild.guildPspStep == GuildPspStep.done ? guild.guildPspStep.stateTitle : guild.guildPspStep.actionName,
+                    style: defaultTextStyle(context, headline: 4).w(FontWeight.w400)),
               ),
-              child: Text("پیگیری میکنم", style: defaultTextStyle(context, headline: 4).w(FontWeight.w400)),
             ),
           ),
         ],

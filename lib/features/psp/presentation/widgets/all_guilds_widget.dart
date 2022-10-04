@@ -13,9 +13,8 @@ import '../manager/all_guilds_state.dart';
 class AllGuildsListWidget extends StatefulWidget {
   final List<String> cities;
   final String searchText;
-  final bool isJustMine;
 
-  const AllGuildsListWidget({required this.cities, required this.isJustMine, required this.searchText, Key? key}) : super(key: key);
+  const AllGuildsListWidget({required this.cities, required this.searchText, Key? key}) : super(key: key);
 
   @override
   State<AllGuildsListWidget> createState() => _AllGuildsListWidgetState();
@@ -67,11 +66,11 @@ class _AllGuildsListWidgetState extends State<AllGuildsListWidget> {
                   _pagingController.appendPage(data.list, nextPageKey);
                 }
                 return PagedListView<int, GuildPsp>(
-                pagingController: _pagingController,
-                builderDelegate: PagedChildBuilderDelegate<GuildPsp>(
-                  itemBuilder: (context, item, index) => GuildItem(guild: item),
-                ),
-              );
+                  pagingController: _pagingController,
+                  builderDelegate: PagedChildBuilderDelegate<GuildPsp>(
+                    itemBuilder: (context, item, index) => GuildItem(guild: item),
+                  ),
+                );
               },
             );
           },
@@ -81,6 +80,6 @@ class _AllGuildsListWidgetState extends State<AllGuildsListWidget> {
   }
 
   void _retry(BuildContext context) {
-    BlocProvider.of<AllGuildsCubit>(context).initialPage(widget.cities, widget.isJustMine, searchText: widget.searchText);
+    BlocProvider.of<AllGuildsCubit>(context).initialPage(widget.cities, searchText: widget.searchText);
   }
 }

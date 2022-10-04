@@ -13,6 +13,14 @@ abstract class RemoteDataSource {
     String? localKey,
   });
 
+  Future<Either<ServerFailure, T>> patchToServer<T>({
+    required String url,
+    required Map<String, dynamic> params,
+    required T Function(Map<String, dynamic> success) mapSuccess,
+    bool isTokenNeed = true,
+    String? localKey,
+  });
+
   Future<Either<ServerFailure, T>> postToServer<T>({
     required String url,
     required dynamic params,
