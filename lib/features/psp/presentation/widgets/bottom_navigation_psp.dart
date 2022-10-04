@@ -58,10 +58,10 @@ class BottomNavigationPsp extends StatelessWidget {
               QR.to('/psp/guildList');
               return;
             case 1:
-              QR.to('/psp/myGuildList');
+              QR.to('/psp/followGuilds');
               return;
             case 2:
-              QR.to('/psp/guildList');
+              QR.to('/psp/myGuildList');
               return;
             default:
               return;

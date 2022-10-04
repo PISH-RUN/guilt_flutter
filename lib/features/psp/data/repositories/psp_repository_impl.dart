@@ -22,7 +22,7 @@ class PspRepositoryImpl implements PspRepository {
   Future<Either<Failure, PaginateList<GuildPsp>>> getAllGuildsByCities(List<String> cities, int page, String searchText) async {
     final output = await remoteDataSource.postToServer<PaginateList<GuildPsp>>(
       url: '${BASE_URL_API}guilds?page=${page - 1}&pageSize=$perPageGuildItem',
-      params: {'cities': cities},
+      params: cities.isEmpty ? {} : {'cities': cities},
       mapSuccess: (Map<String, dynamic> json) => PaginateList(
         list: JsonParser.listParser(json, ['data', 'results']).map((element) => GuildPspModel.fromJson(element)).toList(),
         currentPage: page,
@@ -57,7 +57,7 @@ class PspRepositoryImpl implements PspRepository {
   Future<Either<Failure, PaginateList<GuildPsp>>> getFollowUpGuildList(int page, List<String> cities, String searchText) async {
     final output = await remoteDataSource.getFromServer<PaginateList<GuildPsp>>(
       url: '${BASE_URL_API}users/psps/guilds?page=${page - 1}=0&pageSize=$perPageGuildItem',
-      params: {},
+      params: cities.isEmpty ? {} : {'cities': cities},
       mapSuccess: (Map<String, dynamic> json) => PaginateList(
         list: JsonParser.listParser(json, ['data', 'results']).map((element) => GuildPspModel.fromJson(element)).toList(),
         currentPage: page,

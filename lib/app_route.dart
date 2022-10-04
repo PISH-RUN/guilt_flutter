@@ -38,8 +38,13 @@ class AppRoutes {
           middleware: [AuthGuard()],
         ),
         QRoute(
-          path: '/myGuildList',
+          path: '/followGuilds',
           builder: () => PspPanel(currentIndexBottomNavigation: 1, child: FollowUpGuildsListPage.wrappedRoute()),
+          middleware: [AuthGuard()],
+        ),
+        QRoute(
+          path: '/myGuildList',
+          builder: () => PspPanel(currentIndexBottomNavigation: 2, child: GuildPage.wrappedRoute()),
           middleware: [AuthGuard()],
         ),
         QRoute(
