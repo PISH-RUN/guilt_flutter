@@ -8,6 +8,7 @@ import 'package:guilt_flutter/commons/request_result.dart';
 import 'package:guilt_flutter/features/psp/constants.dart';
 import 'package:guilt_flutter/features/psp/data/models/guild_psp_model.dart';
 import 'package:guilt_flutter/features/psp/domain/entities/guild_psp.dart';
+import 'package:guilt_flutter/features/psp/domain/entities/psp_user.dart';
 import 'package:logger/logger.dart';
 
 import '../../../../application/constants.dart';
@@ -75,5 +76,14 @@ class PspRepositoryImpl implements PspRepository {
       params: {},
       mapSuccess: (Map<String, dynamic> json) => JsonParser.stringParser(json, ['data', 'mobile']),
     );
+  }
+
+  @override
+  Future<RequestResult> signUpPsp(PspUser pspUser) async {
+    return RequestResult.fromEither(await remoteDataSource.postToServer<String>(
+      url: '${BASE_URL_API}users/psps',
+      params: {},
+      mapSuccess: (Map<String, dynamic> json) => "",
+    ));
   }
 }

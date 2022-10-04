@@ -1,4 +1,5 @@
 import 'package:dartz/dartz.dart';
+import 'package:guilt_flutter/commons/failures.dart';
 import 'package:guilt_flutter/commons/request_result.dart';
 import 'package:image_picker/image_picker.dart';
 
@@ -55,10 +56,10 @@ abstract class RemoteDataSource {
     bool isForceRefresh = false,
   });
 
-  Future<RequestResult> postMultipartToServer({
+  Future<Either<Failure, String>> postMultipartToServer({
     required String url,
     required String imageName,
-    required XFile image,
+    required XFile imageFile,
     required String attachName,
     required Map<String, dynamic> bodyParameters,
     bool isTokenNeed = true,

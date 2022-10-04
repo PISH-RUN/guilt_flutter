@@ -72,7 +72,6 @@ class _PspFormPageState extends State<PspFormPage> {
   Widget submitButton(BuildContext context) {
     return GestureDetector(
       onTap: () async {
-        // guild = guild.copyWith(guildPspStep: GuildPspStep.done);
         await BlocProvider.of<UpdateStateOfGuildCubit>(context).updateStateOfSpecialGuild(guild, isJustState: false, token: token);
         BlocProvider.of<UpdateStateOfGuildCubit>(context).state.maybeWhen(
               orElse: () {},

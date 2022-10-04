@@ -1,4 +1,6 @@
 import 'dart:convert';
+import 'dart:io';
+import 'dart:convert';
 
 import 'package:dartz/dartz.dart';
 import 'package:dio/dio.dart' as dio;
@@ -6,10 +8,10 @@ import 'package:get_it/get_it.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:guilt_flutter/application/constants.dart';
 import 'package:guilt_flutter/commons/failures.dart';
-import 'package:guilt_flutter/commons/request_result.dart';
 import 'package:guilt_flutter/features/login/api/login_api.dart';
 import 'package:http/http.dart' as http;
 import 'package:http_parser/http_parser.dart';
+import 'package:image/image.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:logger/logger.dart';
 
@@ -133,8 +135,7 @@ class RemoteDataSourceImpl implements RemoteDataSource {
   }
 
   bool isExpireDateArrived(Duration expireDateLocalKey, String localKey) =>
-      expireDateLocalKey.inSeconds <
-      (DateTime.now().millisecondsSinceEpoch - (GetStorage().read<int>("modifyAt-$localKey") ?? 0) / 1000);
+      expireDateLocalKey.inSeconds < (DateTime.now().millisecondsSinceEpoch - (GetStorage().read<int>("modifyAt-$localKey") ?? 0) / 1000);
 
   @override
   Future<Either<ServerFailure, T>> postToServer<T>({
@@ -283,50 +284,48 @@ class RemoteDataSourceImpl implements RemoteDataSource {
   }
 
   @override
-  Future<RequestResult> postMultipartToServer({
+  Future<Either<Failure, String>> postMultipartToServer({
     required String url,
     required String imageName,
-    required XFile image,
+    required XFile imageFile,
     required String attachName,
     required Map<String, dynamic> bodyParameters,
     bool isTokenNeed = true,
     String? localKey,
   }) async {
-    if (!await isInternetEnable()) return RequestResult.failure(ServerFailure.noInternet());
+    if (!await isInternetEnable()) return Left(ServerFailure.noInternet());
     try {
       var dioRequest = dio.Dio();
       dioRequest.options.baseUrl = url;
       dioRequest.options.headers = getHeader(isTokenNeed);
+
+      Image image = decodeImage(File(imageFile.path).readAsBytesSync())!;
+      Image thumbnail = copyResize(image, width: 700);
+      await File(imageFile.path).writeAsBytes(encodePng(thumbnail));
+
       var formData = dio.FormData.fromMap({
         imageName: await dio.MultipartFile.fromFile(
-          image.path,
-          filename: image.path.split('/').last,
-          contentType: MediaType("image", image.path.split('.').last),
+          imageFile.path,
+          filename: imageFile.path.split('/').last,
+          contentType: MediaType("image", imageFile.path.split('.').last),
         ),
       });
-      // final bytes = await image.readAsBytes();
-      // final dio.MultipartFile file = dio.MultipartFile.fromBytes(bytes, filename: image.path.substring(image.path.lastIndexOf('/') + 1));
-      // MapEntry<String, dio.MultipartFile> entry = MapEntry(imageName, file);
-      // formData.files.add(entry);
       bodyParameters.forEach((key, value) {
         if (value != null) formData.fields.add(MapEntry(key, value.toString()));
       });
       var response = await dioRequest.post(url, data: formData);
       Logger().i("statusCode=> ${response.statusCode!} ");
       if (isSuccessfulStatusCode(response.statusCode!)) {
-        Logger().i("data=> ${response.data.toString()} ");
-        if (localKey != null) {
-          GetStorage().write(localKey, response.data.toString());
-          GetStorage().write("modifyAt-$localKey", DateTime.now().millisecondsSinceEpoch);
-        }
-        return RequestResult.success();
+        Logger().i("data=> ${response.data} ");
+        return Right(response.data.toString());
       } else {
-        Logger().e("error=> ${response.data.toString()} ");
-        return RequestResult.failure(Failure('attach wrong'));
+        Logger().e("error=> ${response.data} ");
+        return Left(Failure('attach wrong'));
       }
     } on dio.DioError catch (e) {
       Logger().wtf("wtf=> ${e.message}    ${e.response.toString()}");
-      return RequestResult.failure(Failure('attach wrong'));
+      if (e.message.contains('413')) return Left(Failure("حجم عکس نباید بیش از یک مگابایت باشد"));
+      return Left(Failure('attach wrong'));
     }
   }
 }

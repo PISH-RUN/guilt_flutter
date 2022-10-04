@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -5,6 +7,7 @@ import 'package:get_it/get_it.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:guilt_flutter/commons/widgets/our_text_field.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:logger/logger.dart';
 import 'package:persian_datetime_picker/persian_datetime_picker.dart';
 import 'package:qlevar_router/qlevar_router.dart';
 import 'package:toggle_switch/toggle_switch.dart';
@@ -123,6 +126,7 @@ class _FormWidgetState extends State<FormWidget> {
   Widget build(BuildContext context) {
     return BlocConsumer<UpdateUserCubit, UpdateUserState>(
       listener: (context, state) {
+        imagePath = '';
         state.maybeWhen(
           error: (failure) => showSnakeBar(context, failure.message),
           success: () {
@@ -145,8 +149,10 @@ class _FormWidgetState extends State<FormWidget> {
                           return;
                         }
                         formKey.currentState!.save();
-                        BlocProvider.of<UpdateUserCubit>(context).updateUserInfo(user);
+                        Logger().i("info=> ${user.avatar} ");
+                        // BlocProvider.of<UpdateUserCubit>(context).updateUserInfo(user);
                         isEditable = false;
+                        // imagePath = '';
                         setState(() {});
                       },
                       backgroundColor: Theme.of(context).primaryColor,
@@ -181,9 +187,7 @@ class _FormWidgetState extends State<FormWidget> {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   const SizedBox(height: 6.0),
-                  QR.currentPath.contains('signIn/profile') || isEditable || GetStorage().hasData('profileTemp')
-                      ? const SizedBox(height: 15.0)
-                      : avatarWidget(context),
+                  avatarWidget(context),
                   const SizedBox(height: 6.0),
                   baseInformationWidget(context),
                 ],
@@ -195,13 +199,23 @@ class _FormWidgetState extends State<FormWidget> {
     );
   }
 
+  String imagePath = '';
+
   Widget avatarWidget(BuildContext context) {
     return GestureDetector(
       onTap: () async {
+        if (!isEditable) return;
         final ImagePicker picker = ImagePicker();
         final XFile? image = await picker.pickImage(source: ImageSource.gallery);
-        await BlocProvider.of<UpdateUserCubit>(context).changeAvatar(user, image!);
-        BlocProvider.of<GetUserCubit>(context).initialPage();
+        final response = await BlocProvider.of<UpdateUserCubit>(context).changeAvatar(user, image!);
+        response.fold(
+          (l) => showSnakeBar(context, l.message),
+          (url) {
+            imagePath = image.path;
+            user = user.copyWith(avatar: url);
+            setState(() {});
+          },
+        );
       },
       child: AbsorbPointer(
         child: SizedBox(
@@ -212,21 +226,57 @@ class _FormWidgetState extends State<FormWidget> {
               Align(
                 alignment: Alignment.center,
                 child: SizedBox(
-                  height: 130,
-                  width: 130,
-                  child: !isUrlValid(user.avatar ?? "")
-                      ? const Image(image: AssetImage('images/avatar.png'))
-                      : ClipRRect(
-                          borderRadius: const BorderRadius.all(Radius.circular(100)),
-                          child: CachedNetworkImage(
-                            imageUrl: user.avatar!,
-                            placeholder: (_, __) => LoadingWidget(size: 50, color: AppColor.blue),
-                            errorWidget: (_, __, ___) => const Text("something error"),
-                            fit: BoxFit.cover,
-                          ),
-                        ),
-                ),
+                    height: 130,
+                    width: 130,
+                    child: Container(
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        border: Border.all(color: Colors.black, width: 2),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.grey.withOpacity(0.5),
+                            spreadRadius: 5,
+                            blurRadius: 7,
+                            offset: const Offset(-3, 3),
+                          )
+                        ],
+                      ),
+                      child: ClipRRect(
+                        borderRadius: const BorderRadius.all(Radius.circular(100)),
+                        child: imagePath.isNotEmpty
+                            ? Image(image: FileImage(File(imagePath)), fit: BoxFit.cover)
+                            : !isUrlValid(user.avatar ?? "")
+                                ? const Image(image: AssetImage('images/avatar.png'), fit: BoxFit.cover)
+                                : CachedNetworkImage(
+                                    imageUrl: user.avatar!,
+                                    placeholder: (_, __) => LoadingWidget(size: 50, color: AppColor.blue),
+                                    errorWidget: (_, __, ___) => const Text("something error"),
+                                    fit: BoxFit.cover,
+                                  ),
+                      ),
+                    )),
               ),
+              if (isEditable)
+                Align(
+                  alignment: Alignment.center,
+                  child: Container(
+                    height: 130,
+                    width: 130,
+                    alignment: Alignment.center,
+                    decoration: const BoxDecoration(
+                      color: Colors.white60,
+                      shape: BoxShape.circle,
+                    ),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: <Widget>[
+                        const Icon(Icons.camera_alt, color: Colors.black54, size: 50.0),
+                        const SizedBox(height: 10.0),
+                        Text("بارگزاری", style: defaultTextStyle(context, headline: 3).c(Colors.black54))
+                      ],
+                    ),
+                  ),
+                ),
             ],
           ),
         ),

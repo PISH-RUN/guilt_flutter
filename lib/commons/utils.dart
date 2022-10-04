@@ -10,6 +10,7 @@ import 'package:flutter/material.dart';
 import 'package:guilt_flutter/application/guild/domain/entities/icis.dart';
 import 'package:guilt_flutter/application/isic.dart';
 import 'package:http/http.dart';
+import 'package:logger/logger.dart';
 import 'package:persian_utils/persian_utils.dart';
 import 'package:shamsi_date/shamsi_date.dart';
 
@@ -165,6 +166,7 @@ bool convertDynamicToBool(dynamic item, {bool defaultValue = false}) {
 }
 
 bool isUrlValid(String url) {
+  Logger().i("info=> ${url} ");
   try {
     return Uri.tryParse(url)?.hasAbsolutePath ?? false;
   } on Exception {

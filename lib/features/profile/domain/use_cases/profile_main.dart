@@ -18,7 +18,7 @@ class ProfileMain {
     return repository.updateProfile(user);
   }
 
-  Future<RequestResult> changeAvatar(XFile avatar) {
+  Future<Either<Failure, String>> changeAvatar(XFile avatar) {
     return repository.changeAvatar(avatar);
   }
 }

@@ -29,7 +29,7 @@ class UserInfoModel extends UserInfo {
       firstName: JsonParser.stringParser(json, ['first_name']),
       lastName: JsonParser.stringParser(json, ['last_name']),
       fatherName: JsonParser.stringParser(json, ['father_name']),
-      avatar: JsonParser.stringParser(json, ['Image']),
+      avatar: JsonParser.stringParser(json, ['image']),
       birthDate: JsonParser.stringParser(json, ['birth_date']).isEmpty
           ? null
           : Jalali(
@@ -56,7 +56,7 @@ class UserInfoModel extends UserInfo {
   Map<String, dynamic> toJson() {
     return {
       'first_name': firstName,
-      'avatar': avatar,
+      'image': avatar,
       'last_name': lastName,
       'father_name': fatherName,
       'birth_date':

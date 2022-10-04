@@ -6,6 +6,7 @@ import 'package:guilt_flutter/features/psp/presentation/pages/login_via_user_pag
 import 'package:guilt_flutter/features/psp/presentation/pages/psp_form_page.dart';
 import 'package:guilt_flutter/features/psp/presentation/pages/psp_panel.dart';
 import 'package:guilt_flutter/features/psp/presentation/pages/register_via_user_page.dart';
+import 'package:guilt_flutter/features/psp/presentation/pages/sign_up_psp.dart';
 import 'package:qlevar_router/qlevar_router.dart';
 import 'application/faq.dart';
 import 'application/guild/presentation/pages/guild_form_page.dart';
@@ -28,6 +29,11 @@ class AppRoutes {
       middleware: [AuthGuard()],
       children: [
         QRoute(
+          path: '/signUp',
+          builder: () => SignUpPsp.wrappedRoute(),
+          middleware: [],
+        ),
+        QRoute(
           path: '/guildList',
           builder: () => PspPanel(currentIndexBottomNavigation: 0, child: AllGuildsListPage.wrappedRoute(false)),
           middleware: [AuthGuard()],
@@ -49,12 +55,12 @@ class AppRoutes {
         ),
         QRoute(
           path: '/register/:phoneNumber((^[0-9]*\$))/:guildId((^[0-9]*\$))',
-          builder: () =>  RegisterViaUserPage.wrappedRoute(),
+          builder: () => RegisterViaUserPage.wrappedRoute(),
           middleware: [AuthGuard()],
         ),
         QRoute(
           path: '/otp/:guildId((^[0-9]*\$))',
-          builder: () =>  LoginViaUserPage.wrappedRoute(),
+          builder: () => LoginViaUserPage.wrappedRoute(),
           middleware: [],
         ),
       ],

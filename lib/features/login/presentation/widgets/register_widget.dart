@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:guilt_flutter/application/colors.dart';
+import 'package:guilt_flutter/application/constants.dart';
 import 'package:guilt_flutter/commons/failures.dart';
 import 'package:guilt_flutter/commons/text_style.dart';
 import 'package:guilt_flutter/commons/utils.dart';
@@ -8,6 +9,7 @@ import 'package:guilt_flutter/commons/widgets/icon_name_widget.dart';
 import 'package:guilt_flutter/commons/widgets/our_button.dart';
 import 'package:guilt_flutter/features/login/presentation/manager/register_cubit.dart';
 import 'package:guilt_flutter/features/login/presentation/manager/register_state.dart';
+import 'package:qlevar_router/qlevar_router.dart';
 
 class RegisterWidget extends StatefulWidget {
   final String phoneNumber;
@@ -126,6 +128,18 @@ class _RegisterWidgetState extends State<RegisterWidget> {
                                   style: defaultTextStyle(context, headline: 4).c(Colors.red),
                                 ),
                                 const SizedBox(height: 10.0),
+                                if (appMode == AppMode.psp)
+                                  Padding(
+                                    padding: const EdgeInsets.only(bottom: 10.0),
+                                    child: GestureDetector(
+                                      onTap: () => QR.to('psp/signUp'),
+                                      child: Text(
+                                        "ثبت نام psp",
+                                        textAlign: TextAlign.center,
+                                        style: defaultTextStyle(context, headline: 4).c(Colors.red),
+                                      ),
+                                    ),
+                                  ),
                               ],
                             ),
                           ),

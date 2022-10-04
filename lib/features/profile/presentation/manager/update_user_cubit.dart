@@ -1,4 +1,6 @@
+import 'package:dartz/dartz.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:guilt_flutter/commons/failures.dart';
 import 'package:guilt_flutter/features/profile/domain/entities/user_info.dart';
 import 'package:image_picker/image_picker.dart';
 import '../../domain/use_cases/profile_main.dart';
@@ -21,12 +23,8 @@ class UpdateUserCubit extends Cubit<UpdateUserState> {
     );
   }
 
-  Future<void> changeAvatar(UserInfo user, XFile avatar) async {
+  Future<Either<Failure,String>> changeAvatar(UserInfo user, XFile avatar) async {
     emit(const UpdateUserState.loading());
-    final response = await _main.changeAvatar( avatar);
-    response.fold(
-      (failure) => emit(UpdateUserState.error(failure: failure)),
-      () => emit(const UpdateUserState.success()),
-    );
+    return (await _main.changeAvatar(avatar));
   }
 }

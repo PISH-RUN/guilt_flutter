@@ -9,5 +9,5 @@ abstract class ProfileRepository {
 
   Future<RequestResult> updateProfile( UserInfo userInfo);
 
-  Future<RequestResult> changeAvatar( XFile avatar);
+  Future<Either<Failure, String>> changeAvatar( XFile avatar);
 }

@@ -17,4 +17,4 @@ enum AppMode {
   const AppMode(this.initPath);
 }
 
-const appMode = AppMode.psp;
+const appMode = AppMode.normal;
