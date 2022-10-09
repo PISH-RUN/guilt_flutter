@@ -29,6 +29,13 @@ class _RegisterViaUserPageState extends State<RegisterViaUserPage> {
 
   @override
   Widget build(BuildContext context) {
-    return RegisterWidget(phoneNumber: phoneNumber, nationalCode: "", isLocked: false, onSuccessful: () => QR.to('psp/otp/$guildId'));
+    return RegisterWidget(
+      phoneNumber: phoneNumber,
+      nationalCode: "",
+      onSuccessful: () => QR.to('psp/otp/$guildId'),
+      isRegisterPspVisible: false,
+      title: "لطفا با مشخصات صاحب کسب و کار احراز هویت کنید",
+      isIconLogoVisible: false,
+    );
   }
 }

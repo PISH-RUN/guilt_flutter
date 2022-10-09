@@ -14,11 +14,20 @@ import 'package:qlevar_router/qlevar_router.dart';
 class RegisterWidget extends StatefulWidget {
   final String phoneNumber;
   final String nationalCode;
-  final bool isLocked;
   final void Function() onSuccessful;
+  final bool isRegisterPspVisible;
+  final bool isIconLogoVisible;
+  final String title;
 
-  const RegisterWidget({required this.phoneNumber, required this.nationalCode, required this.isLocked, required this.onSuccessful, Key? key})
-      : super(key: key);
+  const RegisterWidget({
+    required this.phoneNumber,
+    required this.nationalCode,
+    required this.onSuccessful,
+    required this.isRegisterPspVisible,
+    required this.title,
+    this.isIconLogoVisible = true,
+    Key? key,
+  }) : super(key: key);
 
   @override
   State<RegisterWidget> createState() => _RegisterWidgetState();
@@ -50,7 +59,7 @@ class _RegisterWidgetState extends State<RegisterWidget> {
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    const IconNameWidget(),
+                    if (widget.isIconLogoVisible) const IconNameWidget(),
                     ConstrainedBox(
                       constraints: const BoxConstraints(maxWidth: 600),
                       child: Card(
@@ -62,55 +71,52 @@ class _RegisterWidgetState extends State<RegisterWidget> {
                             child: Column(
                               children: <Widget>[
                                 const SizedBox(height: 10.0),
-                                Text("لطفا اطلاعات خود را وارد کنید", style: Theme.of(context).textTheme.headline4),
-                                const SizedBox(height: 20.0),
-                                AbsorbPointer(
-                                  absorbing: widget.isLocked,
-                                  child: Column(
-                                    mainAxisSize: MainAxisSize.min,
-                                    children: [
-                                      Directionality(
-                                        textDirection: TextDirection.ltr,
-                                        child: TextFormField(
-                                          decoration: InputDecoration(
-                                            labelText: "شماره تلفن",
-                                            helperText: "",
-                                            prefixIcon: const Icon(Icons.phone, color: AppColor.blue, size: 22.0),
-                                            fillColor: widget.isLocked ? const Color(0xffcbcbcb) : const Color(0xffffffff),
-                                          ),
-                                          onFieldSubmitted: (value) => onSubmitButton(context),
-                                          keyboardType: TextInputType.number,
-                                          controller: phoneController,
-                                          validator: (value) {
-                                            if (value == null) return null;
-                                            if (value.isEmpty) return "وارد کردن شماره تلفن ضروری است";
-                                            if (!validatePhoneNumber(value)) return "شماره تلفن معتبر نیست";
-                                            return null;
-                                          },
+                                Text(widget.title, style: Theme.of(context).textTheme.headline4, textAlign: TextAlign.center),
+                                const SizedBox(height: 26.0),
+                                Column(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    Directionality(
+                                      textDirection: TextDirection.ltr,
+                                      child: TextFormField(
+                                        decoration: InputDecoration(
+                                          labelText: "شماره تلفن",
+                                          helperText: "",
+                                          prefixIcon: const Icon(Icons.phone, color: AppColor.blue, size: 22.0),
+                                          fillColor: const Color(0xffffffff),
                                         ),
+                                        onFieldSubmitted: (value) => onSubmitButton(context),
+                                        keyboardType: TextInputType.number,
+                                        controller: phoneController,
+                                        validator: (value) {
+                                          if (value == null) return null;
+                                          if (value.isEmpty) return "وارد کردن شماره تلفن ضروری است";
+                                          if (!validatePhoneNumber(value)) return "شماره تلفن معتبر نیست";
+                                          return null;
+                                        },
                                       ),
-                                      const SizedBox(height: 16.0),
-                                      Directionality(
-                                        textDirection: TextDirection.ltr,
-                                        child: TextFormField(
-                                          decoration: const InputDecoration(
-                                            labelText: "کد ملی",
-                                            helperText: "",
-                                            prefixIcon: Icon(Icons.pin, color: AppColor.blue, size: 22.0),
-                                          ),
-                                          onFieldSubmitted: (value) => onSubmitButton(context),
-                                          keyboardType: TextInputType.number,
-                                          controller: nationalCodeController,
-                                          validator: (value) {
-                                            if (value == null) return null;
-                                            if (value.isEmpty) return "وارد کردن کد ملی ضروری است";
-                                            if (value.length != 10) return "کد ملی نامعتبر نیست";
-                                            return null;
-                                          },
+                                    ),
+                                    const SizedBox(height: 16.0),
+                                    Directionality(
+                                      textDirection: TextDirection.ltr,
+                                      child: TextFormField(
+                                        decoration: const InputDecoration(
+                                          labelText: "کد ملی",
+                                          helperText: "",
+                                          prefixIcon: Icon(Icons.pin, color: AppColor.blue, size: 22.0),
                                         ),
+                                        onFieldSubmitted: (value) => onSubmitButton(context),
+                                        keyboardType: TextInputType.number,
+                                        controller: nationalCodeController,
+                                        validator: (value) {
+                                          if (value == null) return null;
+                                          if (value.isEmpty) return "وارد کردن کد ملی ضروری است";
+                                          if (value.length != 10) return "کد ملی نامعتبر نیست";
+                                          return null;
+                                        },
                                       ),
-                                    ],
-                                  ),
+                                    ),
+                                  ],
                                 ),
                                 const SizedBox(height: 14.0),
                                 OurButton(
@@ -132,7 +138,7 @@ class _RegisterWidgetState extends State<RegisterWidget> {
                                   style: defaultTextStyle(context, headline: 4).c(Colors.red),
                                 ),
                                 const SizedBox(height: 12.0),
-                                if (appMode == AppMode.psp)
+                                if (widget.isRegisterPspVisible)
                                   Padding(
                                     padding: const EdgeInsets.only(bottom: 6.0),
                                     child: GestureDetector(

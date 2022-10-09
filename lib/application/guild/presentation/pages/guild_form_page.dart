@@ -6,6 +6,7 @@ import 'package:guilt_flutter/application/colors.dart';
 import 'package:guilt_flutter/application/constants.dart';
 import 'package:guilt_flutter/commons/widgets/our_text_field.dart';
 import 'package:latlong2/latlong.dart' as lat_lng;
+import 'package:logger/logger.dart';
 import 'package:qlevar_router/qlevar_router.dart';
 
 import '../../../../commons/fix_rtl_flutter_bug.dart';
@@ -185,6 +186,8 @@ class _GuildFormWidgetState extends State<GuildFormWidget> {
     );
   }
 
+  bool isLoadingSubmit = false;
+
   Widget submitButton(BuildContext context) {
     return GestureDetector(
       onTap: () async {
@@ -193,7 +196,9 @@ class _GuildFormWidgetState extends State<GuildFormWidget> {
           return;
         }
         formKey.currentState!.save();
+        setState(() {isLoadingSubmit = true;});
         widget.onSubmitFormInPsps!(guild);
+        setState(() {isLoadingSubmit = true;});
       },
       child: Container(
         width: double.infinity,
@@ -201,7 +206,9 @@ class _GuildFormWidgetState extends State<GuildFormWidget> {
         padding: const EdgeInsets.all(18),
         alignment: Alignment.center,
         decoration: BoxDecoration(color: AppColor.blue, shape: BoxShape.rectangle, borderRadius: BorderRadius.circular(10)),
-        child: Text("اعمال تغییرات و تایید نهایی", style: defaultTextStyle(context, headline: 4).c(Colors.white)),
+        child: isLoadingSubmit
+            ? LoadingWidget(color: Colors.white, size: 20)
+            : Text("اعمال تغییرات و تایید نهایی", style: defaultTextStyle(context, headline: 4).c(Colors.white)),
       ),
     );
   }

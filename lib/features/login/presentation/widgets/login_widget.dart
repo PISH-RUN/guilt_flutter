@@ -15,8 +15,9 @@ import 'package:sms_user_consent/sms_user_consent.dart';
 
 class LoginWidget extends StatefulWidget {
   final void Function(UserData userData) onSuccess;
+  final bool isIconLogoVisible;
 
-  const LoginWidget({required this.onSuccess, Key? key}) : super(key: key);
+  const LoginWidget({required this.onSuccess, this.isIconLogoVisible = true, Key? key}) : super(key: key);
 
   @override
   _LoginWidgetState createState() => _LoginWidgetState();
@@ -74,7 +75,7 @@ class _LoginWidgetState extends State<LoginWidget> {
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    const IconNameWidget(),
+                    if (widget.isIconLogoVisible) const IconNameWidget(),
                     ConstrainedBox(
                       constraints: const BoxConstraints(maxWidth: 600),
                       child: Form(
