@@ -11,6 +11,7 @@ import 'package:guilt_flutter/features/psp/presentation/manager/all_guilds_state
 import 'package:guilt_flutter/features/psp/presentation/manager/update_state_of_guild_cubit.dart';
 import 'package:guilt_flutter/features/psp/presentation/widgets/all_guilds_widget.dart';
 import 'package:guilt_flutter/main.dart';
+import 'package:logger/logger.dart';
 import 'package:multi_select_flutter/multi_select_flutter.dart';
 
 import '../manager/all_guilds_cubit.dart';
@@ -53,7 +54,7 @@ class _AllGuildsListPageState extends State<AllGuildsListPage> {
           return state.maybeWhen(
             loading: () => _basePage(LoadingWidget()),
             error: (failure) => ErrorPage(failure: failure),
-            orElse: () => _basePage(AllGuildsListWidget(cities: selectedCity.isNotEmpty ? selectedCity : ["یاسوج"], searchText: controller.text)),
+            orElse: () => _basePage(AllGuildsListWidget(cities: selectedCity.isNotEmpty ? selectedCity : [], searchText: controller.text)),
           );
         },
       )),
@@ -141,8 +142,8 @@ class _AllGuildsListPageState extends State<AllGuildsListPage> {
             onTap: () async {
               await _showMultiSelect(context);
               if (BlocProvider.of<AllGuildsCubit>(context).currentCities == selectedCity) return;
-              if ((BlocProvider.of<AllGuildsCubit>(context).currentCities.length == 0) && (selectedCity == 0)) return;
-              // BlocProvider.of<AllGuildsCubit>(context).initialPage(selectedCity, searchText: controller.text);
+              if ((BlocProvider.of<AllGuildsCubit>(context).currentCities.isEmpty) && (selectedCity.isEmpty)) return;
+              BlocProvider.of<AllGuildsCubit>(context).initialPage(selectedCity, searchText: controller.text);
             },
             child: AbsorbPointer(
               child: Padding(
@@ -166,6 +167,7 @@ class _AllGuildsListPageState extends State<AllGuildsListPage> {
   }
 
   void search(String value) {
+    //todo fix search
     if (value == BlocProvider.of<AllGuildsCubit>(context).currentSearchText) return;
     // BlocProvider.of<AllGuildsCubit>(context).initialPage(selectedCity, searchText: value);
   }

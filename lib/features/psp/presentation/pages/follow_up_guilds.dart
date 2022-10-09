@@ -128,38 +128,6 @@ class _FollowUpGuildsListPageState extends State<FollowUpGuildsListPage> {
             ],
           ),
         ),
-        Container(
-          margin: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8),
-          decoration: BoxDecoration(
-            color: Colors.white,
-            shape: BoxShape.rectangle,
-            borderRadius: const BorderRadius.all(Radius.circular(9)),
-            boxShadow: simpleShadow(),
-          ),
-          padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 2.0),
-          child: GestureDetector(
-            onTap: () async {
-              await _showMultiSelect(context);
-              if (BlocProvider.of<FollowUpGuildsCubit>(context).currentCities == selectedCity) return;
-              if ((BlocProvider.of<FollowUpGuildsCubit>(context).currentCities.length == 0) && (selectedCity == 0)) return;
-              BlocProvider.of<FollowUpGuildsCubit>(context).initialPage(selectedCity, searchText: controller.text);
-            },
-            child: AbsorbPointer(
-              child: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Row(
-                  children: [
-                    const Icon(Icons.location_city, size: 25.0),
-                    const SizedBox(width: 10.0),
-                    Text(selectedCity.isEmpty ? "شهری انتخاب نشده است" : "${selectedCity.length} شهر انتخاب شده"),
-                    const Spacer(),
-                    const RotatedBox(quarterTurns: 1, child: Icon(Icons.arrow_back_ios_rounded, size: 15.0)),
-                  ],
-                ),
-              ),
-            ),
-          ),
-        ),
         Expanded(child: child),
       ],
     );

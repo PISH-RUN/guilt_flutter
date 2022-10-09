@@ -28,6 +28,7 @@ class PspMain {
   Future<Either<Failure, String>> getUserPhoneNumber(int userId) {
     return repository.getUserPhoneNumber(userId);
   }
+
   Future<RequestResult> signUpPsp(PspUser pspUser) {
     return repository.signUpPsp(pspUser);
   }
