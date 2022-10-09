@@ -98,8 +98,9 @@ class _LoginWidgetState extends State<LoginWidget> {
                                 ),
                                 const SizedBox(height: 26.0),
                                 Directionality(
-                                  textDirection: TextDirection.ltr,
+                                  textDirection: TextDirection.rtl,
                                   child: TextFormField(
+                                    textAlign: TextAlign.end,
                                     decoration: const InputDecoration(
                                       focusedBorder: OutlineInputBorder(
                                         borderRadius: BorderRadius.all(Radius.circular(4)),

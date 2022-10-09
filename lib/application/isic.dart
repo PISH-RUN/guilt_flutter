@@ -1,5 +1,5 @@
 final isicListJson = [
-  {"isicCoding": "12345678", "ISICName": "تست"},//todo remove this line
+  {"isicCoding": "12345678", "ISICName": "تست"},//remove this line
   {"isicCoding": "809017", "ISICName": "آموزش آرایش و زیبایی"},
   {"isicCoding": "202933", "ISICName": "تولید و فروش سبد"},
   {"isicCoding": "502059/1", "ISICName": "کارواش داخل تومبیل"},

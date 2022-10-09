@@ -77,13 +77,14 @@ class _RegisterWidgetState extends State<RegisterWidget> {
                                   mainAxisSize: MainAxisSize.min,
                                   children: [
                                     Directionality(
-                                      textDirection: TextDirection.ltr,
+                                      textDirection: TextDirection.rtl,
                                       child: TextFormField(
-                                        decoration: InputDecoration(
+                                        textAlign: TextAlign.end,
+                                        decoration: const InputDecoration(
                                           labelText: "شماره تلفن",
                                           helperText: "",
-                                          prefixIcon: const Icon(Icons.phone, color: AppColor.blue, size: 22.0),
-                                          fillColor: const Color(0xffffffff),
+                                          prefixIcon: Icon(Icons.phone, color: AppColor.blue, size: 22.0),
+                                          fillColor: Color(0xffffffff),
                                         ),
                                         onFieldSubmitted: (value) => onSubmitButton(context),
                                         keyboardType: TextInputType.number,
@@ -98,8 +99,9 @@ class _RegisterWidgetState extends State<RegisterWidget> {
                                     ),
                                     const SizedBox(height: 16.0),
                                     Directionality(
-                                      textDirection: TextDirection.ltr,
+                                      textDirection: TextDirection.rtl,
                                       child: TextFormField(
+                                        textAlign: TextAlign.end,
                                         decoration: const InputDecoration(
                                           labelText: "کد ملی",
                                           helperText: "",

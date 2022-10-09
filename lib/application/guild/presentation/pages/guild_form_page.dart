@@ -36,9 +36,7 @@ class GuildFormPage extends StatelessWidget {
   Widget build(BuildContext context) {
     if (!isAddNew) BlocProvider.of<GuildCubit>(context).initialPage(QR.params['guildUuid'].toString());
     return WillPopScope(
-      onWillPop: () async {
-        return false;
-      },
+      onWillPop: () async => false,
       child: Scaffold(
         body: SafeArea(
           child: isAddNew
@@ -186,19 +184,13 @@ class _GuildFormWidgetState extends State<GuildFormWidget> {
     );
   }
 
-  bool isLoadingSubmit = false;
+  bool isLoadingSubmitWithOutConfirmed = false;
+  bool isLoadingSubmitWithConfirmed = false;
 
   Widget submitButton(BuildContext context) {
     return GestureDetector(
       onTap: () async {
-        if (widget.onSubmitFormInPsps == null) return;
-        if (!formKey.currentState!.validate()) {
-          return;
-        }
-        formKey.currentState!.save();
-        setState(() {isLoadingSubmit = true;});
-        widget.onSubmitFormInPsps!(guild);
-        setState(() {isLoadingSubmit = true;});
+        await _showModalForSubmit();
       },
       child: Container(
         width: double.infinity,
@@ -206,10 +198,102 @@ class _GuildFormWidgetState extends State<GuildFormWidget> {
         padding: const EdgeInsets.all(18),
         alignment: Alignment.center,
         decoration: BoxDecoration(color: AppColor.blue, shape: BoxShape.rectangle, borderRadius: BorderRadius.circular(10)),
-        child: isLoadingSubmit
-            ? LoadingWidget(color: Colors.white, size: 20)
-            : Text("اعمال تغییرات و تایید نهایی", style: defaultTextStyle(context, headline: 4).c(Colors.white)),
+        child: Text("اعمال تغییرات", style: defaultTextStyle(context, headline: 4).c(Colors.white)),
       ),
+    );
+  }
+
+  Future<void> _showModalForSubmit() async {
+    await showModalBottomSheet<void>(
+      context: context,
+      shape: const RoundedRectangleBorder(borderRadius: BorderRadius.only(topRight: Radius.circular(18.0), topLeft: Radius.circular(18.0))),
+      builder: (BuildContext context) {
+        return Padding(
+          padding: const EdgeInsets.only(bottom: 0.0),
+          child: Container(
+            height: 200.0,
+            alignment: Alignment.center,
+            decoration: BoxDecoration(
+              color: Colors.white,
+              shape: BoxShape.rectangle,
+              borderRadius: const BorderRadius.all(Radius.circular(18)),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.grey.withOpacity(0.5),
+                  spreadRadius: 5,
+                  blurRadius: 7,
+                  offset: const Offset(3, 3),
+                )
+              ],
+            ),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                GestureDetector(
+                  onTap: () async {
+                    if (widget.onSubmitFormInPsps == null) return;
+                    if (!formKey.currentState!.validate()) {
+                      return;
+                    }
+                    Logger().i("info=> ${guild.homeTelephone} ");
+                    formKey.currentState!.save();
+                    Logger().i("info=> ${guild.homeTelephone} ");
+                    setState(() {
+                      isLoadingSubmitWithOutConfirmed = true;
+                    });
+                    widget.onSubmitFormInPsps!(guild);
+                    setState(() {
+                      isLoadingSubmitWithOutConfirmed = true;
+                    });
+                  },
+                  child: Container(
+                    width: double.infinity,
+                    margin: const EdgeInsets.symmetric(horizontal: 20.0),
+                    padding: const EdgeInsets.all(18),
+                    alignment: Alignment.center,
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      shape: BoxShape.rectangle,
+                      border: Border.all(color: AppColor.blue, width: 2.0),
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: isLoadingSubmitWithOutConfirmed
+                        ? LoadingWidget(color: Colors.white, size: 20)
+                        : Text("اعمال تغییرات بدون تایید نهایی", style: defaultTextStyle(context, headline: 4).c(AppColor.blue)),
+                  ),
+                ),
+                const SizedBox(height: 25.0),
+                GestureDetector(
+                  onTap: () async {
+                    if (widget.onSubmitFormInPsps == null) return;
+                    if (!formKey.currentState!.validate()) {
+                      return;
+                    }
+                    formKey.currentState!.save();
+                    setState(() {
+                      isLoadingSubmitWithConfirmed = true;
+                    });
+                    widget.onSubmitFormInPsps!(guild.copyWith(status: 'confirmed'));
+                    setState(() {
+                      isLoadingSubmitWithConfirmed = false;
+                    });
+                  },
+                  child: Container(
+                    width: double.infinity,
+                    margin: const EdgeInsets.symmetric(horizontal: 20.0),
+                    padding: const EdgeInsets.all(18),
+                    alignment: Alignment.center,
+                    decoration: BoxDecoration(color: AppColor.blue, shape: BoxShape.rectangle, borderRadius: BorderRadius.circular(10)),
+                    child: isLoadingSubmitWithConfirmed
+                        ? LoadingWidget(color: Colors.white, size: 20)
+                        : Text("اعمال تغییرات و تایید نهایی", style: defaultTextStyle(context, headline: 4).c(Colors.white)),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
     );
   }
 

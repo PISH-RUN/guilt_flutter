@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:guilt_flutter/application/guild/presentation/pages/guild_form_page.dart';
 import 'package:guilt_flutter/commons/text_style.dart';
 import 'package:guilt_flutter/commons/widgets/pair_text_row.dart';
 import 'package:guilt_flutter/commons/widgets/simple_snake_bar.dart';
@@ -91,6 +92,9 @@ class _GuildItemState extends State<GuildItem> {
               guild = guild.copyWith(guildPspStep: GuildPspStep.values.firstWhere((element) => element.id == (guild.guildPspStep.id + 1)));
               BlocProvider.of<UpdateStateOfGuildCubit>(context).updateStateOfSpecialGuild(guild);
               setState(() {});
+              if (guild.guildPspStep == GuildPspStep.in_location) {
+                _showModalForSubmit();
+              }
             },
             child: Opacity(
               opacity: guild.guildPspStep == GuildPspStep.done ? 0.4 : 1.0,
@@ -111,6 +115,41 @@ class _GuildItemState extends State<GuildItem> {
         ],
       ),
     );
+  }
+
+  Future<void> _showModalForSubmit() async {
+    isDialogOpen = true;
+    final isOK = await showDialog(
+      context: context,
+      builder: (dialogContext) => AlertDialog(
+        shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(12.0))),
+        title: Text("ویرایش صنف", style: defaultTextStyle(context, headline: 3)),
+        contentPadding: const EdgeInsets.symmetric(horizontal: 24, vertical: 8),
+        content: Text("برای تایید یا ویرایش اطلاعات این کسب و کار ابتدا باید با شماره تلفن صاحب کسب و کار احراز هویت کنید",
+            style: defaultTextStyle(context, headline: 5).c(Colors.black.withOpacity(0.7))),
+        actions: <Widget>[
+          TextButton(
+            child: Text("انصراف", style: defaultTextStyle(context, headline: 5).c(Colors.grey)),
+            onPressed: () {
+              isDialogOpen = false;
+              Navigator.pop(dialogContext, false);
+            },
+          ),
+          TextButton(
+            child: Text("تایید", style: defaultTextStyle(context, headline: 5).c(Theme.of(context).primaryColor)),
+            onPressed: () async {
+              isDialogOpen = false;
+              Navigator.pop(dialogContext, true);
+            },
+          ),
+        ],
+      ),
+    ) as bool;
+    isDialogOpen = false;
+    if (isOK) {
+      final phoneResponse = await BlocProvider.of<UpdateStateOfGuildCubit>(context).getUserPhoneNumber(guild.guild.userId);
+      QR.to('psp/register/${phoneResponse.getOrElse(() => throw UnimplementedError())}/${guild.guild.id}/');
+    }
   }
 
   void showDetailDialog(BuildContext context) {

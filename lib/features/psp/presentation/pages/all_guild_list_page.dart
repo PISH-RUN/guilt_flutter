@@ -66,7 +66,6 @@ class _AllGuildsListPageState extends State<AllGuildsListPage> {
     await showModalBottomSheet(
       isScrollControlled: true,
       context: context,
-      shape: const RoundedRectangleBorder(borderRadius: BorderRadius.only(topRight: Radius.circular(18.0), topLeft: Radius.circular(18.0))),
       builder: (ctx) {
         return Padding(
           padding: const EdgeInsets.only(bottom: 8.0),

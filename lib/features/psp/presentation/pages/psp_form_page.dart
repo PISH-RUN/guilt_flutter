@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
-import 'package:guilt_flutter/application/constants.dart';
-import 'package:guilt_flutter/application/guild/data/models/guild_model.dart';
 import 'package:guilt_flutter/application/guild/presentation/pages/guild_form_page.dart';
 import 'package:guilt_flutter/commons/widgets/simple_snake_bar.dart';
 import 'package:guilt_flutter/features/psp/domain/entities/guild_psp.dart';
@@ -52,7 +50,8 @@ class _PspFormPageState extends State<PspFormPage> {
               isEditable: true,
               isPsp: true,
               onSubmitFormInPsps: (guildChanged) async {
-                guild = guild.copyWith(guild: guildChanged.copyWith(status: 'confirmed'));
+                Logger().i("info=> ${guildChanged.homeTelephone} ");
+                guild = guild.copyWith(guild: guildChanged);
                 await BlocProvider.of<UpdateStateOfGuildCubit>(context).updateStateOfSpecialGuild(guild, isJustState: false, token: token);
                 BlocProvider.of<UpdateStateOfGuildCubit>(context).state.maybeWhen(
                       orElse: () {},
