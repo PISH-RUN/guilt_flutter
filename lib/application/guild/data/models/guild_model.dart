@@ -6,7 +6,6 @@ import 'package:guilt_flutter/application/guild/domain/entities/pos.dart';
 import 'package:guilt_flutter/commons/data/model/json_parser.dart';
 import 'package:guilt_flutter/commons/utils.dart';
 import 'package:latlong2/latlong.dart' as lat_lng;
-import 'package:logger/logger.dart';
 
 import '../../domain/entities/guild.dart';
 

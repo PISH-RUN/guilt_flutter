@@ -35,6 +35,14 @@ class ErrorPage extends StatelessWidget {
             ),
           ],
         );
+      case FailureType.forbiddenError:
+        return Column(
+          mainAxisSize: MainAxisSize.min,
+          children: <Widget>[
+            Text(failure.message, style: defaultTextStyle(context, headline: 4)),
+            const SizedBox(height: 36.0),
+          ],
+        );
       default:
         return Text(
           "${failure.message}\n${QR.currentPath}",

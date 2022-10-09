@@ -38,6 +38,19 @@ class PspUser extends Equatable {
     );
   }
 
+  factory PspUser.empty() {
+    return const
+    PspUser(
+      id: 0,
+      firstName: "",
+      lastName: "",
+      organ: "",
+      province: "",
+      mobile: "",
+      nationalCode: "",
+    );
+  }
+
   @override
   List<Object> get props => [nationalCode];
 }

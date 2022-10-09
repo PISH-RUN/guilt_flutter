@@ -5,18 +5,20 @@ import 'package:guilt_flutter/application/colors.dart';
 import 'package:guilt_flutter/commons/fix_rtl_flutter_bug.dart';
 import 'package:guilt_flutter/commons/text_style.dart';
 import 'package:guilt_flutter/commons/utils.dart';
+import 'package:guilt_flutter/commons/widgets/loading_widget.dart';
 import 'package:guilt_flutter/commons/widgets/our_item_picker.dart';
 import 'package:guilt_flutter/commons/widgets/our_text_field.dart';
+import 'package:guilt_flutter/commons/widgets/simple_snake_bar.dart';
 import 'package:guilt_flutter/features/psp/domain/entities/psp_user.dart';
 import 'package:guilt_flutter/features/psp/presentation/manager/sign_up_psp_cubit.dart';
+import 'package:guilt_flutter/features/psp/presentation/manager/sign_up_psp_state.dart';
+import 'package:qlevar_router/qlevar_router.dart';
 
 class SignUpPsp extends StatefulWidget {
   const SignUpPsp({Key? key}) : super(key: key);
 
   @override
   _SignUpPspState createState() => _SignUpPspState();
-
-  //implements AutoRouteWrapper
 
   static Widget wrappedRoute() {
     return BlocProvider(create: (ctx) => GetIt.instance<SignUpPspCubit>(), child: const SignUpPsp());
@@ -38,6 +40,7 @@ class _SignUpPspState extends State<SignUpPsp> {
 
   @override
   void initState() {
+    pspUser = PspUser.empty();
     firstNameController = TextEditingController(text: '');
     lastNameController = TextEditingController(text: '');
     organController = TextEditingController(text: '');
@@ -51,9 +54,7 @@ class _SignUpPspState extends State<SignUpPsp> {
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
-      onWillPop: () async {
-        return false;
-      },
+      onWillPop: () async => false,
       child: formWidget(context),
     );
   }
@@ -69,6 +70,7 @@ class _SignUpPspState extends State<SignUpPsp> {
             baseInformationWidget(context),
             const SizedBox(height: 10.0),
             submitButton(context),
+            const SizedBox(height: 20.0),
           ],
         ),
       ),
@@ -76,22 +78,32 @@ class _SignUpPspState extends State<SignUpPsp> {
   }
 
   Widget submitButton(BuildContext context) {
-    return GestureDetector(
-      onTap: () async {
-        if (!formKey.currentState!.validate()) {
-          return;
-        }
-        formKey.currentState!.save();
-        BlocProvider.of<SignUpPspCubit>(context).signUpPsp(pspUser);
+    return BlocConsumer<SignUpPspCubit, SignUpPspState>(
+      listener: (context, state) => state.maybeWhen(success: () {
+        showSnakeBar(context, "منتظر تایید توسط ادمین باشید");
+        QR.back();
+      }, orElse: () {}),
+      builder: (context, state) {
+        return GestureDetector(
+          onTap: () async {
+            if (!formKey.currentState!.validate()) {
+              return;
+            }
+            formKey.currentState!.save();
+            BlocProvider.of<SignUpPspCubit>(context).signUpPsp(pspUser);
+          },
+          child: Container(
+            width: double.infinity,
+            margin: const EdgeInsets.symmetric(horizontal: 20.0),
+            padding: const EdgeInsets.all(18),
+            alignment: Alignment.center,
+            decoration: BoxDecoration(color: AppColor.blue, shape: BoxShape.rectangle, borderRadius: BorderRadius.circular(10)),
+            child: state is Loading
+                ? LoadingWidget(size: 20, color: Colors.white)
+                : Text("ثبت نام", style: defaultTextStyle(context, headline: 4).c(Colors.white)),
+          ),
+        );
       },
-      child: Container(
-        width: double.infinity,
-        margin: const EdgeInsets.symmetric(horizontal: 20.0),
-        padding: const EdgeInsets.all(18),
-        alignment: Alignment.center,
-        decoration: BoxDecoration(color: AppColor.blue, shape: BoxShape.rectangle, borderRadius: BorderRadius.circular(10)),
-        child: Text("ثبت نام", style: defaultTextStyle(context, headline: 4).c(Colors.white)),
-      ),
     );
   }
 
@@ -187,13 +199,14 @@ class _SignUpPspState extends State<SignUpPsp> {
                           keyboardType: TextInputType.number,
                           textAlign: TextAlign.end,
                           decoration: defaultInputDecoration(context).copyWith(
-                            hintText: 'شماره تلفن صنف',
+                            hintText: 'شماره موبایل',
                             contentPadding: const EdgeInsets.only(left: 8.0, right: 8.0, top: 20.0, bottom: 20.0),
                             prefixIcon: const Icon(Icons.phone, color: Color(0xffA0A8B1), size: 25.0),
+                            hintTextDirection: TextDirection.ltr,
                           ),
                           validator: (value) {
                             if (value == null) return null;
-                            if (value.isEmpty) return "وارد کردن شماره تلفن ضروری است";
+                            if (value.isEmpty) return "وارد کردن شماره موبایل ضروری است";
                             return null;
                           },
                           onSaved: (value) => pspUser = pspUser.copyWith(mobile: value),
@@ -211,19 +224,19 @@ class _SignUpPspState extends State<SignUpPsp> {
                             hintText: 'کد ملی',
                             contentPadding: const EdgeInsets.only(left: 8.0, right: 8.0, top: 20.0, bottom: 20.0),
                             prefixIcon: const Icon(Icons.phone, color: Color(0xffA0A8B1), size: 25.0),
+                            hintTextDirection: TextDirection.ltr,
                           ),
                           validator: (value) {
                             if (value == null) return null;
                             if (value.length != 10) return "کد ملی معتبر نیست";
                             return null;
                           },
-                          onSaved: (value) => pspUser = pspUser.copyWith(mobile: value),
+                          onSaved: (value) => pspUser = pspUser.copyWith(nationalCode: value),
                         ),
                       ),
                       SizedBox(height: paddingBetweenTextFiled),
                       OurItemPicker(
                         hint: "استان",
-                        headlineSize: 6,
                         icon: Icons.pin_drop_outlined,
                         items: null,
                         onFillParams: () => getIranProvince(context),

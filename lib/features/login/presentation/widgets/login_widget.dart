@@ -27,7 +27,7 @@ class _LoginWidgetState extends State<LoginWidget> {
   final TextEditingController verifyController = TextEditingController();
   final GlobalKey<FormState> formKey = GlobalKey();
 
-  int expireAt = 120;
+  int expireAt = 180;
 
   @override
   void initState() {

@@ -31,7 +31,7 @@ class GuildListCubit extends Cubit<GuildListState> {
   }
 
   Future<RequestResult> saveGuild(Guild guild) {
-    return main.updateGuild(nationalCode: GetIt.instance<LoginApi>().getUserData().nationalCode, guild: guild);
+    return main.updateGuild(guild: guild);
   }
 
   Future<RequestResult> sendRequestForCoupon({required Guild guild}) {

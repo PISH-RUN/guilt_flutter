@@ -1,5 +1,6 @@
 import 'package:dartz/dartz.dart';
 import 'package:guilt_flutter/application/guild/data/models/guild_model.dart';
+import 'package:guilt_flutter/application/guild/domain/entities/guild.dart';
 import 'package:guilt_flutter/commons/data/data_source/remote_data_source.dart';
 import 'package:guilt_flutter/commons/data/model/json_parser.dart';
 import 'package:guilt_flutter/commons/data/model/paginate_list.dart';
@@ -7,9 +8,9 @@ import 'package:guilt_flutter/commons/failures.dart';
 import 'package:guilt_flutter/commons/request_result.dart';
 import 'package:guilt_flutter/features/psp/constants.dart';
 import 'package:guilt_flutter/features/psp/data/models/guild_psp_model.dart';
+import 'package:guilt_flutter/features/psp/data/models/psp_user_model.dart';
 import 'package:guilt_flutter/features/psp/domain/entities/guild_psp.dart';
 import 'package:guilt_flutter/features/psp/domain/entities/psp_user.dart';
-import 'package:logger/logger.dart';
 
 import '../../../../application/constants.dart';
 import '../../domain/repositories/psp_repository.dart';
@@ -42,16 +43,15 @@ class PspRepositoryImpl implements PspRepository {
         params: {...GuildModel.fromSuper(guild.guild).toJson(), 'user_token': token},
         mapSuccess: (Map<String, dynamic> json) => true,
       );
-      if (output.isLeft()) {
-        return RequestResult.fromEither(output);
-      }
+      return RequestResult.fromEither(output);
+    } else {
+      final output = await remoteDataSource.postToServer<bool>(
+        url: '${BASE_URL_API}users/psps/guilds',
+        params: {'status': guild.guildPspStep.name, 'guild_uuid': guild.guild.uuid},
+        mapSuccess: (Map<String, dynamic> json) => true,
+      );
+      return RequestResult.fromEither(output);
     }
-    final output = await remoteDataSource.postToServer<bool>(
-      url: '${BASE_URL_API}users/psps/guilds',
-      params: {'status': guild.guildPspStep.name, 'guild_uuid': guild.guild.uuid},
-      mapSuccess: (Map<String, dynamic> json) => true,
-    );
-    return RequestResult.fromEither(output);
   }
 
   @override
@@ -59,12 +59,14 @@ class PspRepositoryImpl implements PspRepository {
     final output = await remoteDataSource.getFromServer<PaginateList<GuildPsp>>(
       url: '${BASE_URL_API}users/psps/guilds?page=${page - 1}=0&pageSize=$perPageGuildItem',
       params: cities.isEmpty ? {} : {'cities': cities},
-      mapSuccess: (Map<String, dynamic> json) => PaginateList(
-        list: JsonParser.listParser(json, ['data', 'results']).map((element) => GuildPspModel.fromJson(element)).toList(),
-        currentPage: page,
-        perPage: perPageGuildItem,
-        totalPage: (JsonParser.intParser(json, ['data', 'total']) ~/ perPageGuildItem),
-      ),
+      mapSuccess: (Map<String, dynamic> json) {
+        return PaginateList(
+          list: JsonParser.listParser(json, ['data', 'results']).map((element) => GuildPspModel.fromJson(element)).toList(),
+          currentPage: page,
+          perPage: perPageGuildItem,
+          totalPage: (JsonParser.intParser(json, ['data', 'total']) ~/ perPageGuildItem),
+        );
+      },
     );
     return output;
   }
@@ -82,7 +84,7 @@ class PspRepositoryImpl implements PspRepository {
   Future<RequestResult> signUpPsp(PspUser pspUser) async {
     return RequestResult.fromEither(await remoteDataSource.postToServer<String>(
       url: '${BASE_URL_API}users/psps',
-      params: {},
+      params: PspUserModel.fromSuper(pspUser).toJson(),
       mapSuccess: (Map<String, dynamic> json) => "",
     ));
   }

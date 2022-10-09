@@ -3,9 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
 import 'package:guilt_flutter/application/colors.dart';
+import 'package:guilt_flutter/application/constants.dart';
 import 'package:guilt_flutter/commons/widgets/our_text_field.dart';
-import 'package:guilt_flutter/commons/widgets/simple_snake_bar.dart';
-import 'package:guilt_flutter/features/psp/presentation/manager/update_state_of_guild_cubit.dart';
 import 'package:latlong2/latlong.dart' as lat_lng;
 import 'package:qlevar_router/qlevar_router.dart';
 
@@ -16,7 +15,6 @@ import '../../../../commons/widgets/loading_widget.dart';
 import '../../../../commons/widgets/our_button.dart';
 import '../../../../commons/widgets/our_item_picker.dart';
 import '../../../../commons/widgets/warning_dialog.dart';
-import '../../../../main.dart';
 import '../../domain/entities/guild.dart';
 import '../../domain/entities/pos.dart';
 import '../manager/guild_cubit.dart';
@@ -35,7 +33,7 @@ class GuildFormPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    if (!isAddNew) BlocProvider.of<GuildCubit>(context).initialPage(int.parse(QR.params['guildId'].toString()));
+    if (!isAddNew) BlocProvider.of<GuildCubit>(context).initialPage(QR.params['guildUuid'].toString());
     return WillPopScope(
       onWillPop: () async {
         return false;
@@ -47,7 +45,7 @@ class GuildFormPage extends StatelessWidget {
                   listener: (context, state) {
                     if (state is Loaded) {
                       isLoading = false;
-                      QR.navigator.replaceAll(initPath);
+                      QR.navigator.replaceAll(appMode.initPath);
                     }
                   },
                   child: GuildFormWidget(isAddNew: true, guild: Guild.fromEmpty(), isEditable: isEditable),
@@ -150,7 +148,7 @@ class _GuildFormWidgetState extends State<GuildFormWidget> {
                             : await BlocProvider.of<GuildCubit>(context).saveGuild(guild);
                         if (isEditable) {
                           isLoading = false;
-                          QR.navigator.replaceAll(initPath);
+                          QR.navigator.replaceAll(appMode.initPath);
                         }
                       },
                       backgroundColor: Theme.of(context).primaryColor,
@@ -319,6 +317,7 @@ class _GuildFormWidgetState extends State<GuildFormWidget> {
                                 textAlign: TextAlign.end,
                                 decoration: defaultInputDecoration(context).copyWith(
                                   hintText: 'شماره تلفن صنف',
+                                  hintTextDirection: TextDirection.ltr,
                                   contentPadding: const EdgeInsets.only(left: 8.0, right: 8.0, top: 20.0, bottom: 20.0),
                                   prefixIcon: const Icon(Icons.phone, color: Color(0xffA0A8B1), size: 25.0),
                                 ),
@@ -341,7 +340,7 @@ class _GuildFormWidgetState extends State<GuildFormWidget> {
                                 final isic = getIsicWithName(value);
                                 guild = guild.copyWith(isic: isic);
                               },
-                              currentText: isic,
+                              currentText: isicController.text,
                               controller: isicController,
                             )
                           : labelWidget(Icons.store, "رسته صنفی", isic),
@@ -398,6 +397,7 @@ class _GuildFormWidgetState extends State<GuildFormWidget> {
                                 textAlign: TextAlign.end,
                                 decoration: defaultInputDecoration(context).copyWith(
                                   hintText: 'کد پستی',
+                                  hintTextDirection: TextDirection.ltr,
                                   contentPadding: const EdgeInsets.only(left: 8.0, right: 8.0, top: 20.0, bottom: 20.0),
                                   prefixIcon: const Icon(Icons.map, color: Color(0xffA0A8B1), size: 25.0),
                                 ),
@@ -419,6 +419,7 @@ class _GuildFormWidgetState extends State<GuildFormWidget> {
                                 style: defaultTextStyle(context).c(const Color(0xff2F3135)),
                                 controller: addressController,
                                 keyboardType: TextInputType.streetAddress,
+                                onTap: () => setState(() => fixRtlFlutterBug(addressController)),
                                 decoration: defaultInputDecoration(context).copyWith(
                                   hintText: 'نشانی کامل',
                                   contentPadding: const EdgeInsets.symmetric(vertical: 16.0),
@@ -560,77 +561,91 @@ class _GuildFormWidgetState extends State<GuildFormWidget> {
                 child: Builder(builder: (context) {
                   return AlertDialog(
                     shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(12.0))),
-                    content: Form(
-                      key: formKeyDialog,
-                      onWillPop: () async => true,
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          TextFormField(
-                            style: defaultTextStyle(context),
-                            controller: terminalController,
-                            keyboardType: TextInputType.name,
-                            textAlign: TextAlign.end,
-                            decoration: defaultInputDecoration(context).copyWith(labelText: "شماره ترمینال:"),
-                            validator: (value) => posValidatorCheck(value),
-                            maxLines: 1,
-                          ),
-                          const SizedBox(height: 10.0),
-                          TextFormField(
-                            style: defaultTextStyle(context),
-                            controller: pspController,
-                            keyboardType: TextInputType.name,
-                            textAlign: TextAlign.end,
-                            decoration: defaultInputDecoration(context).copyWith(labelText: "psp:"),
-                            validator: (value) => posValidatorCheck(value),
-                            maxLines: 1,
-                          ),
-                          const SizedBox(height: 10.0),
-                          TextFormField(
-                            style: defaultTextStyle(context),
-                            controller: accountController,
-                            keyboardType: TextInputType.name,
-                            textAlign: TextAlign.end,
-                            decoration: defaultInputDecoration(context).copyWith(labelText: "شماره حساب:"),
-                            validator: (value) => posValidatorCheck(value),
-                            maxLines: 1,
-                          ),
-                          const SizedBox(height: 16.0),
-                          Row(
-                            children: [
-                              Expanded(
-                                  child: OurButton(
-                                onTap: () {
-                                  isDialogOpen = false;
-                                  Navigator.pop(context);
-                                },
-                                title: "انصراف",
-                                isLoading: false,
-                                color: Colors.grey,
-                              )),
-                              const SizedBox(width: 12.0),
-                              Expanded(
-                                  child: OurButton(
-                                onTap: () async {
-                                  isDialogOpen = false;
-                                  if (!formKeyDialog.currentState!.validate()) {
-                                    return;
-                                  }
-                                  final pos = Pos(
-                                    terminalId: terminalController.text,
-                                    accountNumber: accountController.text,
-                                    psp: pspController.text,
-                                  );
-                                  guild = guild.copyWith(poses: [...guild.poses, pos]);
-                                  await BlocProvider.of<GuildCubit>(context).saveGuild(guild);
-                                  Navigator.pop(context);
-                                },
-                                title: "ثبت",
-                                isLoading: false,
-                              )),
-                            ],
-                          ),
-                        ],
+                    content: SingleChildScrollView(
+                      child: Form(
+                        key: formKeyDialog,
+                        onWillPop: () async => true,
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            TextFormField(
+                              style: defaultTextStyle(context),
+                              controller: terminalController,
+                              keyboardType: TextInputType.name,
+                              textAlign: TextAlign.end,
+                              decoration: defaultInputDecoration(context).copyWith(
+                                labelText: "شماره ترمینال:",
+                                hintTextDirection: TextDirection.ltr,
+                                contentPadding: const EdgeInsets.only(left: 8.0, right: 8.0, top: 20.0, bottom: 20.0),
+                              ),
+                              validator: (value) => posValidatorCheck(value),
+                              maxLines: 1,
+                            ),
+                            const SizedBox(height: 10.0),
+                            TextFormField(
+                              style: defaultTextStyle(context),
+                              controller: pspController,
+                              keyboardType: TextInputType.name,
+                              textAlign: TextAlign.end,
+                              decoration: defaultInputDecoration(context).copyWith(
+                                labelText: "psp:",
+                                hintTextDirection: TextDirection.ltr,
+                                contentPadding: const EdgeInsets.only(left: 8.0, right: 8.0, top: 20.0, bottom: 20.0),
+                              ),
+                              validator: (value) => posValidatorCheck(value),
+                              maxLines: 1,
+                            ),
+                            const SizedBox(height: 10.0),
+                            TextFormField(
+                              style: defaultTextStyle(context),
+                              controller: accountController,
+                              keyboardType: TextInputType.name,
+                              textAlign: TextAlign.end,
+                              decoration: defaultInputDecoration(context).copyWith(
+                                labelText: "شماره حساب:",
+                                hintTextDirection: TextDirection.ltr,
+                                contentPadding: const EdgeInsets.only(left: 8.0, right: 8.0, top: 20.0, bottom: 20.0),
+                              ),
+                              validator: (value) => posValidatorCheck(value),
+                              maxLines: 1,
+                            ),
+                            const SizedBox(height: 16.0),
+                            Row(
+                              children: [
+                                Expanded(
+                                    child: OurButton(
+                                  onTap: () {
+                                    isDialogOpen = false;
+                                    Navigator.pop(context);
+                                  },
+                                  title: "انصراف",
+                                  isLoading: false,
+                                  color: Colors.grey,
+                                )),
+                                const SizedBox(width: 12.0),
+                                Expanded(
+                                    child: OurButton(
+                                  onTap: () async {
+                                    isDialogOpen = false;
+                                    if (!formKeyDialog.currentState!.validate()) {
+                                      return;
+                                    }
+                                    final pos = Pos(
+                                      terminalId: terminalController.text,
+                                      accountNumber: accountController.text,
+                                      psp: pspController.text,
+                                    );
+                                    guild = guild.copyWith(poses: [...guild.poses, pos]);
+                                    await BlocProvider.of<GuildCubit>(context).saveGuild(guild);
+                                    Navigator.pop(context);
+                                  },
+                                  title: "ثبت",
+                                  isLoading: false,
+                                )),
+                              ],
+                            ),
+                          ],
+                        ),
                       ),
                     ),
                   );

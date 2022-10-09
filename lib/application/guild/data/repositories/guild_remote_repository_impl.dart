@@ -1,4 +1,3 @@
-import 'dart:convert';
 import 'package:collection/collection.dart';
 import 'package:dartz/dartz.dart';
 import 'package:get_it/get_it.dart';
@@ -28,13 +27,14 @@ class GuildRemoteRepositoryImpl implements GuildRemoteRepository {
     nationalCodeLocal = nationalCode;
     if (GetStorage().hasData("guilds${getLocalKeyOfUser(nationalCode)}")) {
       final guildListLocal = GuildModel.convertStringToGuildList(GetStorage().read<String>("guilds${getLocalKeyOfUser(nationalCode)}") ?? "[]");
+      Logger().i("info=> ${guildListLocal.map((e) => e.id)} ");
       return Right(guildListLocal);
     }
     final output = await remoteDataSource.getFromServer<List<Guild>>(
       url: '${BASE_URL_API}guilds',
       params: {},
       localKey: 'guilds${getLocalKeyOfUser(nationalCode)}',
-      mapSuccess: (data) => (data['data']['results'] as List).mapIndexed((index, json) => GuildModel.fromJson(json)).toList(),
+      mapSuccess: (data) => (data['data']['results'] as List).map((json) => GuildModel.fromJson(json)).toList(),
     );
     if (output.isRight()) {
       GetStorage()
@@ -45,7 +45,9 @@ class GuildRemoteRepositoryImpl implements GuildRemoteRepository {
 
   @override
   Future<RequestResult> updateSpecialGuild(Guild guildItem) async {
-    int guildOldId = guildItem.id;
+    final guildListLocal = GuildModel.convertStringToGuildList(GetStorage().read<String>("guilds${getLocalKeyOfUser(nationalCodeLocal)}") ?? "[]");
+    final guild = guildListLocal.firstWhereOrNull((element) => element.uuid == guildItem.uuid);
+    int guildOldId = guild == null ? guildItem.id : guild.id;
     return RequestResult.fromEither(
       await remoteDataSource.putToServer(
         url: '${BASE_URL_API}guilds/$guildOldId',
@@ -53,7 +55,7 @@ class GuildRemoteRepositoryImpl implements GuildRemoteRepository {
         mapSuccess: (guildJson) {
           final guildListLocal =
               GuildModel.convertStringToGuildList(GetStorage().read<String>("guilds${getLocalKeyOfUser(nationalCodeLocal)}") ?? "[]");
-          final guildListLocalTemp = guildListLocal.map((e) => guildItem.uuid == e.uuid ? guildItem : e).toList();
+          final guildListLocalTemp = guildListLocal.map((e) => guildItem.uuid == e.uuid ? GuildModel.fromJson(guildJson['data']) : e).toList();
           GetStorage().write("guilds${getLocalKeyOfUser(nationalCodeLocal)}", GuildModel.convertGuildListToString(guildListLocalTemp));
           return true;
         },
@@ -70,11 +72,13 @@ class GuildRemoteRepositoryImpl implements GuildRemoteRepository {
     final response = await remoteDataSource.postToServer(
       url: '${BASE_URL_API}guilds/insert',
       params: GuildModel.fromSuper(guild).toJson(),
-      mapSuccess: (date) => guild,
+      mapSuccess: (data) => GuildModel.fromJson(data['data']),
     );
     if (response.isRight()) {
+      Logger().i("info=> ${response.getOrElse(() => throw UnimplementedError())} ");
+
       final guildListLocal = GuildModel.convertStringToGuildList(GetStorage().read<String>("guilds${getLocalKeyOfUser(nationalCodeLocal)}") ?? "[]");
-      guildListLocal.add(guild);
+      guildListLocal.add(response.getOrElse(() => throw UnimplementedError()));
       GetStorage().write("guilds${getLocalKeyOfUser(nationalCodeLocal)}", GuildModel.convertGuildListToString(guildListLocal));
     }
     return response;

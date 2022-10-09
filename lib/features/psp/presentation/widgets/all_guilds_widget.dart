@@ -46,6 +46,7 @@ class _AllGuildsListWidgetState extends State<AllGuildsListWidget> {
               error: (failure) => Center(child: Text(failure.message)),
               empty: () => Column(
                 mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
                   Column(
                     mainAxisSize: MainAxisSize.min,
@@ -53,7 +54,7 @@ class _AllGuildsListWidgetState extends State<AllGuildsListWidget> {
                       const SizedBox(height: 15.0),
                       const Image(image: AssetImage('images/empty.webp'), height: 150, width: 150),
                       const SizedBox(height: 10.0),
-                      Text("کسب و کاری با مشخصات زیر موجود نمی باشد", style: defaultTextStyle(context)),
+                      Text("کسب و کاری موجود نمی باشد", style: defaultTextStyle(context)),
                     ],
                   ),
                 ],

@@ -9,12 +9,13 @@ const String apiMapKey =
 enum LocalKeys { userId, userPhone, token }
 
 enum AppMode {
-  psp('psp/guildList'),
-  normal('guild/dashboard');
+  psp('psp/guildList', "شما باید از نرم افزار مخصوص کاربران استفاده کنید"),
+  normal('guild/dashboard', "شما باید از نرم افزار مخصوص psp استفاده کنید");
 
   final String initPath;
+  final String forbiddenError;
 
-  const AppMode(this.initPath);
+  const AppMode(this.initPath, this.forbiddenError);
 }
 
 const appMode = AppMode.normal;

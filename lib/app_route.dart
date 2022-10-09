@@ -26,7 +26,7 @@ class AppRoutes {
     QRoute.withChild(
       path: '/psp',
       builderChild: (p0) => p0,
-      middleware: [AuthGuard()],
+      middleware: [],
       children: [
         QRoute(
           path: '/signUp',
@@ -49,7 +49,7 @@ class AppRoutes {
           middleware: [AuthGuard()],
         ),
         QRoute(
-          path: '/myGuildList',
+          path: '/personalGuild',
           builder: () => PspPanel(currentIndexBottomNavigation: 2, child: GuildPage.wrappedRoute()),
           middleware: [AuthGuard()],
         ),
@@ -91,7 +91,7 @@ class AppRoutes {
           middleware: [AuthGuard(), QMiddlewareBuilder(canPopFunc: () async => !isDialogOpen)],
         ),
         QRoute(
-          path: '/:guildId((^[0-9]*\$))',
+          path: '/view/:guildUuid',
           builder: () =>
               AuthenticatedPage(child: GuildMainPanel(currentIndexBottomNavigation: 1, child: GuildFormPage.wrappedRoute(isAddNew: false))),
           middleware: [AuthGuard(), QMiddlewareBuilder(canPopFunc: () async => !isDialogOpen)],

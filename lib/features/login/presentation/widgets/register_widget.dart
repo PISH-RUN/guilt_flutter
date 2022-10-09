@@ -121,22 +121,26 @@ class _RegisterWidgetState extends State<RegisterWidget> {
                                 const SizedBox(height: 6.0),
                                 Text(
                                   state.maybeWhen(
-                                      error: (failure) =>
-                                          failure.failureType == FailureType.authentication ? "اطلاعات شما نادرست است" : failure.message,
+                                      error: (failure) {
+                                        if (failure.failureType == FailureType.forbiddenError && appMode == AppMode.psp) {
+                                          return "ابتدا شما باید توسط ادمین تایید شوید";
+                                        }
+                                        return failure.failureType == FailureType.authentication ? "اطلاعات شما نادرست است" : failure.message;
+                                      },
                                       orElse: () => ""),
                                   textAlign: TextAlign.center,
                                   style: defaultTextStyle(context, headline: 4).c(Colors.red),
                                 ),
-                                const SizedBox(height: 10.0),
+                                const SizedBox(height: 12.0),
                                 if (appMode == AppMode.psp)
                                   Padding(
-                                    padding: const EdgeInsets.only(bottom: 10.0),
+                                    padding: const EdgeInsets.only(bottom: 6.0),
                                     child: GestureDetector(
                                       onTap: () => QR.to('psp/signUp'),
                                       child: Text(
                                         "ثبت نام psp",
                                         textAlign: TextAlign.center,
-                                        style: defaultTextStyle(context, headline: 4).c(Colors.red),
+                                        style: defaultTextStyle(context, headline: 4).c(Colors.black),
                                       ),
                                     ),
                                   ),

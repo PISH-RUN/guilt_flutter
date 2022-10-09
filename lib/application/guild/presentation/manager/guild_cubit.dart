@@ -12,9 +12,9 @@ class GuildCubit extends Cubit<GuildState> {
     required this.main,
   }) : super(const GuildState.loading());
 
-  Future<void> initialPage(int guildId) async {
+  Future<void> initialPage(String guildUuid) async {
     emit(const GuildState.loading());
-    final response = await main.getFullDetailOfOneGuild(nationalCode: GetIt.instance<LoginApi>().getUserData().nationalCode, guildId: guildId);
+    final response = await main.getFullDetailOfOneGuild(nationalCode: GetIt.instance<LoginApi>().getUserData().nationalCode, guildUuid: guildUuid);
     response.fold(
       (failure) => emit(GuildState.error(failure: failure)),
       (guild) => emit(GuildState.loaded(guild: guild)),
@@ -22,7 +22,7 @@ class GuildCubit extends Cubit<GuildState> {
   }
 
   Future<void> saveGuild(Guild guild) async {
-    final response = await main.updateGuild(nationalCode: GetIt.instance<LoginApi>().getUserData().nationalCode, guild: guild);
+    final response = await main.updateGuild( guild: guild);
     response.fold(
       (failure) => emit(GuildState.error(failure: failure)),
       () => emit(GuildState.loaded(guild: guild)),

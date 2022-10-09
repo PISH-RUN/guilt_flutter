@@ -1,3 +1,4 @@
+import 'package:guilt_flutter/application/constants.dart';
 import 'package:guilt_flutter/application/parse_error_message.dart';
 import 'package:http/http.dart';
 import '../../failures.dart';
@@ -29,8 +30,8 @@ class ServerFailure extends Failure {
         super("لطفا ابتدا وارد شوید", failureType: FailureType.authentication);
 
   ServerFailure.notBuyAccountYet()
-      : statusCode = AUTHENTICATION_IS_WRONG_STATUS_CODE,
-        super("لطفا ابتدا اشتراک تهیه کنید", failureType: FailureType.payment);
+      : statusCode = FORBIDDEN_STATUS_CODE,
+        super(appMode.forbiddenError, failureType: FailureType.forbiddenError);
 
   ServerFailure.somethingWentWrong()
       : statusCode = -2,

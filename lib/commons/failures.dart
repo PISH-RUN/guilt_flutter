@@ -1,6 +1,6 @@
 import 'package:equatable/equatable.dart';
 
-enum FailureType { authentication, noInternet, other, serverError, payment, somethingWentWrong, haveNoGuildAndProfile, first_fill_profile }
+enum FailureType { authentication, noInternet, other, serverError, forbiddenError, somethingWentWrong, haveNoGuildAndProfile, first_fill_profile }
 
 class Failure extends Equatable {
   final FailureType failureType;

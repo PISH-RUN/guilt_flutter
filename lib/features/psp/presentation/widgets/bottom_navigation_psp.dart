@@ -46,8 +46,8 @@ class BottomNavigationPsp extends StatelessWidget {
             backgroundColor: Colors.white,
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.add_business, color: AppColor.blue),
-            activeIcon: Icon(Icons.add_business_outlined, color: AppColor.blue),
+            icon: Icon(Icons.store_mall_directory_outlined, color: AppColor.blue),
+            activeIcon: Icon(Icons.store, color: AppColor.blue),
             label: 'اصناف شخصی',
             backgroundColor: Colors.white,
           ),
@@ -61,7 +61,7 @@ class BottomNavigationPsp extends StatelessWidget {
               QR.to('/psp/followGuilds');
               return;
             case 2:
-              QR.to('/psp/myGuildList');
+              QR.to('/psp/personalGuild');
               return;
             default:
               return;

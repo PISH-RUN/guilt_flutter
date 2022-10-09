@@ -166,7 +166,6 @@ bool convertDynamicToBool(dynamic item, {bool defaultValue = false}) {
 }
 
 bool isUrlValid(String url) {
-  Logger().i("info=> ${url} ");
   try {
     return Uri.tryParse(url)?.hasAbsolutePath ?? false;
   } on Exception {

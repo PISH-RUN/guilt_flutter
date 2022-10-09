@@ -4,7 +4,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
-import 'package:get_storage/get_storage.dart';
+import 'package:guilt_flutter/application/constants.dart';
 import 'package:guilt_flutter/commons/widgets/our_text_field.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:logger/logger.dart';
@@ -114,6 +114,8 @@ class _FormWidgetState extends State<FormWidget> {
   bool isEditable = false;
   late UserInfo user;
 
+  String imagePath = '';
+
   @override
   void initState() {
     user = widget.user;
@@ -126,7 +128,7 @@ class _FormWidgetState extends State<FormWidget> {
   Widget build(BuildContext context) {
     return BlocConsumer<UpdateUserCubit, UpdateUserState>(
       listener: (context, state) {
-        imagePath = '';
+        // imagePath = '';
         state.maybeWhen(
           error: (failure) => showSnakeBar(context, failure.message),
           success: () {
@@ -149,11 +151,14 @@ class _FormWidgetState extends State<FormWidget> {
                           return;
                         }
                         formKey.currentState!.save();
-                        Logger().i("info=> ${user.avatar} ");
-                        // BlocProvider.of<UpdateUserCubit>(context).updateUserInfo(user);
+                        BlocProvider.of<UpdateUserCubit>(context).updateUserInfo(user);
                         isEditable = false;
                         // imagePath = '';
-                        setState(() {});
+                        if (QR.currentPath.contains('signIn/profile')) {
+                          QR.navigator.replaceAll(appMode.initPath);
+                        } else {
+                          setState(() {});
+                        }
                       },
                       backgroundColor: Theme.of(context).primaryColor,
                       foregroundColor: Colors.white,
@@ -176,6 +181,8 @@ class _FormWidgetState extends State<FormWidget> {
     gender = widget.user.gender;
   }
 
+  bool isProgressAvatarHide = true;
+
   Form formWidget(BuildContext context) {
     return Form(
       key: formKey,
@@ -186,6 +193,13 @@ class _FormWidgetState extends State<FormWidget> {
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
+                  Opacity(
+                    opacity: isProgressAvatarHide ? 0.0 : 1.0,
+                    child: LinearProgressIndicator(
+                      valueColor: AlwaysStoppedAnimation<Color>(Theme.of(context).primaryColor),
+                      minHeight: 4.0,
+                    ),
+                  ),
                   const SizedBox(height: 6.0),
                   avatarWidget(context),
                   const SizedBox(height: 6.0),
@@ -199,15 +213,15 @@ class _FormWidgetState extends State<FormWidget> {
     );
   }
 
-  String imagePath = '';
-
   Widget avatarWidget(BuildContext context) {
     return GestureDetector(
       onTap: () async {
         if (!isEditable) return;
         final ImagePicker picker = ImagePicker();
         final XFile? image = await picker.pickImage(source: ImageSource.gallery);
+        setState(() => isProgressAvatarHide = false);
         final response = await BlocProvider.of<UpdateUserCubit>(context).changeAvatar(user, image!);
+        setState(() => isProgressAvatarHide = true);
         response.fold(
           (l) => showSnakeBar(context, l.message),
           (url) {
@@ -229,18 +243,7 @@ class _FormWidgetState extends State<FormWidget> {
                     height: 130,
                     width: 130,
                     child: Container(
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        border: Border.all(color: Colors.black, width: 2),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.grey.withOpacity(0.5),
-                            spreadRadius: 5,
-                            blurRadius: 7,
-                            offset: const Offset(-3, 3),
-                          )
-                        ],
-                      ),
+                      decoration: BoxDecoration(shape: BoxShape.circle, border: Border.all(color: AppColor.blue, width: 2)),
                       child: ClipRRect(
                         borderRadius: const BorderRadius.all(Radius.circular(100)),
                         child: imagePath.isNotEmpty
@@ -256,7 +259,7 @@ class _FormWidgetState extends State<FormWidget> {
                       ),
                     )),
               ),
-              if (isEditable)
+              if (isEditable && (imagePath.isNotEmpty || (user.avatar ?? "").isNotEmpty))
                 Align(
                   alignment: Alignment.center,
                   child: Container(
@@ -272,7 +275,7 @@ class _FormWidgetState extends State<FormWidget> {
                       children: <Widget>[
                         const Icon(Icons.camera_alt, color: Colors.black54, size: 50.0),
                         const SizedBox(height: 10.0),
-                        Text("بارگزاری", style: defaultTextStyle(context, headline: 3).c(Colors.black54))
+                        Text("تغییر تصویر", style: defaultTextStyle(context, headline: 5).c(Colors.black54))
                       ],
                     ),
                   ),

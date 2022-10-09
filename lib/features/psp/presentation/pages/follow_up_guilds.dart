@@ -12,7 +12,9 @@ import 'package:guilt_flutter/features/psp/presentation/manager/follow_up_guilds
 import 'package:guilt_flutter/features/psp/presentation/manager/follow_up_guilds_state.dart';
 import 'package:guilt_flutter/features/psp/presentation/manager/update_state_of_guild_cubit.dart';
 import 'package:guilt_flutter/features/psp/presentation/widgets/guild_item.dart';
+import 'package:guilt_flutter/main.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
+import 'package:logger/logger.dart';
 import 'package:multi_select_flutter/multi_select_flutter.dart';
 
 class FollowUpGuildsListPage extends StatefulWidget {
@@ -109,7 +111,7 @@ class _FollowUpGuildsListPageState extends State<FollowUpGuildsListPage> {
               Expanded(
                 child: TextField(
                   controller: controller,
-                  onChanged: (value) => search(),
+                  onChanged: (value) => search(value),
                   style: defaultTextStyle(context).c(Colors.black87),
                   onTap: () => setState(() => fixRtlFlutterBug(controller)),
                   cursorWidth: 0.2,
@@ -136,7 +138,12 @@ class _FollowUpGuildsListPageState extends State<FollowUpGuildsListPage> {
           ),
           padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 2.0),
           child: GestureDetector(
-            onTap: () => _showMultiSelect(context),
+            onTap: () async {
+              await _showMultiSelect(context);
+              if (BlocProvider.of<FollowUpGuildsCubit>(context).currentCities == selectedCity) return;
+              if ((BlocProvider.of<FollowUpGuildsCubit>(context).currentCities.length == 0) && (selectedCity == 0)) return;
+              BlocProvider.of<FollowUpGuildsCubit>(context).initialPage(selectedCity, searchText: controller.text);
+            },
             child: AbsorbPointer(
               child: Padding(
                 padding: const EdgeInsets.all(8.0),
@@ -158,8 +165,8 @@ class _FollowUpGuildsListPageState extends State<FollowUpGuildsListPage> {
     );
   }
 
-  void _showMultiSelect(BuildContext context) async {
-    final cities = await getCitiesOfOneProvince(context, 'یزد');
+  Future<void> _showMultiSelect(BuildContext context) async {
+    final cities = await getCitiesOfOneProvince(context, province);
     await showModalBottomSheet(
       isScrollControlled: true,
       context: context,
@@ -178,6 +185,7 @@ class _FollowUpGuildsListPageState extends State<FollowUpGuildsListPage> {
             title: Text("انتخاب شهر", style: defaultTextStyle(context, headline: 4)),
             items: cities.map((e) => MultiSelectItem(e, e)).toList(),
             onConfirm: (values) {
+              if (selectedCity == values) return;
               selectedCity = values.map((e) => e.toString()).toList();
               setState(() {});
             },
@@ -190,5 +198,8 @@ class _FollowUpGuildsListPageState extends State<FollowUpGuildsListPage> {
     );
   }
 
-  void search() {}
+  void search(String value) {
+    if (value == BlocProvider.of<FollowUpGuildsCubit>(context).currentSearchText) return;
+    BlocProvider.of<FollowUpGuildsCubit>(context).initialPage(selectedCity, searchText: value);
+  }
 }

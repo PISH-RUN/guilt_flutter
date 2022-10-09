@@ -34,7 +34,7 @@ class GuildItem extends StatelessWidget {
                     Text(guild.title, style: defaultTextStyle(context, headline: 3)),
                     const SizedBox(width: 16.0),
                     GestureDetector(
-                      onTap: () => QR.to('guild/${guild.id}'),
+                      onTap: () => QR.to('guild/view/${guild.uuid}'),
                       child: Container(
                         alignment: Alignment.center,
                         padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 10.0),
@@ -50,7 +50,7 @@ class GuildItem extends StatelessWidget {
                 const SizedBox(height: paddingSize),
                 PairTextRow(title: "شهرستان", value: guild.city),
                 const SizedBox(height: paddingSize),
-                PairTextRow(title: "نام رسته شغلی", value: guild.isic.name),
+                PairTextRow(title: "رسته شغلی", value: guild.isic.name),
                 const SizedBox(height: paddingSize),
                 PairTextRow(title: "نام سازمان", value: guild.organName),
                 const SizedBox(height: paddingSize),
@@ -63,6 +63,7 @@ class GuildItem extends StatelessWidget {
           ),
           GestureDetector(
             onTap: () async {
+              if (guild.isCouponRequested) return;
               isDialogOpen = true;
               final isOK = await showDialog(
                 context: context,
@@ -92,7 +93,7 @@ class GuildItem extends StatelessWidget {
               ) as bool;
               isDialogOpen = false;
               if (isOK) {
-                BlocProvider.of<GuildListCubit>(context).sendRequestForCoupon(guild: guild);
+                await BlocProvider.of<GuildListCubit>(context).sendRequestForCoupon(guild: guild);
                 BlocProvider.of<GuildListCubit>(context).initialPage(context);
               }
             },

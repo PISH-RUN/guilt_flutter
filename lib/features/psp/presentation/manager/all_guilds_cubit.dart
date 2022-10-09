@@ -32,7 +32,11 @@ class AllGuildsCubit extends Cubit<AllGuildsState> {
       totalPage = guildList.totalPage;
       currentPage = guildList.currentPage;
       guildPspList = [...guildPspList, ...guildList.list];
-      emit(AllGuildsState.loaded(guildList: guildList.copyWith(list: guildList.list)));
+      if (guildList.list.isEmpty) {
+        emit(const AllGuildsState.empty());
+      } else {
+        emit(AllGuildsState.loaded(guildList: guildList.copyWith(list: guildList.list)));
+      }
     });
   }
 
