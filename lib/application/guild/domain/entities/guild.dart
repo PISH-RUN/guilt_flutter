@@ -52,6 +52,7 @@ class Guild extends Equatable {
   });
 
   Guild copyWith({
+    int? id,
     int? userId,
     String? image,
     String? status,
@@ -74,7 +75,7 @@ class Guild extends Equatable {
     lat_lng.LatLng? location,
   }) {
     return Guild(
-      id: id,
+      id: id ?? this.id,
       userId: userId ?? this.userId,
       image: image ?? this.image,
       status: status ?? this.status,

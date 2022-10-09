@@ -34,7 +34,7 @@ class LoginRepositoryImpl implements LoginRepository {
       params: {'mobile': "0$phoneNumber", 'national_code': nationalCode},
       mapSuccess: (Map<String, dynamic> data) => true,
     );
-    return result.fold((l) => Left(l), (r) => const Right(true));
+    return result.fold((l) => l.message == "mobile and national_code mismatch" ? Left(Failure("شماره موبایل متعلق به این کد ملی نمی باشد")) : Left(l), (r) => const Right(true));
   }
 
   @override

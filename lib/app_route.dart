@@ -1,4 +1,5 @@
 import 'package:get_it/get_it.dart';
+import 'package:guilt_flutter/application/constants.dart';
 import 'package:guilt_flutter/application/error_page.dart';
 import 'package:guilt_flutter/features/psp/presentation/pages/all_guild_list_page.dart';
 import 'package:guilt_flutter/features/psp/presentation/pages/follow_up_guilds.dart';
@@ -87,13 +88,18 @@ class AppRoutes {
         ),
         QRoute(
           path: '/add',
-          builder: () => AuthenticatedPage(child: GuildMainPanel(currentIndexBottomNavigation: 1, child: GuildFormPage.wrappedRoute(isAddNew: true))),
+          builder: () => AuthenticatedPage(
+              child: appMode == AppMode.psp
+                  ? GuildFormPage.wrappedRoute(isAddNew: true)
+                  : GuildMainPanel(currentIndexBottomNavigation: 1, child: GuildFormPage.wrappedRoute(isAddNew: true))),
           middleware: [AuthGuard(), QMiddlewareBuilder(canPopFunc: () async => !isDialogOpen)],
         ),
         QRoute(
           path: '/view/:guildUuid',
-          builder: () =>
-              AuthenticatedPage(child: GuildMainPanel(currentIndexBottomNavigation: 1, child: GuildFormPage.wrappedRoute(isAddNew: false))),
+          builder: () => AuthenticatedPage(
+              child: appMode == AppMode.psp
+                  ? GuildFormPage.wrappedRoute(isAddNew: false)
+                  : GuildMainPanel(currentIndexBottomNavigation: 1, child: GuildFormPage.wrappedRoute(isAddNew: false))),
           middleware: [AuthGuard(), QMiddlewareBuilder(canPopFunc: () async => !isDialogOpen)],
         ),
       ],

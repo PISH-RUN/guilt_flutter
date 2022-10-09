@@ -7,7 +7,6 @@ import 'package:get_it/get_it.dart';
 import 'package:guilt_flutter/application/constants.dart';
 import 'package:guilt_flutter/commons/widgets/our_text_field.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:logger/logger.dart';
 import 'package:persian_datetime_picker/persian_datetime_picker.dart';
 import 'package:qlevar_router/qlevar_router.dart';
 import 'package:toggle_switch/toggle_switch.dart';
@@ -133,7 +132,7 @@ class _FormWidgetState extends State<FormWidget> {
           error: (failure) => showSnakeBar(context, failure.message),
           success: () {
             if (QR.currentPath.contains('signIn/profile')) {
-              QR.navigator.replaceAll(initPath);
+              QR.navigator.replaceAll(appMode.initPath);
             }
           },
           orElse: () {},
@@ -515,7 +514,7 @@ class _FormWidgetState extends State<FormWidget> {
             GestureDetector(
               onTap: () async {
                 await GetIt.instance<LoginApi>().signOut();
-                QR.navigator.replaceAll(initPath);
+                QR.navigator.replaceAll(appMode.initPath);
               },
               child: Container(
                 width: double.infinity,

@@ -10,7 +10,7 @@ class GuildMain {
   GuildMain(this.guildRemoteRepository);
 
   Future<RequestResult> updateGuild({ required Guild guild}) async {
-    guildRemoteRepository.updateSpecialGuild(guild);
+    await guildRemoteRepository.updateSpecialGuild(guild);
     return RequestResult.success();
   }
 
@@ -22,8 +22,8 @@ class GuildMain {
     return RequestResult.fromEither(response);
   }
 
-  Future<Either<Failure, List<Guild>>> getListOfMyGuilds({required String nationalCode, bool isForceRefresh = false}) async {
-    return (await guildRemoteRepository.getListOfMyGuilds(nationalCode, isForceRefresh)).fold((l) => left(l), (r) => Right(r));
+  Future<Either<Failure, List<Guild>>> getListOfMyGuilds({required String nationalCode}) async {
+    return (await guildRemoteRepository.getListOfMyGuilds(nationalCode)).fold((l) => left(l), (r) => Right(r));
   }
 
   Future<Either<Failure, Guild>> getFullDetailOfOneGuild({required String nationalCode, required String guildUuid, bool isForceFromServer = false}) async {

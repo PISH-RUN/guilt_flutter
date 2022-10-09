@@ -10,7 +10,7 @@ class GuildApi {
   GuildApi({required this.guildRemoteRepository});
 
   Future<Either<Failure, List<Guild>>> getMyGuildList({required String nationalCode, bool isForceRefresh = false}) async {
-    return guildRemoteRepository.getListOfMyGuilds(nationalCode, isForceRefresh);
+    return guildRemoteRepository.getListOfMyGuilds(nationalCode);
   }
 
   Future<RequestResult> updateGuildList({required String nationalCode, required Guild guildItem}) async {

@@ -14,7 +14,6 @@ import 'package:guilt_flutter/features/psp/presentation/manager/update_state_of_
 import 'package:guilt_flutter/features/psp/presentation/widgets/guild_item.dart';
 import 'package:guilt_flutter/main.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
-import 'package:logger/logger.dart';
 import 'package:multi_select_flutter/multi_select_flutter.dart';
 
 class FollowUpGuildsListPage extends StatefulWidget {

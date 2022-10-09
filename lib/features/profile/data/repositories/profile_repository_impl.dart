@@ -5,7 +5,6 @@ import 'package:get_it/get_it.dart';
 import 'package:guilt_flutter/commons/data/model/json_parser.dart';
 import 'package:guilt_flutter/features/login/api/login_api.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:logger/logger.dart';
 
 import '../../../../application/constants.dart';
 import '../../../../application/get_local_key_of_user.dart';

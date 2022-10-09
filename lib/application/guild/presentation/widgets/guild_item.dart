@@ -94,6 +94,7 @@ class GuildItem extends StatelessWidget {
               isDialogOpen = false;
               if (isOK) {
                 await BlocProvider.of<GuildListCubit>(context).sendRequestForCoupon(guild: guild);
+                await Future.delayed(const Duration(milliseconds: 600));
                 BlocProvider.of<GuildListCubit>(context).initialPage(context);
               }
             },

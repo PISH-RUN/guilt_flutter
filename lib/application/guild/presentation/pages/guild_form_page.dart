@@ -6,7 +6,6 @@ import 'package:guilt_flutter/application/colors.dart';
 import 'package:guilt_flutter/application/constants.dart';
 import 'package:guilt_flutter/commons/widgets/our_text_field.dart';
 import 'package:latlong2/latlong.dart' as lat_lng;
-import 'package:logger/logger.dart';
 import 'package:qlevar_router/qlevar_router.dart';
 
 import '../../../../commons/fix_rtl_flutter_bug.dart';
@@ -235,9 +234,7 @@ class _GuildFormWidgetState extends State<GuildFormWidget> {
                     if (!formKey.currentState!.validate()) {
                       return;
                     }
-                    Logger().i("info=> ${guild.homeTelephone} ");
                     formKey.currentState!.save();
-                    Logger().i("info=> ${guild.homeTelephone} ");
                     setState(() {
                       isLoadingSubmitWithOutConfirmed = true;
                     });

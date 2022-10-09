@@ -1,6 +1,5 @@
 import 'dart:io';
 
-import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:get_storage/get_storage.dart';
@@ -13,7 +12,6 @@ import 'package:guilt_flutter/commons/data/model/json_parser.dart';
 import 'package:guilt_flutter/commons/utils.dart';
 import 'package:guilt_flutter/features/login/api/login_api.dart';
 import 'package:http/http.dart' as http;
-import 'package:logger/logger.dart';
 import 'package:qlevar_router/qlevar_router.dart';
 
 import 'application/guild/guild_injection_container.dart' as di_guild;
@@ -59,8 +57,6 @@ void prepareGetIt() {
   }
 }
 
-String initPath = 'guild/dashboard';
-
 class MyApp extends StatelessWidget {
   MyApp({Key? key}) : super(key: key);
 
@@ -72,7 +68,7 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       routeInformationParser: const QRouteInformationParser(),
       builder: (context, child) => child == null ? const SizedBox() : SafeArea(child: Directionality(textDirection: TextDirection.rtl, child: child)),
-      routerDelegate: QRouterDelegate(AppRoutes().routes, withWebBar: false, initPath: appMode.initPath),
+      routerDelegate: QRouterDelegate(AppRoutes().routes, withWebBar: true, initPath: appMode.initPath),
     );
   }
 }

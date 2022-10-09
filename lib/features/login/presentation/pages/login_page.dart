@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
 import 'package:get_storage/get_storage.dart';
+import 'package:guilt_flutter/application/constants.dart';
 import 'package:guilt_flutter/features/login/domain/entities/user_role.dart';
 import 'package:guilt_flutter/features/login/presentation/widgets/login_widget.dart';
 import 'package:qlevar_router/qlevar_router.dart';
@@ -30,16 +31,7 @@ class _LoginPageState extends State<LoginPage> {
       final path = redirectPath;
       redirectPath = "";
       GetStorage().write('userData', jsonEncode(userData.toJson()));
-      switch (userData.role) {
-        case UserRole.psp:
-          QR.navigator.replaceAll(path.isNotEmpty ? path : 'psp/guildList');
-          break;
-        case UserRole.user:
-          QR.navigator.replaceAll(path.isNotEmpty ? path : initPath);
-          break;
-        case UserRole.admin:
-          break;
-      }
+      QR.navigator.replaceAll(path.isNotEmpty ? path : appMode.initPath);
     });
   }
 }
