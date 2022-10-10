@@ -1,4 +1,3 @@
-import 'package:collection/collection.dart';
 import 'package:dartz/dartz.dart';
 import 'package:get_it/get_it.dart';
 import 'package:get_storage/get_storage.dart';
@@ -43,11 +42,8 @@ class GuildRemoteRepositoryImpl implements GuildRemoteRepository {
 
   @override
   Future<RequestResult> updateSpecialGuild(Guild guildItem) async {
-    final guildListLocal = GuildModel.convertStringToGuildList(GetStorage().read<String>("guilds${getLocalKeyOfUser(nationalCodeLocal)}") ?? "[]");
-    final guild = guildListLocal.firstWhereOrNull((element) => element.uuid == guildItem.uuid);
-    int guildOldId = guild == null ? guildItem.id : guild.id;
-    final output = await remoteDataSource.putToServer(
-      url: '${BASE_URL_API}guilds/$guildOldId',
+    return  RequestResult.fromEither(await remoteDataSource.putToServer(
+      url: '${BASE_URL_API}guilds/${guildItem.uuid}',
       params: GuildModel.fromSuper(guildItem).toJson(),
       mapSuccess: (guildJson) {
         final guildListLocal =
@@ -56,24 +52,7 @@ class GuildRemoteRepositoryImpl implements GuildRemoteRepository {
         GetStorage().write("guilds${getLocalKeyOfUser(nationalCodeLocal)}", GuildModel.convertGuildListToString(guildListLocalTemp));
         return true;
       },
-    );
-    return output.fold(
-      (failure) async {
-        if (failure.message.toLowerCase().contains("not found")) {
-          GetStorage().remove("guilds${getLocalKeyOfUser(nationalCodeLocal)}");
-          final guildListResponse = await getListOfMyGuilds(nationalCodeLocal);
-          final guildList = guildListResponse.getOrElse(() => []);
-          final guild = guildList.firstWhereOrNull((element) => element.uuid == guildItem.uuid);
-          if (guild != null) {
-            return updateSpecialGuild(guildItem.copyWith(id: guild.id));
-          }
-        }
-        return RequestResult.failure(failure);
-      },
-      (_) {
-        return RequestResult.success();
-      },
-    );
+    ));
   }
 
   void handleGlobalErrorInServer(http.Response response) {

@@ -40,8 +40,13 @@ class AppRoutes {
           middleware: [AuthGuard()],
         ),
         QRoute(
-          path: '/edit/:token/:guildId((^[0-9]*\$))',
+          path: '/editGuild/:token/:guildId((^[0-9]*\$))',
           builder: () => PspFormPage.wrappedRoute(),
+          middleware: [AuthGuard()],
+        ),
+        QRoute(
+          path: '/editUser/:token',
+          builder: () => ProfilePage.wrappedRoute(true),
           middleware: [AuthGuard()],
         ),
         QRoute(
@@ -78,7 +83,7 @@ class AppRoutes {
         ),
         QRoute(
           path: '/profile',
-          builder: () => AuthenticatedPage(child: GuildMainPanel(currentIndexBottomNavigation: 0, child: ProfilePage.wrappedRoute())),
+          builder: () => AuthenticatedPage(child: GuildMainPanel(currentIndexBottomNavigation: 0, child: ProfilePage.wrappedRoute(false))),
           middleware: [AuthGuard()],
         ),
         QRoute(
@@ -104,7 +109,7 @@ class AppRoutes {
         ),
       ],
     ),
-    QRoute(path: '/signIn/profile', builder: () => ProfilePage.wrappedRoute(), middleware: [AuthGuard()]),
+    QRoute(path: '/signIn/profile', builder: () => ProfilePage.wrappedRoute(true), middleware: [AuthGuard()]),
     QRoute(path: '/error', builder: () => BasePage(child: ErrorPage(failure: Failure('بروز خطای ناشناخته')))),
     QRoute(path: '/otp', builder: () => BasePage(child: LoginPage.wrappedRoute())),
     QRoute(path: '/register', builder: () => BasePage(child: RegisterPage.wrappedRoute())),

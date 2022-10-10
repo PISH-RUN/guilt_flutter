@@ -1,6 +1,5 @@
 import 'package:dartz/dartz.dart';
 import 'package:guilt_flutter/application/guild/data/models/guild_model.dart';
-import 'package:guilt_flutter/application/guild/domain/entities/guild.dart';
 import 'package:guilt_flutter/commons/data/data_source/remote_data_source.dart';
 import 'package:guilt_flutter/commons/data/model/json_parser.dart';
 import 'package:guilt_flutter/commons/data/model/paginate_list.dart';
@@ -39,7 +38,7 @@ class PspRepositoryImpl implements PspRepository {
   Future<RequestResult> updateStateOfSpecialGuild(GuildPsp guild, {bool isJustState = true, String token = ""}) async {
     if (!isJustState) {
       final output = await remoteDataSource.putToServer<bool>(
-        url: '${BASE_URL_API}guilds/${guild.guild.id}/psps',
+        url: '${BASE_URL_API}guilds/${guild.guild.uuid}/psps',
         params: {...GuildModel.fromSuper(guild.guild).toJson(), 'user_token': token},
         mapSuccess: (Map<String, dynamic> json) => true,
       );

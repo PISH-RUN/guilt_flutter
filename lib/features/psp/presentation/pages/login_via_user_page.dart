@@ -20,7 +20,7 @@ class _LoginViaUserPageState extends State<LoginViaUserPage> {
   @override
   Widget build(BuildContext context) {
     return LoginWidget(
-      onSuccess: (userData) => QR.to('psp/edit/${userData.token}/${QR.params['guildId'].toString()}'.trim()),
+      onSuccess: (userData) => QR.to('psp/editGuild/${userData.token}/${QR.params['guildId'].toString()}'.trim()),
       isIconLogoVisible: false,
     );
   }
