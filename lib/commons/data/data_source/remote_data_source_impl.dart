@@ -243,7 +243,9 @@ class RemoteDataSourceImpl implements RemoteDataSource {
               ? ServerFailure.notLoggedInYet()
               : finalResponse.statusCode == FORBIDDEN_STATUS_CODE
                   ? ServerFailure.notBuyAccountYet()
-                  : ServerFailure(finalResponse),
+                  : finalResponse.body.toLowerCase().contains("not user")
+                      ? ServerFailure.forbiddenError()
+                      : ServerFailure(finalResponse),
         );
       }
     } on Exception catch (e) {

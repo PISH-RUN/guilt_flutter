@@ -10,7 +10,7 @@ enum LocalKeys { userId, userPhone, token }
 
 enum AppMode {
   psp('psp/guildList', "شما باید از نرم افزار مخصوص کاربران استفاده کنید"),
-  normal('guild/dashboard', "شما باید از نرم افزار مخصوص psp استفاده کنید");
+  normal('guild/dashboard', "شما باید از نرم افزار پرداخت یار استفاده کنید");
 
   final String initPath;
   final String forbiddenError;

@@ -34,7 +34,10 @@ class GuildListCubit extends Cubit<GuildListState> {
     return main.updateGuild(guild: guild);
   }
 
-  Future<RequestResult> sendRequestForCoupon({required Guild guild}) {
-    return saveGuild(guild.copyWith(isCouponRequested: true));
+  Future<void> sendRequestForCoupon(BuildContext context, {required Guild guild}) async {
+    emit(const GuildListState.loading());
+    await saveGuild(guild.copyWith(isCouponRequested: true));
+    await Future.delayed(const Duration(milliseconds: 400));
+    initialPage(context);
   }
 }

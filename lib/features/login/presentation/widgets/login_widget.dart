@@ -89,12 +89,20 @@ class _LoginWidgetState extends State<LoginWidget> {
                                 const SizedBox(height: 10.0),
                                 Text("لطفا کد تایید را وارد کنید", style: Theme.of(context).textTheme.headline4),
                                 const SizedBox(height: 16.0),
-                                Text(LoginCubit.phoneNumber, style: Theme.of(context).textTheme.headline4),
-                                const SizedBox(height: 4.0),
                                 GestureDetector(
-                                  onTap: () => QR.back(),
-                                  child: Text("تغییر شماره تلفن",
-                                      style: Theme.of(context).textTheme.headline4!.copyWith(color: Colors.black.withOpacity(0.45))),
+                                  onTap: () {
+                                    smsUserConsent.dispose();
+                                    QR.back();
+                                  },
+                                  child: Column(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      Text(LoginCubit.phoneNumber, style: Theme.of(context).textTheme.headline4),
+                                      const SizedBox(height: 4.0),
+                                      Text("تغییر شماره تلفن",
+                                          style: Theme.of(context).textTheme.headline4!.copyWith(color: Colors.black.withOpacity(0.45))),
+                                    ],
+                                  ),
                                 ),
                                 const SizedBox(height: 26.0),
                                 Directionality(

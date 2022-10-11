@@ -1,6 +1,7 @@
 import 'package:get_it/get_it.dart';
 import 'package:guilt_flutter/application/constants.dart';
 import 'package:guilt_flutter/application/error_page.dart';
+import 'package:guilt_flutter/application/forbidden_page.dart';
 import 'package:guilt_flutter/features/psp/presentation/pages/all_guild_list_page.dart';
 import 'package:guilt_flutter/features/psp/presentation/pages/follow_up_guilds.dart';
 import 'package:guilt_flutter/features/psp/presentation/pages/login_via_user_page.dart';
@@ -112,6 +113,7 @@ class AppRoutes {
     ),
     QRoute(path: '/signIn/profile', builder: () => ProfilePage.wrappedRoute(true), middleware: [AuthGuard()]),
     QRoute(path: '/error', builder: () => BasePage(child: ErrorPage(failure: Failure('بروز خطای ناشناخته')))),
+    QRoute(path: '/forbidden', builder: () => BasePage(child: const ForbiddenPage())),
     QRoute(path: '/otp', builder: () => BasePage(child: LoginPage.wrappedRoute())),
     QRoute(path: '/register', builder: () => BasePage(child: RegisterPage.wrappedRoute())),
   ];
@@ -135,7 +137,7 @@ class ProfileGuard extends QMiddleware {
   Future<String?> redirectGuard(String path) async {
     final response = await GetIt.instance<ProfileApi>().hasProfile(nationalCode: GetIt.instance<LoginApi>().getUserData().nationalCode);
     return response.fold(
-      (l) => l.failureType == FailureType.authentication ? '/register' : '/error',
+      (l) => l.failureType == FailureType.authentication ? '/register' :l.failureType == FailureType.forbiddenError ? '/forbidden' : '/error',
       (hasProfile) => hasProfile ? null : '/signIn/profile',
     );
   }

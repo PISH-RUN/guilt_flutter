@@ -29,6 +29,10 @@ class ServerFailure extends Failure {
       : statusCode = AUTHENTICATION_IS_WRONG_STATUS_CODE,
         super("لطفا ابتدا وارد شوید", failureType: FailureType.authentication);
 
+  ServerFailure.forbiddenError()
+      : statusCode = -1,
+        super(appMode.forbiddenError,failureType: FailureType.forbiddenError);
+
   ServerFailure.notBuyAccountYet()
       : statusCode = FORBIDDEN_STATUS_CODE,
         super(appMode.forbiddenError, failureType: FailureType.forbiddenError);
