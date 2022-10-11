@@ -34,12 +34,9 @@ class _GuildLabelWidgetState extends State<GuildLabelWidget> {
                     const SizedBox(height: 10.0),
                     Row(
                       children: [
-                        const SizedBox(width: 56.0),
+                        const SizedBox(width: 52.0),
                         const Spacer(),
-                        Padding(
-                          padding: const EdgeInsets.symmetric(vertical: 10.0),
-                          child: Text("اطلاعات کسب و کار", style: defaultTextStyle(context, headline: 3)),
-                        ),
+                        Text("اطلاعات کسب و کار", style: defaultTextStyle(context, headline: 3)),
                         const Spacer(),
                         GestureDetector(
                           onTap: () => showEditDialog(context),
@@ -89,16 +86,18 @@ class _GuildLabelWidgetState extends State<GuildLabelWidget> {
                         SizedBox(height: paddingBetweenTextFiled),
                         labelWidget(context, Icons.pin_drop_outlined, "نشانی کامل", widget.guild.address),
                         SizedBox(height: paddingBetweenTextFiled),
-                        Container(
-                          width: double.infinity,
-                          height: 180,
-                          decoration: BoxDecoration(
-                            color: Colors.blueGrey.withOpacity(0.4),
-                            shape: BoxShape.rectangle,
-                            borderRadius: const BorderRadius.all(Radius.circular(16)),
-                          ),
-                          child: widget.guild.location == null ? const SizedBox() : MapScreenShotWidget(pinLocation: widget.guild.location!),
-                        ),
+                        widget.guild.location == null
+                            ? const SizedBox()
+                            : Container(
+                                width: double.infinity,
+                                height: 180,
+                                decoration: BoxDecoration(
+                                  color: Colors.blueGrey.withOpacity(0.4),
+                                  shape: BoxShape.rectangle,
+                                  borderRadius: const BorderRadius.all(Radius.circular(16)),
+                                ),
+                                child: MapScreenShotWidget(pinLocation: widget.guild.location!),
+                              ),
                         SizedBox(height: paddingBetweenTextFiled),
                         const SizedBox(height: 26.0),
                       ],

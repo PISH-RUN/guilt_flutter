@@ -33,18 +33,15 @@ class _LabelWidgetState extends State<LabelWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-        body: SingleChildScrollView(
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          const SizedBox(height: 6.0),
-          avatarWidget(context),
-          const SizedBox(height: 6.0),
-          baseInformationWidget(context),
-        ],
-      ),
-    ));
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        const SizedBox(height: 6.0),
+        avatarWidget(context),
+        const SizedBox(height: 6.0),
+        baseInformationWidget(context),
+      ],
+    );
   }
 
   Widget avatarWidget(BuildContext context) {
@@ -88,14 +85,11 @@ class _LabelWidgetState extends State<LabelWidget> {
         children: [
           Card(
             margin: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 0.0),
-              child: Column(
+            child:  Column(
                 children: <Widget>[
-                  const SizedBox(height: 20.0),
                   Row(
                     children: [
-                      const SizedBox(width: 56.0),
+                      const SizedBox(width: 93.0),
                       const Spacer(),
                       Text("اطلاعات شخصی", style: defaultTextStyle(context, headline: 3)),
                       const Spacer(),
@@ -110,42 +104,51 @@ class _LabelWidgetState extends State<LabelWidget> {
                             }),
                           );
                         },
-                        child: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: <Widget>[
-                            const Icon(Icons.edit, color: Colors.blueGrey, size: 15.0),
-                            const SizedBox(width: 4.0),
-                            Text("ویرایش", style: defaultTextStyle(context, headline: 5).c(Colors.blueGrey)),
-                          ],
+                        child: Container(
+                          padding: EdgeInsets.all(20),
+                          decoration: BoxDecoration(
+                            shape: BoxShape.rectangle,
+                            borderRadius: BorderRadius.only(topLeft: Radius.circular(20)),
+                          ),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: <Widget>[
+                              const Icon(Icons.edit, color: Colors.blueGrey, size: 15.0),
+                              const SizedBox(width: 4.0),
+                              Text("ویرایش", style: defaultTextStyle(context, headline: 5).c(Colors.blueGrey)),
+                            ],
+                          ),
                         ),
                       ),
                     ],
                   ),
-                  const SizedBox(height: 20.0),
-                  Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: <Widget>[
-                      labelWidget(Icons.person_outline, "نام", user.firstName),
-                      SizedBox(height: paddingBetweenTextFiled),
-                      labelWidget(Icons.person_outline, "نام خانوادگی", user.lastName),
-                      SizedBox(height: paddingBetweenTextFiled),
-                      labelWidget(Icons.person_outline, "نام پدر", user.fatherName),
-                      labelWidgetRow(Icons.calendar_month, "تاریخ تولد",
-                          [user.birthDate!.day.toString(), monthNames[user.birthDate!.month - 1], user.birthDate!.year.toString()]),
-                      SizedBox(height: paddingBetweenTextFiled),
-                      labelWidget(Icons.pin, "کد ملی", GetIt.instance<LoginApi>().getUserData().nationalCode),
-                      SizedBox(height: paddingBetweenTextFiled),
-                      labelWidget(Icons.pin, "شماره تلفن", GetIt.instance<LoginApi>().getUserData().phoneNumber),
-                      SizedBox(height: paddingBetweenTextFiled),
-                      labelWidget(Icons.male, "جنسیت", user.gender.persianName),
-                      SizedBox(height: paddingBetweenTextFiled),
-                      const SizedBox(height: 16.0),
-                    ],
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 0.0),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: <Widget>[
+                        labelWidget(Icons.person_outline, "نام", user.firstName),
+                        SizedBox(height: paddingBetweenTextFiled),
+                        labelWidget(Icons.person_outline, "نام خانوادگی", user.lastName),
+                        SizedBox(height: paddingBetweenTextFiled),
+                        labelWidget(Icons.person_outline, "نام پدر", user.fatherName),
+                        labelWidgetRow(Icons.calendar_month, "تاریخ تولد",
+                            [user.birthDate!.day.toString(), monthNames[user.birthDate!.month - 1], user.birthDate!.year.toString()]),
+                        SizedBox(height: paddingBetweenTextFiled),
+                        labelWidget(Icons.pin, "کد ملی", GetIt.instance<LoginApi>().getUserData().nationalCode),
+                        SizedBox(height: paddingBetweenTextFiled),
+                        labelWidget(Icons.pin, "شماره تلفن", GetIt.instance<LoginApi>().getUserData().phoneNumber),
+                        SizedBox(height: paddingBetweenTextFiled),
+                        labelWidget(Icons.male, "جنسیت", user.gender.persianName),
+                        SizedBox(height: paddingBetweenTextFiled),
+                        const SizedBox(height: 16.0),
+                      ],
+                    ),
                   ),
                 ],
               ),
             ),
-          ),
+
         ],
       ),
     );

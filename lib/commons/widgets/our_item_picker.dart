@@ -164,23 +164,26 @@ class _ShowAlertDialogWithButtonsState extends State<ShowAlertDialogWithButtons>
                     ),
                     child: Row(
                       children: <Widget>[
-                        const Icon(Icons.search, color: AppColor.blue, size: 25.0),
                         Expanded(
-                          child: TextField(
-                            controller: controller,
-                            onChanged: (value) {
-                              searchText = value;
-                              setState(() {});
-                            },
-                            style: defaultTextStyle(context).c(Colors.black87),
-                            cursorWidth: 0.2,
-                            maxLines: 1,
-                            minLines: 1,
-                            decoration: InputDecoration(
-                              // enabledBorder: const OutlineInputBorder(borderSide: BorderSide(width: 0, color: Colors.transparent)),
-                              // focusedBorder: const OutlineInputBorder(borderSide: BorderSide(width: 0, color: Colors.transparent)),
-                              hintText: 'جستجو ...',
-                              hintStyle: Theme.of(context).textTheme.headline4!.copyWith(color: Colors.grey),
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                            child: TextField(
+                              controller: controller,
+                              onChanged: (value) {
+                                searchText = value;
+                                setState(() {});
+                              },
+                              style: defaultTextStyle(context).c(Colors.black87),
+                              cursorWidth: 0.2,
+                              maxLines: 1,
+                              minLines: 1,
+                              decoration: InputDecoration(
+                                // enabledBorder: const OutlineInputBorder(borderSide: BorderSide(width: 0, color: Colors.transparent)),
+                                // focusedBorder: const OutlineInputBorder(borderSide: BorderSide(width: 0, color: Colors.transparent)),
+                                hintText: 'جستجو ...',
+                                prefixIcon: const Icon(Icons.search, color: AppColor.blue, size: 25.0),
+                                hintStyle: Theme.of(context).textTheme.headline4!.copyWith(color: Colors.grey),
+                              ),
                             ),
                           ),
                         ),

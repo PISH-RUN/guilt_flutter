@@ -1,15 +1,20 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
+import 'package:guilt_flutter/application/colors.dart';
 import 'package:guilt_flutter/application/constants.dart';
 import 'package:guilt_flutter/application/guild/domain/entities/pos.dart';
 import 'package:guilt_flutter/application/guild/presentation/widgets/guild_form_widget.dart';
 import 'package:guilt_flutter/application/guild/presentation/widgets/guild_label_widget.dart';
 import 'package:guilt_flutter/application/guild/presentation/widgets/pos_item.dart';
 import 'package:guilt_flutter/commons/text_style.dart';
+import 'package:guilt_flutter/commons/utils.dart';
 import 'package:guilt_flutter/commons/widgets/our_button.dart';
 import 'package:guilt_flutter/commons/widgets/simple_snake_bar.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:logger/logger.dart';
 import 'package:qlevar_router/qlevar_router.dart';
 
 import '../../../../commons/widgets/loading_widget.dart';
@@ -36,11 +41,14 @@ class GuildFormPage extends StatefulWidget {
 class _GuildFormPageState extends State<GuildFormPage> {
   late bool isEditable;
   bool isLoading = false;
+  Guild? guild;
 
   @override
   void initState() {
     isLoading = false;
-    if (!widget.isAddNew) BlocProvider.of<GuildCubit>(context).initialPage(QR.params['guildUuid'].toString());
+    widget.isAddNew
+        ? BlocProvider.of<GuildCubit>(context).initialPageForNewGuild()
+        : BlocProvider.of<GuildCubit>(context).initialPage(QR.params['guildUuid'].toString());
     isEditable = widget.isEditable;
     super.initState();
   }
@@ -58,23 +66,31 @@ class _GuildFormPageState extends State<GuildFormPage> {
               return state.when(
                 loading: () => LoadingWidget(),
                 error: (failure) => Center(child: Text(failure.message)),
-                loaded: (guild) {
+                loaded: (data) {
+                  guild ??= data;
                   if (widget.isAddNew) {
                     isEditable = true;
-                    guild = Guild.fromEmpty();
                   }
                   return isEditable
                       ? Scaffold(
-                          body: GuildFormWidget(
-                            defaultGuild: guild,
-                            onSubmit: (guild) async {
-                              await widget.isAddNew
-                                  ? BlocProvider.of<GuildCubit>(context).addGuild(guild)
-                                  : BlocProvider.of<GuildCubit>(context).saveGuild(guild);
-                              setState(() => isLoading = false);
-                              QR.navigator.replaceAll(appMode.initPath);
-                            },
-                            formController: formController,
+                          body: SingleChildScrollView(
+                            child: Column(
+                              children: [
+                                const SizedBox(height: 10.0),
+                                GuildFormWidget(
+                                  defaultGuild: guild!,
+                                  onSubmit: (guildChanged) async {
+                                    guild = guildChanged.copyWith(image: guild!.image);
+                                    await widget.isAddNew
+                                        ? BlocProvider.of<GuildCubit>(context).addGuild(guild!)
+                                        : BlocProvider.of<GuildCubit>(context).saveGuild(guild!);
+                                    setState(() => isLoading = false);
+                                    QR.navigator.replaceAll(appMode.initPath);
+                                  },
+                                  formController: formController,
+                                ),
+                              ],
+                            ),
                           ),
                           floatingActionButton: FloatingActionButton(
                             onPressed: () async {
@@ -92,8 +108,30 @@ class _GuildFormPageState extends State<GuildFormPage> {
                       : SingleChildScrollView(
                           child: Column(
                             children: [
-                              GuildLabelWidget(guild: guild, onEditPressed: () => setState(() => isEditable = true)),
-                              posesList(context, guild),
+                              Opacity(
+                                opacity: isProgressAvatarHide ? 0.0 : 1.0,
+                                child: LinearProgressIndicator(
+                                    valueColor: AlwaysStoppedAnimation<Color>(Theme.of(context).primaryColor), minHeight: 4.0),
+                              ),
+                              const SizedBox(height: 10.0),
+                              GestureDetector(
+                                onTap: () async {
+                                  final ImagePicker picker = ImagePicker();
+                                  final XFile? image = await picker.pickImage(source: ImageSource.gallery);
+                                  if (image == null) return;
+                                  setState(() => isProgressAvatarHide = false);
+                                  final response = await BlocProvider.of<GuildCubit>(context).updateAvatar(guild!, image);
+                                  response.fold(
+                                    (l) => showSnakeBar(context, l.message),
+                                    (url) => guild = guild!.copyWith(image: url),
+                                  );
+                                  setState(() => isProgressAvatarHide = true);
+                                },
+                                child: avatarWidget(context, guild!),
+                              ),
+                              const SizedBox(height: 10.0),
+                              GuildLabelWidget(guild: guild!, onEditPressed: () => setState(() => isEditable = true)),
+                              posesList(context, guild!),
                             ],
                           ),
                         );
@@ -101,6 +139,55 @@ class _GuildFormPageState extends State<GuildFormPage> {
               );
             },
           ),
+        ),
+      ),
+    );
+  }
+
+  bool isProgressAvatarHide = true;
+
+  Widget avatarWidget(BuildContext context, Guild guild) {
+    return AbsorbPointer(
+      key: UniqueKey(),
+      child: Container(
+        height: 150,
+        width: 150,
+        alignment: Alignment.center,
+        color: Colors.transparent,
+        child: Stack(
+          children: [
+            Align(
+              alignment: Alignment.center,
+              child: Container(
+                height: 130,
+                width: 130,
+                decoration: BoxDecoration(shape: BoxShape.circle, border: Border.all(color: AppColor.blue, width: 2)),
+                child: ClipRRect(
+                  borderRadius: const BorderRadius.all(Radius.circular(200)),
+                  child: !isUrlValid(guild.image.trim())
+                      ? const Image(image: AssetImage('images/avatar.png'), fit: BoxFit.cover)
+                      : CachedNetworkImage(
+                          imageUrl: guild.image.trim(),
+                          placeholder: (_, __) => LoadingWidget(size: 50, color: AppColor.blue),
+                          errorWidget: (_, __, ___) {
+                            return const Image(image: AssetImage('images/avatar.png'), fit: BoxFit.cover);
+                          },
+                          fit: BoxFit.cover,
+                        ),
+                ),
+              ),
+            ),
+            const Align(
+              alignment: Alignment.bottomRight,
+              child: Padding(
+                padding: EdgeInsets.all(8.0),
+                child: CircleAvatar(
+                  backgroundColor: Color(0xffdddddd),
+                  child: Icon(Icons.camera_alt, color: Colors.black, size: 25.0),
+                ),
+              ),
+            ),
+          ],
         ),
       ),
     );
@@ -139,7 +226,7 @@ class _GuildFormPageState extends State<GuildFormPage> {
                   .toList(),
               Padding(
                 padding: const EdgeInsets.all(8.0),
-                child: addPoseButton(context, guild),
+                child: addPoseButton(context),
               ),
             ],
           ),
@@ -148,7 +235,7 @@ class _GuildFormPageState extends State<GuildFormPage> {
     );
   }
 
-  Widget addPoseButton(BuildContext context, Guild guild) {
+  Widget addPoseButton(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 2.0),
       child: DottedBorder(
@@ -246,8 +333,8 @@ class _GuildFormPageState extends State<GuildFormPage> {
                                       accountNumber: accountController.text,
                                       psp: pspController.text,
                                     );
-                                    guild = guild.copyWith(poses: [...guild.poses, pos]);
-                                    await BlocProvider.of<GuildCubit>(context).saveGuild(guild);
+                                    guild = guild!.copyWith(poses: [...guild!.poses, pos]);
+                                    await BlocProvider.of<GuildCubit>(context).saveGuild(guild!);
                                     Navigator.pop(context);
                                   },
                                   title: "ثبت",

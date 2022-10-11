@@ -259,9 +259,9 @@ class _FormWidgetState extends State<FormWidget> {
                             onTap: () async {
                               Jalali? picked = await showPersianDatePicker(
                                 context: context,
-                                initialDate: Jalali.now(),
-                                firstDate: Jalali(1385, 8),
-                                lastDate: Jalali(1450, 9),
+                                initialDate: Jalali(Jalali.now().year-20, Jalali.now().month),
+                                firstDate: Jalali(1300, 1),
+                                lastDate: Jalali(Jalali.now().year-12, 1),
                               );
                               if (picked == null) return;
                               user = user.copyWith(birthDate: picked);

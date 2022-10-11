@@ -1,5 +1,5 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="psp.af.pish.run">
+    package="af.pish.run">
 
     <uses-permission android:name="android.permission.INTERNET"/>
 

@@ -19,7 +19,7 @@ class ProfileApi {
     }
     final output = await main.getProfile(nationalCode);
     return output.fold(
-      (failure) => failure.failureType == FailureType.haveNoGuildAndProfile ? const Right(false) : Left(failure),
+      (failure) => Left(failure),
       (user) => Right(user.firstName.isNotEmpty && user.lastName.isNotEmpty),
     );
   }

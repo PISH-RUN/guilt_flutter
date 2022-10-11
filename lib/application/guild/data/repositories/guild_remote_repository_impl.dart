@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:dartz/dartz.dart';
 import 'package:get_it/get_it.dart';
 import 'package:get_storage/get_storage.dart';
@@ -7,11 +9,13 @@ import 'package:guilt_flutter/application/guild/data/models/guild_model.dart';
 import 'package:guilt_flutter/application/guild/domain/entities/guild.dart';
 import 'package:guilt_flutter/application/guild/domain/repositories/guild_remote_repository.dart';
 import 'package:guilt_flutter/commons/data/data_source/remote_data_source.dart';
+import 'package:guilt_flutter/commons/data/model/json_parser.dart';
 import 'package:guilt_flutter/commons/data/model/server_failure.dart';
 import 'package:guilt_flutter/commons/failures.dart';
 import 'package:guilt_flutter/commons/request_result.dart';
 import 'package:guilt_flutter/features/login/api/login_api.dart';
 import 'package:http/http.dart' as http;
+import 'package:image_picker/image_picker.dart';
 
 class GuildRemoteRepositoryImpl implements GuildRemoteRepository {
   final RemoteDataSource remoteDataSource;
@@ -42,7 +46,7 @@ class GuildRemoteRepositoryImpl implements GuildRemoteRepository {
 
   @override
   Future<RequestResult> updateSpecialGuild(Guild guildItem) async {
-    return  RequestResult.fromEither(await remoteDataSource.putToServer(
+    return RequestResult.fromEither(await remoteDataSource.putToServer(
       url: '${BASE_URL_API}guilds/${guildItem.uuid}',
       params: GuildModel.fromSuper(guildItem).toJson(),
       mapSuccess: (guildJson) {
@@ -53,6 +57,26 @@ class GuildRemoteRepositoryImpl implements GuildRemoteRepository {
         return true;
       },
     ));
+  }
+
+  @override
+  Future<Either<Failure, String>> updateAvatar(Guild guild, XFile avatar) async {
+    final output = await remoteDataSource.postMultipartToServer(
+      url: '${BASE_URL_API}guilds/${guild.uuid}/image',
+      attachName: 'image',
+      imageName: 'image',
+      imageFile: avatar,
+      bodyParameters: {},
+    );
+    if (output.isRight()) {}
+    return output.fold((l) => Left(l), (json) {
+      String url = json.substring(json.indexOf('image_url:') + 'image_url:'.length);
+      url = url.split('}')[0];
+      final guildListLocal = GuildModel.convertStringToGuildList(GetStorage().read<String>("guilds${getLocalKeyOfUser(nationalCodeLocal)}") ?? "[]");
+      final guildListLocalTemp = guildListLocal.map((e) => guild.uuid == e.uuid ? GuildModel.fromSuper(guild.copyWith(image: url)) : e).toList();
+      GetStorage().write("guilds${getLocalKeyOfUser(nationalCodeLocal)}", GuildModel.convertGuildListToString(guildListLocalTemp));
+      return Right(url);
+    });
   }
 
   void handleGlobalErrorInServer(http.Response response) {

@@ -34,10 +34,6 @@ class ProfileRepositoryImpl implements ProfileRepository {
           .nationalCode),
       bodyParameters: {},
     );
-    // if (output.isLeft()) {
-    //   return output;
-    // }
-    // await GetIt.instance<GuildApi>().getMyGuildList(nationalCode: GetIt.instance<LoginApi>().getUserData().nationalCode, isForceRefresh: true);
     return output.fold((l) => Left(l), (json) {
       String url = json.substring(json.indexOf('image_url:') + 'image_url:'.length);
       url = url.split('}')[0];
