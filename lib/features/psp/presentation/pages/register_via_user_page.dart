@@ -32,7 +32,7 @@ class _RegisterViaUserPageState extends State<RegisterViaUserPage> {
     return RegisterWidget(
       phoneNumber: phoneNumber,
       nationalCode: "",
-      onSuccessful: () => QR.to('psp/otp/$guildId'),
+      onSuccessful: () => QR.to('psp/otp/${QR.params['userId'].toString()}/$guildId'),
       isRegisterPspVisible: false,
       title: "لطفا با مشخصات صاحب کسب و کار احراز هویت کنید",
       isIconLogoVisible: false,

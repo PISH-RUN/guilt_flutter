@@ -8,9 +8,7 @@ import 'package:guilt_flutter/application/constants.dart';
 import 'package:guilt_flutter/application/guild/presentation/widgets/guild_form_widget.dart';
 import 'package:guilt_flutter/commons/widgets/our_text_field.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:logger/logger.dart';
 import 'package:persian_datetime_picker/persian_datetime_picker.dart';
-import 'package:qlevar_router/qlevar_router.dart';
 import 'package:toggle_switch/toggle_switch.dart';
 
 import '../../../../application/colors.dart';
@@ -23,14 +21,15 @@ import '../../../login/api/login_api.dart';
 import '../../domain/entities/gender_type.dart';
 import '../../domain/entities/user_info.dart';
 import '../manager/update_user_cubit.dart';
-import '../manager/update_user_state.dart';
 
 class FormWidget extends StatefulWidget {
   final UserInfo defaultUser;
+  final bool isAvatarVisible;
   final FormController formController;
   final void Function(UserInfo user) onSubmit;
 
-  const FormWidget({required this.defaultUser, required this.formController, required this.onSubmit, Key? key}) : super(key: key);
+  const FormWidget({required this.defaultUser, required this.formController, required this.onSubmit, this.isAvatarVisible = true, Key? key})
+      : super(key: key);
 
   @override
   _FormWidgetState createState() => _FormWidgetState();
@@ -57,44 +56,23 @@ class _FormWidgetState extends State<FormWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocConsumer<UpdateUserCubit, UpdateUserState>(
-      listener: (context, state) {
-        state.maybeWhen(
-          error: (failure) => showSnakeBar(context, failure.message),
-          success: () {
-            if (QR.currentPath.contains('signIn/profile')) {
-              QR.navigator.replaceAll(appMode.initPath);
-            }
-          },
-          orElse: () {},
-        );
-      },
-      builder: (context, _) {
-        return Form(
-          key: formKey,
-          child: Column(
-            children: [
-              Expanded(
-                child: SingleChildScrollView(
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Opacity(
-                        opacity: isProgressAvatarHide ? 0.0 : 1.0,
-                        child: LinearProgressIndicator(valueColor: AlwaysStoppedAnimation<Color>(Theme.of(context).primaryColor), minHeight: 4.0),
-                      ),
-                      const SizedBox(height: 6.0),
-                      avatarWidget(context),
-                      const SizedBox(height: 6.0),
-                      baseInformationWidget(context),
-                    ],
-                  ),
-                ),
-              ),
-            ],
-          ),
-        );
-      },
+    return Form(
+      key: formKey,
+      child: SingleChildScrollView(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Opacity(
+              opacity: isProgressAvatarHide ? 0.0 : 1.0,
+              child: LinearProgressIndicator(valueColor: AlwaysStoppedAnimation<Color>(Theme.of(context).primaryColor), minHeight: 4.0),
+            ),
+            const SizedBox(height: 6.0),
+            if (widget.isAvatarVisible) avatarWidget(context),
+            const SizedBox(height: 6.0),
+            baseInformationWidget(context),
+          ],
+        ),
+      ),
     );
   }
 

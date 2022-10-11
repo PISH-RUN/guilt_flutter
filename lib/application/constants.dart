@@ -18,7 +18,7 @@ enum AppMode {
   const AppMode(this.initPath, this.forbiddenError);
 }
 
-const appMode = AppMode.normal;
+const appMode = AppMode.psp;
 
 const List<String> monthNames = [
   "فروردین",

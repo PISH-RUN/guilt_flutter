@@ -6,6 +6,8 @@ import 'gender_type.dart';
 
 class UserInfo extends Equatable {
   final int id;
+  final String phoneNumber;
+  final String nationalCode;
   final String firstName;
   final String lastName;
   final String fatherName;
@@ -15,6 +17,8 @@ class UserInfo extends Equatable {
 
   const UserInfo({
     required this.id,
+    required this.phoneNumber,
+    required this.nationalCode,
     required this.firstName,
     required this.lastName,
     required this.fatherName,
@@ -25,15 +29,18 @@ class UserInfo extends Equatable {
 
   UserInfo copyWith({
     String? firstName,
+    String? nationalCode,
+    String? phoneNumber,
     String? lastName,
     String? fatherName,
-    String? phoneNumber,
     Gender? gender,
     Jalali? birthDate,
     String? avatar,
   }) {
     return UserInfo(
       id: id,
+      phoneNumber: phoneNumber ?? this.phoneNumber,
+      nationalCode: nationalCode ?? this.nationalCode,
       firstName: firstName ?? this.firstName,
       lastName: lastName ?? this.lastName,
       fatherName: fatherName ?? this.fatherName,
@@ -53,6 +60,8 @@ class UserInfo extends Equatable {
         firstName: "",
         lastName: "",
         fatherName: "",
+        nationalCode: "",
+        phoneNumber: "",
         birthDate: Jalali.now(),
         avatar: null,
         gender: Gender.boy,

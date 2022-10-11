@@ -46,29 +46,31 @@ class _PspFormPageState extends State<PspFormPage> {
 
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      child: Column(
-        children: [
-          GuildFormWidget(
-            defaultGuild: guild.guild,
-            onSubmit: (guildChanged) async {
-              guild = guild.copyWith(guild: guildChanged);
-              await BlocProvider.of<UpdateStateOfGuildCubit>(context).updateStateOfSpecialGuild(guild, isJustState: false, token: token);
-              BlocProvider.of<UpdateStateOfGuildCubit>(context).state.maybeWhen(
-                    orElse: () {},
-                    error: (failure) => showSnakeBar(context, failure.message),
-                    success: () {
-                      showSnakeBar(context, "تغییرات با موفقیت اعمال شد");
-                      return QR.navigator.replaceAll('psp/followGuilds');
-                    },
-                  );
-            },
-            formController: formController,
-          ),
-          const SizedBox(height: 20.0),
-          submitButton(context),
-          const SizedBox(height: 20.0),
-        ],
+    return Scaffold(
+      body: SingleChildScrollView(
+        child: Column(
+          children: [
+            GuildFormWidget(
+              defaultGuild: guild.guild,
+              onSubmit: (guildChanged) async {
+                guild = guild.copyWith(guild: guildChanged);
+                await BlocProvider.of<UpdateStateOfGuildCubit>(context).updateStateOfSpecialGuild(guild, isJustState: false, token: token);
+                BlocProvider.of<UpdateStateOfGuildCubit>(context).state.maybeWhen(
+                      orElse: () {},
+                      error: (failure) => showSnakeBar(context, failure.message),
+                      success: () {
+                        showSnakeBar(context, "تغییرات با موفقیت اعمال شد");
+                        return QR.navigator.replaceAll('psp/followGuilds');
+                      },
+                    );
+              },
+              formController: formController,
+            ),
+            const SizedBox(height: 20.0),
+            submitButton(context),
+            const SizedBox(height: 20.0),
+          ],
+        ),
       ),
     );
   }

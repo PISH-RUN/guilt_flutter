@@ -7,6 +7,8 @@ import '../../domain/entities/user_info.dart';
 class UserInfoModel extends UserInfo {
   const UserInfoModel({
     required int id,
+    required String nationalCode,
+    required String phoneNumber,
     required String firstName,
     required String lastName,
     required String fatherName,
@@ -20,12 +22,16 @@ class UserInfoModel extends UserInfo {
           fatherName: fatherName,
           gender: gender,
           avatar: avatar,
+          phoneNumber: phoneNumber,
+          nationalCode: nationalCode,
           birthDate: birthDate,
         );
 
   factory UserInfoModel.fromJson(Map<String, dynamic> json) {
     return UserInfoModel(
       id: JsonParser.intParser(json, ['user_id']),
+      nationalCode: JsonParser.stringParser(json, ['national_code']),
+      phoneNumber: JsonParser.stringParser(json, ['mobile']),
       firstName: JsonParser.stringParser(json, ['first_name']),
       lastName: JsonParser.stringParser(json, ['last_name']),
       fatherName: JsonParser.stringParser(json, ['father_name']),
@@ -46,6 +52,8 @@ class UserInfoModel extends UserInfo {
       id: userInfo.id,
       firstName: userInfo.firstName,
       lastName: userInfo.lastName,
+      phoneNumber: userInfo.phoneNumber,
+      nationalCode: userInfo.nationalCode,
       fatherName: userInfo.fatherName,
       birthDate: userInfo.birthDate,
       gender: userInfo.gender,

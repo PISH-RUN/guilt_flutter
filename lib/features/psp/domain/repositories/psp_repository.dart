@@ -2,6 +2,7 @@ import 'package:dartz/dartz.dart';
 import 'package:guilt_flutter/commons/data/model/paginate_list.dart';
 import 'package:guilt_flutter/commons/failures.dart';
 import 'package:guilt_flutter/commons/request_result.dart';
+import 'package:guilt_flutter/features/profile/domain/entities/user_info.dart';
 import 'package:guilt_flutter/features/psp/domain/entities/guild_psp.dart';
 import 'package:guilt_flutter/features/psp/domain/entities/psp_user.dart';
 
@@ -12,7 +13,9 @@ abstract class PspRepository {
 
   Future<RequestResult> updateStateOfSpecialGuild(GuildPsp guild, {bool isJustState = true, String token = ""});
 
-  Future<Either<Failure, String>> getUserPhoneNumber(int userId);
+  Future<Either<Failure, UserInfo>> getUserData(int userId);
 
   Future<RequestResult> signUpPsp(PspUser pspUser);
+
+  Future<RequestResult> updateUser(UserInfo userInfo,String token);
 }

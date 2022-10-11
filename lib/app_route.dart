@@ -6,6 +6,7 @@ import 'package:guilt_flutter/features/psp/presentation/pages/follow_up_guilds.d
 import 'package:guilt_flutter/features/psp/presentation/pages/login_via_user_page.dart';
 import 'package:guilt_flutter/features/psp/presentation/pages/psp_form_page.dart';
 import 'package:guilt_flutter/features/psp/presentation/pages/psp_panel.dart';
+import 'package:guilt_flutter/features/psp/presentation/pages/psp_profile_edit_page.dart';
 import 'package:guilt_flutter/features/psp/presentation/pages/register_via_user_page.dart';
 import 'package:guilt_flutter/features/psp/presentation/pages/sign_up_psp.dart';
 import 'package:qlevar_router/qlevar_router.dart';
@@ -45,8 +46,8 @@ class AppRoutes {
           middleware: [AuthGuard()],
         ),
         QRoute(
-          path: '/editUser/:token',
-          builder: () => ProfilePage.wrappedRoute(true),
+          path: '/editUser/:token/:userId/:guildId((^[0-9]*\$))',
+          builder: () => PspProfileEditPage.wrappedRoute(),
           middleware: [AuthGuard()],
         ),
         QRoute(
@@ -60,12 +61,12 @@ class AppRoutes {
           middleware: [AuthGuard()],
         ),
         QRoute(
-          path: '/register/:phoneNumber((^[0-9]*\$))/:guildId((^[0-9]*\$))',
+          path: '/register/:userId((^[0-9]*\$))/:phoneNumber((^[0-9]*\$))/:guildId((^[0-9]*\$))',
           builder: () => RegisterViaUserPage.wrappedRoute(),
           middleware: [AuthGuard()],
         ),
         QRoute(
-          path: '/otp/:guildId((^[0-9]*\$))',
+          path: '/otp/:userId((^[0-9]*\$))/:guildId((^[0-9]*\$))',
           builder: () => LoginViaUserPage.wrappedRoute(),
           middleware: [],
         ),

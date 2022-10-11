@@ -5,6 +5,8 @@ import 'package:guilt_flutter/commons/data/model/json_parser.dart';
 import 'package:guilt_flutter/commons/data/model/paginate_list.dart';
 import 'package:guilt_flutter/commons/failures.dart';
 import 'package:guilt_flutter/commons/request_result.dart';
+import 'package:guilt_flutter/features/profile/data/models/user_info_model.dart';
+import 'package:guilt_flutter/features/profile/domain/entities/user_info.dart';
 import 'package:guilt_flutter/features/psp/constants.dart';
 import 'package:guilt_flutter/features/psp/data/models/guild_psp_model.dart';
 import 'package:guilt_flutter/features/psp/data/models/psp_user_model.dart';
@@ -71,11 +73,11 @@ class PspRepositoryImpl implements PspRepository {
   }
 
   @override
-  Future<Either<Failure, String>> getUserPhoneNumber(int userId) {
-    return remoteDataSource.getFromServer<String>(
+  Future<Either<Failure, UserInfo>> getUserData(int userId) {
+    return remoteDataSource.getFromServer<UserInfo>(
       url: '${BASE_URL_API}users/$userId',
       params: {},
-      mapSuccess: (Map<String, dynamic> json) => JsonParser.stringParser(json, ['data', 'mobile']),
+      mapSuccess: (Map<String, dynamic> json) => UserInfoModel.fromJson(JsonParser.parser(json, ['data'])),
     );
   }
 
@@ -84,6 +86,15 @@ class PspRepositoryImpl implements PspRepository {
     return RequestResult.fromEither(await remoteDataSource.postToServer<String>(
       url: '${BASE_URL_API}users/psps',
       params: PspUserModel.fromSuper(pspUser).toJson(),
+      mapSuccess: (Map<String, dynamic> json) => "",
+    ));
+  }
+
+  @override
+  Future<RequestResult> updateUser(UserInfo user, String token) async {
+    return RequestResult.fromEither(await remoteDataSource.putToServer<String>(
+      url: '${BASE_URL_API}users/by/psps',
+      params: {...UserInfoModel.fromSuper(user).toJson(), 'user_token': token},
       mapSuccess: (Map<String, dynamic> json) => "",
     ));
   }

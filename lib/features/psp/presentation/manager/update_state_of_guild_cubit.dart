@@ -22,7 +22,7 @@ class UpdateStateOfGuildCubit extends Cubit<UpdateStateOfGuildState> {
     );
   }
 
-  Future<Either<Failure, String>> getUserPhoneNumber(int userId) {
-    return _main.getUserPhoneNumber(userId);
+  Future<Either<Failure, String>> getUserPhoneNumber(int userId) async {
+    return (await _main.getUserData(userId)).fold((l) => Left(l), (r) => Right(r.phoneNumber));
   }
 }
