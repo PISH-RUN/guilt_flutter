@@ -2,7 +2,6 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:guilt_flutter/application/constants.dart';
-import 'package:logger/logger.dart';
 
 import '../../../../application/colors.dart';
 import '../../../../commons/text_style.dart';

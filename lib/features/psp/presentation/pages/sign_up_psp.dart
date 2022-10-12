@@ -13,7 +13,6 @@ import 'package:guilt_flutter/commons/widgets/simple_snake_bar.dart';
 import 'package:guilt_flutter/features/psp/domain/entities/psp_user.dart';
 import 'package:guilt_flutter/features/psp/presentation/manager/sign_up_psp_cubit.dart';
 import 'package:guilt_flutter/features/psp/presentation/manager/sign_up_psp_state.dart';
-import 'package:logger/logger.dart';
 import 'package:qlevar_router/qlevar_router.dart';
 
 class SignUpPsp extends StatefulWidget {

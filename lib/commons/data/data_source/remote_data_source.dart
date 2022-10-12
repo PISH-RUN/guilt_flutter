@@ -1,6 +1,5 @@
 import 'package:dartz/dartz.dart';
 import 'package:guilt_flutter/commons/failures.dart';
-import 'package:guilt_flutter/commons/request_result.dart';
 import 'package:image_picker/image_picker.dart';
 
 import '../model/server_failure.dart';

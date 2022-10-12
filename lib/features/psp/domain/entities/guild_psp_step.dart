@@ -1,3 +1,5 @@
+// ignore_for_file: constant_identifier_names
+
 enum GuildPspStep {
   normal(id: 1, actionName: "پیگیری میکنم", stateTitle: "پیگیری نشده", isGuildEditable: false, isEnd: false),
   follow_up(id: 2, actionName: "در موقعیت هستم", stateTitle: "اقدام برای پیگیری", isGuildEditable: false, isEnd: false),

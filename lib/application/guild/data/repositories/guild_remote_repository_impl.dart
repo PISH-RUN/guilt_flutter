@@ -1,4 +1,3 @@
-import 'dart:convert';
 
 import 'package:dartz/dartz.dart';
 import 'package:get_it/get_it.dart';
@@ -9,7 +8,6 @@ import 'package:guilt_flutter/application/guild/data/models/guild_model.dart';
 import 'package:guilt_flutter/application/guild/domain/entities/guild.dart';
 import 'package:guilt_flutter/application/guild/domain/repositories/guild_remote_repository.dart';
 import 'package:guilt_flutter/commons/data/data_source/remote_data_source.dart';
-import 'package:guilt_flutter/commons/data/model/json_parser.dart';
 import 'package:guilt_flutter/commons/data/model/server_failure.dart';
 import 'package:guilt_flutter/commons/failures.dart';
 import 'package:guilt_flutter/commons/request_result.dart';

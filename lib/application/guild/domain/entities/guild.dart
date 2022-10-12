@@ -1,7 +1,6 @@
 import 'package:equatable/equatable.dart';
 import 'package:guilt_flutter/application/guild/domain/entities/icis.dart';
 import 'package:guilt_flutter/application/guild/domain/entities/pos.dart';
-import 'package:guilt_flutter/features/profile/domain/entities/gender_type.dart';
 import 'package:latlong2/latlong.dart' as lat_lng;
 
 class Guild extends Equatable {

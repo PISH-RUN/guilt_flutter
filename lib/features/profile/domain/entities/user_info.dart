@@ -1,6 +1,4 @@
 import 'package:equatable/equatable.dart';
-import 'package:get_it/get_it.dart';
-import 'package:guilt_flutter/features/login/api/login_api.dart';
 import 'package:persian_datetime_picker/persian_datetime_picker.dart';
 import 'gender_type.dart';
 

@@ -4,8 +4,6 @@ import 'dart:io';
 import 'package:collection/collection.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:device_info_plus/device_info_plus.dart';
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:guilt_flutter/application/guild/domain/entities/icis.dart';

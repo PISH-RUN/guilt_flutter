@@ -3,7 +3,6 @@ import 'package:guilt_flutter/commons/utils.dart';
 import 'package:guilt_flutter/features/login/presentation/manager/register_state.dart';
 import 'login_cubit.dart';
 import '../../domain/usecase/login_main.dart';
-import 'login_state.dart';
 
 class RegisterCubit extends Cubit<RegisterState> {
   final LoginMain _loginMain;

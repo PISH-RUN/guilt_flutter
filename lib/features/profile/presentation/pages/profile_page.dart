@@ -8,10 +8,8 @@ import 'package:guilt_flutter/features/login/api/login_api.dart';
 import 'package:guilt_flutter/features/profile/presentation/manager/update_user_cubit.dart';
 import 'package:guilt_flutter/features/profile/presentation/widgets/form_widget.dart';
 import 'package:guilt_flutter/features/profile/presentation/widgets/label_widget.dart';
-import 'package:logger/logger.dart';
 import 'package:qlevar_router/qlevar_router.dart';
 
-import '../../../../commons/failures.dart';
 import '../../../../commons/widgets/loading_widget.dart';
 import '../../domain/entities/user_info.dart';
 import '../manager/get_user_cubit.dart';
