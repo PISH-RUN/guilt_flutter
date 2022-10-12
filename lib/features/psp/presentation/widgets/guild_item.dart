@@ -80,9 +80,7 @@ class _GuildItemState extends State<GuildItem> {
             onTap: () async {
               if (guild.guildPspStep.isGuildEditable) {
                 final phoneResponse = await BlocProvider.of<UpdateStateOfGuildCubit>(context).getUserPhoneNumber(guild.guild.userId);
-                //todo
-                // QR.to('psp/register/${guild.guild.userId}/${phoneResponse.getOrElse(() => throw UnimplementedError())}/${guild.guild.id}/');
-                QR.to('psp/editUser/eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjo5LCJyb2xlIjoicHNwIiwiaWF0IjoxNjY1NDczODU1LCJleHAiOjE2NjU0ODQ2NTV9.O33Tu_Vy8h0WCOm6HEkKfpsQDjFvNxkdEK8OK3R_nXc/${guild.guild.userId}/${guild.guild.id}'.trim());
+                QR.to('psp/register/${guild.guild.userId}/${phoneResponse.getOrElse(() => throw UnimplementedError())}/${guild.guild.id}/');
                 return;
               }
               if (guild.guildPspStep.isEnd) {

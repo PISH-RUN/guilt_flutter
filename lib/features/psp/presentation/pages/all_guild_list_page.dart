@@ -95,38 +95,38 @@ class _AllGuildsListPageState extends State<AllGuildsListPage> {
   Widget _basePage(Widget child) {
     return Column(
       children: [
-        Container(
-          margin: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8),
-          decoration: BoxDecoration(
-            color: Colors.white,
-            shape: BoxShape.rectangle,
-            borderRadius: const BorderRadius.all(Radius.circular(9)),
-            boxShadow: simpleShadow(),
-          ),
-          padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 2.0),
-          child: Row(
-            children: <Widget>[
-              const Icon(Icons.search, color: AppColor.blue, size: 25.0),
-              Expanded(
-                child: TextField(
-                  controller: controller,
-                  onChanged: (value) => search(value),
-                  style: defaultTextStyle(context).c(Colors.black87),
-                  onTap: () => setState(() => fixRtlFlutterBug(controller)),
-                  cursorWidth: 0.2,
-                  maxLines: 1,
-                  minLines: 1,
-                  decoration: InputDecoration(
-                    enabledBorder: const OutlineInputBorder(borderSide: BorderSide(width: 0, color: Colors.transparent)),
-                    focusedBorder: const OutlineInputBorder(borderSide: BorderSide(width: 0, color: Colors.transparent)),
-                    hintText: 'جستجو ...',
-                    hintStyle: Theme.of(context).textTheme.headline4!.copyWith(color: Colors.grey),
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ),
+        // Container(
+        //   margin: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8),
+        //   decoration: BoxDecoration(
+        //     color: Colors.white,
+        //     shape: BoxShape.rectangle,
+        //     borderRadius: const BorderRadius.all(Radius.circular(9)),
+        //     boxShadow: simpleShadow(),
+        //   ),
+        //   padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 2.0),
+        //   child: Row(
+        //     children: <Widget>[
+        //       const Icon(Icons.search, color: AppColor.blue, size: 25.0),
+        //       Expanded(
+        //         child: TextField(
+        //           controller: controller,
+        //           onChanged: (value) => search(value),
+        //           style: defaultTextStyle(context).c(Colors.black87),
+        //           onTap: () => setState(() => fixRtlFlutterBug(controller)),
+        //           cursorWidth: 0.2,
+        //           maxLines: 1,
+        //           minLines: 1,
+        //           decoration: InputDecoration(
+        //             enabledBorder: const OutlineInputBorder(borderSide: BorderSide(width: 0, color: Colors.transparent)),
+        //             focusedBorder: const OutlineInputBorder(borderSide: BorderSide(width: 0, color: Colors.transparent)),
+        //             hintText: 'جستجو ...',
+        //             hintStyle: Theme.of(context).textTheme.headline4!.copyWith(color: Colors.grey),
+        //           ),
+        //         ),
+        //       ),
+        //     ],
+        //   ),
+        // ),
         Container(
           margin: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8),
           decoration: BoxDecoration(

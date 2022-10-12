@@ -14,7 +14,6 @@ import 'package:guilt_flutter/commons/utils.dart';
 import 'package:guilt_flutter/commons/widgets/our_button.dart';
 import 'package:guilt_flutter/commons/widgets/simple_snake_bar.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:logger/logger.dart';
 import 'package:qlevar_router/qlevar_router.dart';
 
 import '../../../../commons/widgets/loading_widget.dart';
@@ -57,9 +56,7 @@ class _GuildFormPageState extends State<GuildFormPage> {
 
   @override
   Widget build(BuildContext context) {
-    return WillPopScope(
-      onWillPop: () async => false,
-      child: Scaffold(
+    return Scaffold(
         body: SafeArea(
           child: BlocBuilder<GuildCubit, GuildState>(
             builder: (context, state) {
@@ -140,7 +137,7 @@ class _GuildFormPageState extends State<GuildFormPage> {
             },
           ),
         ),
-      ),
+      
     );
   }
 

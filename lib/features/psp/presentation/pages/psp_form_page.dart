@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
 import 'package:guilt_flutter/application/colors.dart';
-import 'package:guilt_flutter/application/guild/presentation/pages/guild_form_page.dart';
 import 'package:guilt_flutter/application/guild/presentation/widgets/guild_form_widget.dart';
 import 'package:guilt_flutter/commons/text_style.dart';
 import 'package:guilt_flutter/commons/widgets/loading_widget.dart';
@@ -10,6 +9,7 @@ import 'package:guilt_flutter/commons/widgets/simple_snake_bar.dart';
 import 'package:guilt_flutter/features/psp/domain/entities/guild_psp.dart';
 import 'package:guilt_flutter/features/psp/presentation/manager/follow_up_guilds_cubit.dart';
 import 'package:guilt_flutter/features/psp/presentation/manager/update_state_of_guild_cubit.dart';
+import 'package:logger/logger.dart';
 import 'package:qlevar_router/qlevar_router.dart';
 
 class PspFormPage extends StatefulWidget {
@@ -53,7 +53,7 @@ class _PspFormPageState extends State<PspFormPage> {
             GuildFormWidget(
               defaultGuild: guild.guild,
               onSubmit: (guildChanged) async {
-                guild = guild.copyWith(guild: guildChanged);
+                guild = guild.copyWith(guild: guildChanged.copyWith(status: isConfirmed ? 'confirmed' : 'waiting_confirmation'));
                 await BlocProvider.of<UpdateStateOfGuildCubit>(context).updateStateOfSpecialGuild(guild, isJustState: false, token: token);
                 BlocProvider.of<UpdateStateOfGuildCubit>(context).state.maybeWhen(
                       orElse: () {},
@@ -94,6 +94,8 @@ class _PspFormPageState extends State<PspFormPage> {
     );
   }
 
+  bool isConfirmed = false;
+
   Future<void> _showModalForSubmit() async {
     await showModalBottomSheet<void>(
       context: context,
@@ -122,7 +124,7 @@ class _PspFormPageState extends State<PspFormPage> {
               children: [
                 GestureDetector(
                   onTap: () async {
-                    guild = guild.copyWith(guild: guild.guild.copyWith(status: 'waiting_confirmation'));
+                    isConfirmed = false;
                     if (!formController.onSubmitButton!()) {
                       showSnakeBar(context, "فرم شما ایراد دارد"); //todo replace with good sentence
                       return;
@@ -148,7 +150,7 @@ class _PspFormPageState extends State<PspFormPage> {
                 const SizedBox(height: 25.0),
                 GestureDetector(
                   onTap: () async {
-                    guild = guild.copyWith(guild: guild.guild.copyWith(status: 'confirmed'));
+                    isConfirmed = true;
                     if (!formController.onSubmitButton!()) {
                       showSnakeBar(context, "فرم شما ایراد دارد"); //todo replace with good sentence
                       return;

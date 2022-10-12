@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 import 'package:get_it/get_it.dart';
 import 'package:guilt_flutter/application/colors.dart';
 import 'package:guilt_flutter/commons/fix_rtl_flutter_bug.dart';
@@ -12,6 +13,7 @@ import 'package:guilt_flutter/commons/widgets/simple_snake_bar.dart';
 import 'package:guilt_flutter/features/psp/domain/entities/psp_user.dart';
 import 'package:guilt_flutter/features/psp/presentation/manager/sign_up_psp_cubit.dart';
 import 'package:guilt_flutter/features/psp/presentation/manager/sign_up_psp_state.dart';
+import 'package:logger/logger.dart';
 import 'package:qlevar_router/qlevar_router.dart';
 
 class SignUpPsp extends StatefulWidget {
@@ -55,7 +57,7 @@ class _SignUpPspState extends State<SignUpPsp> {
   Widget build(BuildContext context) {
     return WillPopScope(
       onWillPop: () async => false,
-      child: formWidget(context),
+      child: Scaffold(body: formWidget(context)),
     );
   }
 
@@ -70,7 +72,7 @@ class _SignUpPspState extends State<SignUpPsp> {
             baseInformationWidget(context),
             const SizedBox(height: 10.0),
             submitButton(context),
-            const SizedBox(height: 20.0),
+            KeyboardVisibilityBuilder(builder: (context, isKeyboardVisible) => SizedBox(height: isKeyboardVisible ? 265.0 : 20.0)),
           ],
         ),
       ),
@@ -79,10 +81,15 @@ class _SignUpPspState extends State<SignUpPsp> {
 
   Widget submitButton(BuildContext context) {
     return BlocConsumer<SignUpPspCubit, SignUpPspState>(
-      listener: (context, state) => state.maybeWhen(success: () {
-        showSnakeBar(context, "منتظر تایید توسط ادمین باشید");
-        QR.back();
-      }, orElse: () {}),
+      listener: (context, state) => state.maybeWhen(
+        success: () {
+          showSnakeBar(context, "منتظر تایید توسط ادمین باشید");
+          QR.back();
+        },
+        error: (failure) =>
+            showSnakeBar(context, failure.message.contains("incorrect national_code or mobile") ? "شما قبلا ثبت نام کردید" : failure.message),
+        orElse: () {},
+      ),
       builder: (context, state) {
         return GestureDetector(
           onTap: () async {
@@ -99,7 +106,7 @@ class _SignUpPspState extends State<SignUpPsp> {
             alignment: Alignment.center,
             decoration: BoxDecoration(color: AppColor.blue, shape: BoxShape.rectangle, borderRadius: BorderRadius.circular(10)),
             child: state is Loading
-                ? LoadingWidget(size: 20, color: Colors.white)
+                ? LoadingWidget(size: 18, color: Colors.white)
                 : Text("ثبت نام", style: defaultTextStyle(context, headline: 4).c(Colors.white)),
           ),
         );
@@ -140,7 +147,7 @@ class _SignUpPspState extends State<SignUpPsp> {
                           onTap: () => setState(() => fixRtlFlutterBug(firstNameController)),
                           decoration: defaultInputDecoration(context).copyWith(
                             hintText: 'نام',
-                            prefixIcon: const Icon(Icons.store, color: Color(0xffA0A8B1), size: 25.0),
+                            prefixIcon: const Icon(Icons.person, color: Color(0xffA0A8B1), size: 25.0),
                           ),
                           validator: (value) {
                             if (value == null) return null;
@@ -160,7 +167,7 @@ class _SignUpPspState extends State<SignUpPsp> {
                           onTap: () => setState(() => fixRtlFlutterBug(lastNameController)),
                           decoration: defaultInputDecoration(context).copyWith(
                             hintText: 'نام خانوادگی',
-                            prefixIcon: const Icon(Icons.store, color: Color(0xffA0A8B1), size: 25.0),
+                            prefixIcon: const Icon(Icons.person, color: Color(0xffA0A8B1), size: 25.0),
                           ),
                           validator: (value) {
                             if (value == null) return null;
@@ -223,7 +230,7 @@ class _SignUpPspState extends State<SignUpPsp> {
                           decoration: defaultInputDecoration(context).copyWith(
                             hintText: 'کد ملی',
                             contentPadding: const EdgeInsets.only(left: 8.0, right: 8.0, top: 20.0, bottom: 20.0),
-                            prefixIcon: const Icon(Icons.phone, color: Color(0xffA0A8B1), size: 25.0),
+                            prefixIcon: const Icon(Icons.pin, color: Color(0xffA0A8B1), size: 25.0),
                             hintTextDirection: TextDirection.ltr,
                           ),
                           validator: (value) {

@@ -11,6 +11,7 @@ import 'package:guilt_flutter/commons/text_style.dart';
 import 'package:guilt_flutter/commons/utils.dart';
 import 'package:guilt_flutter/commons/widgets/loading_widget.dart';
 import 'package:guilt_flutter/commons/widgets/our_button.dart';
+import 'package:logger/logger.dart';
 import 'package:qlevar_router/qlevar_router.dart';
 
 class GuildPage extends StatelessWidget {
@@ -122,7 +123,7 @@ class _GuildListPageState extends State<GuildListPage> {
         ),
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () => QR.to('/guild/add'),
+        onPressed: () => QR.navigator.push('/guild/add'),
         backgroundColor: Theme.of(context).primaryColor,
         foregroundColor: Colors.white,
         child: const Icon(Icons.add),

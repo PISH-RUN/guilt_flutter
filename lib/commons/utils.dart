@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:collection/collection.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/cupertino.dart';
@@ -285,7 +286,7 @@ Isic getIsicWithCode(String code) {
   if (_isicList.isEmpty) {
     initialListOfIsic();
   }
-  return _isicList.firstWhere((element) => element.code == code);
+  return _isicList.firstWhereOrNull((element) => element.code == code) ?? _isicList[0];
 }
 
 Isic getIsicWithName(String name) {
@@ -360,4 +361,3 @@ extension NewProperty on Duration {
     return int.parse(times[2]);
   }
 }
-
