@@ -4,6 +4,7 @@ import 'package:guilt_flutter/application/guild/presentation/pages/guild_form_pa
 import 'package:guilt_flutter/application/guild/presentation/widgets/guild_form_widget.dart';
 import 'package:guilt_flutter/commons/text_style.dart';
 import 'package:guilt_flutter/commons/widgets/our_text_field.dart';
+import 'package:logger/logger.dart';
 
 class OurItemPicker extends StatefulWidget {
   final IconData? icon;

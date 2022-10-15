@@ -17,9 +17,6 @@ class GuildMain {
 
   Future<RequestResult> addGuild({required String nationalCode, required Guild guild}) async {
     final response = await guildRemoteRepository.addGuild(nationalCode, guild);
-    if (response.isLeft()) {
-      return RequestResult.fromEither(response);
-    }
     return RequestResult.fromEither(response);
   }
 

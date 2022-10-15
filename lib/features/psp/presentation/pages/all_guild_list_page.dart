@@ -1,11 +1,8 @@
-// ignore_for_file: unused_import
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
 import 'package:guilt_flutter/application/colors.dart';
 import 'package:guilt_flutter/application/error_page.dart';
-import 'package:guilt_flutter/commons/fix_rtl_flutter_bug.dart';
 import 'package:guilt_flutter/commons/text_style.dart';
 import 'package:guilt_flutter/commons/utils.dart';
 import 'package:guilt_flutter/commons/widgets/loading_widget.dart';
@@ -13,9 +10,7 @@ import 'package:guilt_flutter/features/psp/presentation/manager/all_guilds_state
 import 'package:guilt_flutter/features/psp/presentation/manager/update_state_of_guild_cubit.dart';
 import 'package:guilt_flutter/features/psp/presentation/widgets/all_guilds_widget.dart';
 import 'package:guilt_flutter/main.dart';
-import 'package:logger/logger.dart';
 import 'package:multi_select_flutter/multi_select_flutter.dart';
-import 'package:qlevar_router/qlevar_router.dart';
 
 import '../manager/all_guilds_cubit.dart';
 
@@ -171,6 +166,6 @@ class _AllGuildsListPageState extends State<AllGuildsListPage> {
   void search(String value) {
     //todo fix search
     if (value == BlocProvider.of<AllGuildsCubit>(context).currentSearchText) return;
-    // BlocProvider.of<AllGuildsCubit>(context).initialPage(selectedCity, searchText: value);
+    BlocProvider.of<AllGuildsCubit>(context).initialPage(selectedCity, searchText: value);
   }
 }
