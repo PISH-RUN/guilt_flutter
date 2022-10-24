@@ -15,6 +15,7 @@ class GuildPsp extends Equatable {
   GuildPsp copyWith({
     Guild? guild,
     GuildPspStep? guildPspStep,
+
   }) {
     return GuildPsp(
       guild: guild ?? this.guild,

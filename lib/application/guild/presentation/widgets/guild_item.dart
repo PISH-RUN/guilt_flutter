@@ -34,7 +34,7 @@ class GuildItem extends StatelessWidget {
                     Text(guild.title, style: defaultTextStyle(context, headline: 3)),
                     const SizedBox(width: 16.0),
                     GestureDetector(
-                      onTap: () => QR.navigator.push('guild/view/${guild.uuid}'),
+                      onTap: () => QR.to('guild/view/${guild.uuid}'),
                       child: Container(
                         alignment: Alignment.center,
                         padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 10.0),

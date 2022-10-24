@@ -57,6 +57,7 @@ dependencies:
   flutter_map: ^0.14.0
   geolocator: ^9.0.1
   latlong2: ^0.8.1
+  flutter_flavorizr: ^2.1.4
 
 dev_dependencies:
   flutter_test:
@@ -95,3 +96,24 @@ flutter:
           weight: 700
         - asset: fonts/iran_sans_mobile_medium.ttf
           weight: 300
+
+flavorizr:
+  flavors:
+    data:
+      app:
+        name: "دیتا"
+
+      android:
+        applicationId: "af.pish.run"
+
+      ios:
+        bundleId: "af.pish.run"
+
+    psp:
+      app:
+        name: "پرداخت یار"
+
+      android:
+        applicationId: "psp.af.pish.run"
+      ios:
+        bundleId: "psp.af.pish.run"

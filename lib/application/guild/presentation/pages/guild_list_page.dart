@@ -122,7 +122,7 @@ class _GuildListPageState extends State<GuildListPage> {
         ),
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () => QR.navigator.push('/guild/add'),
+        onPressed: () => QR.to('/guild/add'),
         backgroundColor: Theme.of(context).primaryColor,
         foregroundColor: Colors.white,
         child: const Icon(Icons.add),

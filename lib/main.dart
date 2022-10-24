@@ -23,9 +23,18 @@ String provincePsp = '';
 
 void main() async {
   await GetStorage.init();
-  prepareGetIt();
   HttpOverrides.global = MyHttpOverrides();
+  prepareGetIt();
   await getProvinceOfPsp();
+
+  // final ImagePicker picker = ImagePicker();
+  // final XFile? image = await picker.pickImage(source: ImageSource.camera);
+  // final InputImage inputImage = InputImage.fromFilePath(image!.path);
+  // final textRecognizer = TextRecognizer(script: TextRecognitionScript.latin);
+  // final RecognizedText recognizedText = await textRecognizer.processImage(inputImage);
+  // String text = recognizedText.text;
+  // Logger().i("info=> ${text} ");
+
   runApp(MyApp());
 }
 
@@ -36,9 +45,7 @@ Future<void> getProvinceOfPsp() async {
   await GetIt.instance<RemoteDataSource>().getFromServer(
     url: '${BASE_URL_API}users/psps',
     params: {},
-    mapSuccess: (Map<String, dynamic> json) {
-      province = JsonParser.stringParser(json, ['data', 'province']);
-    },
+    mapSuccess: (Map<String, dynamic> json) => province = JsonParser.stringParser(json, ['data', 'province']),
   );
 }
 
@@ -76,6 +83,6 @@ class MyApp extends StatelessWidget {
 class MyHttpOverrides extends HttpOverrides {
   @override
   HttpClient createHttpClient(SecurityContext? context) {
-    return super.createHttpClient(context)..badCertificateCallback = (X509Certificate cert, String host, int port) => true;
+    return super.createHttpClient(context)..badCertificateCallback = (X509Certificate cert, String host, int port) => false;
   }
 }

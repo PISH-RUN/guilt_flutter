@@ -426,6 +426,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "3.3.0"
+  flutter_flavorizr:
+    dependency: "direct main"
+    description:
+      name: flutter_flavorizr
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "2.1.4"
   flutter_keyboard_visibility:
     dependency: "direct main"
     description:
@@ -1211,6 +1218,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.9.0"
+  sprintf:
+    dependency: transitive
+    description:
+      name: sprintf
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "6.0.2"
   sqflite:
     dependency: transitive
     description:
