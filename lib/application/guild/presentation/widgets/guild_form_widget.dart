@@ -37,6 +37,7 @@ class _GuildFormWidgetState extends State<GuildFormWidget> {
   late TextEditingController cityController;
   late TextEditingController postalCodeController;
   late TextEditingController homeTelephoneController;
+  late TextEditingController provinceCodeController;
   late TextEditingController organController;
   late TextEditingController guildNameController;
   late lat_lng.LatLng? pinLocation;
@@ -60,7 +61,10 @@ class _GuildFormWidgetState extends State<GuildFormWidget> {
     isic = guild.isic.name;
     cityController = TextEditingController(text: guild.city);
     postalCodeController = TextEditingController(text: guild.postalCode);
-    homeTelephoneController = TextEditingController(text: guild.homeTelephone);
+    final homeTelephone = guild.homeTelephone;
+    homeTelephoneController = TextEditingController(
+        text: homeTelephone.length > 8 ? homeTelephone.substring(homeTelephone.length - 8, homeTelephone.length) : homeTelephone);
+    provinceCodeController = TextEditingController(text: homeTelephone.length > 8 ? homeTelephone.substring(0, homeTelephone.length - 8) : "");
     pinLocation = guild.location;
   }
 
@@ -147,26 +151,63 @@ class _GuildFormWidgetState extends State<GuildFormWidget> {
                             ),
                           ),
                           SizedBox(height: paddingBetweenTextFiled),
-                          OurTextField(
-                            title: "شماره تلفن صنف",
-                            textFormField: TextFormField(
-                              style: defaultTextStyle(context).c(const Color(0xff2F3135)),
-                              controller: homeTelephoneController,
-                              keyboardType: TextInputType.number,
-                              textAlign: TextAlign.end,
-                              decoration: defaultInputDecoration(context).copyWith(
-                                hintText: 'شماره تلفن صنف',
-                                hintTextDirection: TextDirection.ltr,
-                                contentPadding: const EdgeInsets.only(left: 8.0, right: 8.0, top: 20.0, bottom: 20.0),
-                                prefixIcon: const Icon(Icons.phone, color: Color(0xffA0A8B1), size: 25.0),
+                          Row(
+                            children: [
+                              Expanded(
+                                flex: 3,
+                                child: OurTextField(
+                                  title: "شماره تلفن",
+                                  textFormField: TextFormField(
+                                    style: defaultTextStyle(context).c(const Color(0xff2F3135)),
+                                    controller: homeTelephoneController,
+                                    keyboardType: TextInputType.number,
+                                    textAlign: TextAlign.end,
+                                    decoration: defaultInputDecoration(context).copyWith(
+                                      hintText: 'شماره تلفن',
+                                      hintTextDirection: TextDirection.ltr,
+                                      contentPadding: const EdgeInsets.only(left: 8.0, right: 8.0, top: 20.0, bottom: 20.0),
+                                      prefixIcon: const Icon(Icons.phone, color: Color(0xffA0A8B1), size: 25.0),
+                                    ),
+                                    validator: (value) {
+                                      if (value == null) return null;
+                                      if (value.isEmpty) return "وارد کردن شماره تلفن ضروری است";
+                                      if (provinceCodeController.text.isEmpty) return "وارد کردن کد ضروری است";
+                                      if (!provinceCodeController.text.startsWith('0')) return "کد با صفر شروع میشود";
+                                      if (provinceCodeController.text.length != 3) return "کد معتبر نمی باشد";
+                                      if (value.length != 8) return "شماره تلفن معتبر نمی باشد";
+                                      return null;
+                                    },
+                                    onSaved: (value) => guild = guild.copyWith(homeTelephone: "${provinceCodeController.text}$value"),
+                                  ),
+                                ),
                               ),
-                              validator: (value) {
-                                if (value == null) return null;
-                                if (value.isEmpty) return "وارد کردن شماره تلفن ضروری است";
-                                return null;
-                              },
-                              onSaved: (value) => guild = guild.copyWith(homeTelephone: value),
-                            ),
+                              const SizedBox(width: 10.0),
+                              Expanded(
+                                flex: 1,
+                                child: OurTextField(
+                                  title: "کد استان",
+                                  textFormField: TextFormField(
+                                    style: defaultTextStyle(context).c(const Color(0xff2F3135)),
+                                    controller: provinceCodeController,
+                                    keyboardType: TextInputType.number,
+                                    textAlign: TextAlign.end,
+                                    decoration: defaultInputDecoration(context).copyWith(
+                                      hintText: 'کد استان',
+                                      hintTextDirection: TextDirection.ltr,
+                                      contentPadding: const EdgeInsets.only(left: 8.0, right: 8.0, top: 20.0, bottom: 20.0),
+                                    ),
+                                    validator: (value) {
+                                      if (value == null) return null;
+                                      if (value.isEmpty) return "";
+                                      if (!value.startsWith('0')) return "";
+                                      if (value.length != 3) return "";
+                                      return null;
+                                    },
+                                  ),
+                                ),
+                              ),
+
+                            ],
                           ),
                           SizedBox(height: paddingBetweenTextFiled),
                           OurItemPicker(

@@ -25,11 +25,10 @@ class GuildRemoteRepositoryImpl implements GuildRemoteRepository {
   @override
   Future<Either<Failure, List<Guild>>> getListOfMyGuilds(String nationalCode) async {
     nationalCodeLocal = nationalCode;
-    //todo
-    // if (GetStorage().hasData("guilds${getLocalKeyOfUser(nationalCode)}")) {
-    //   final guildListLocal = GuildModel.convertStringToGuildList(GetStorage().read<String>("guilds${getLocalKeyOfUser(nationalCode)}") ?? "[]");
-    //   return Right(guildListLocal);
-    // }
+    if (GetStorage().hasData("guilds${getLocalKeyOfUser(nationalCode)}")) {
+      final guildListLocal = GuildModel.convertStringToGuildList(GetStorage().read<String>("guilds${getLocalKeyOfUser(nationalCode)}") ?? "[]");
+      return Right(guildListLocal);
+    }
     final output = await remoteDataSource.getFromServer<List<Guild>>(
       url: '${BASE_URL_API}guilds',
       params: {},
