@@ -7,6 +7,7 @@ import 'package:guilt_flutter/commons/text_style.dart';
 import 'package:guilt_flutter/features/profile/presentation/widgets/form_widget.dart';
 import 'package:guilt_flutter/features/psp/presentation/manager/psp_update_user_cubit.dart';
 import 'package:guilt_flutter/features/psp/presentation/manager/psp_update_user_state.dart';
+import 'package:logger/logger.dart';
 import 'package:qlevar_router/qlevar_router.dart';
 
 import '../../../../commons/widgets/loading_widget.dart';
@@ -35,7 +36,7 @@ class _PspProfileEditPageState extends State<PspProfileEditPage> {
   void initState() {
     formController = FormController();
     isLoadingSubmit = false;
-    BlocProvider.of<PspUpdateUserCubit>(context).initialPage(int.parse(QR.params['userId'].toString()));
+    BlocProvider.of<PspUpdateUserCubit>(context).initialPage(int.parse(QR.params['userId'].toString()), QR.params['token'].toString());
     super.initState();
   }
 
@@ -48,7 +49,9 @@ class _PspProfileEditPageState extends State<PspProfileEditPage> {
         state.maybeWhen(
           orElse: () {},
           loadingForSubmit: () => isLoadingSubmit = true,
-          success: () => QR.navigator.replaceLast('psp/editGuild/${QR.params['token'].toString()}/${QR.params['guildId'].toString()}'),
+          success: () {
+            QR.to('psp/editGuild/${QR.params['token'].toString()}/${QR.params['guildId'].toString()}');
+          },
         );
       },
       builder: (context, state) {

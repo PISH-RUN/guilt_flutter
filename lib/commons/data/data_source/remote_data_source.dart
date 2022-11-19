@@ -41,6 +41,7 @@ abstract class RemoteDataSource {
     required Map<String, dynamic> params,
     required T Function(Map<String, dynamic> success) mapSuccess,
     bool isTokenNeed = true,
+    String customiseToken = "",
     String? localKey,
     Duration? expireDateLocalKey,
   });

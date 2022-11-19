@@ -32,11 +32,15 @@ class FollowUpGuildsCubit extends Cubit<FollowUpGuildsState> {
       totalPage = guildList.totalPage;
       currentPage = guildList.currentPage;
       guildPspList = [...guildPspList, ...guildList.list];
-      emit(FollowUpGuildsState.loaded(guildList: guildList.copyWith(list: guildList.list)));
+      if (guildList.list.isEmpty) {
+        emit(const FollowUpGuildsState.empty());
+      } else {
+        emit(FollowUpGuildsState.loaded(guildList: guildList.copyWith(list: guildList.list)));
+      }
     });
   }
 
-  GuildPsp getGuildBuId(int guildId) {
+  GuildPsp getGuildById(int guildId) {
     return guildPspList.firstWhere((element) => element.guild.id == guildId);
   }
 

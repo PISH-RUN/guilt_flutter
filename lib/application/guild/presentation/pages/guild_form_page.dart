@@ -57,87 +57,89 @@ class _GuildFormPageState extends State<GuildFormPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        body: SafeArea(
-          child: BlocBuilder<GuildCubit, GuildState>(
-            builder: (context, state) {
-              return state.when(
-                loading: () => LoadingWidget(),
-                error: (failure) => Center(child: Text(failure.message)),
-                loaded: (data) {
-                  guild ??= data;
-                  if (widget.isAddNew) {
-                    isEditable = true;
-                  }
-                  return isEditable
-                      ? Scaffold(
-                          body: SingleChildScrollView(
-                            child: Column(
-                              children: [
-                                const SizedBox(height: 10.0),
-                                GuildFormWidget(
-                                  defaultGuild: guild!,
-                                  onSubmit: (guildChanged) async {
-                                    guild = guildChanged.copyWith(image: guild!.image);
-                                    await widget.isAddNew
-                                        ? BlocProvider.of<GuildCubit>(context).addGuild(guild!)
-                                        : BlocProvider.of<GuildCubit>(context).saveGuild(guild!);
-                                    setState(() => isLoading = false);
-                                    QR.navigator.replaceAll(appMode.initPath);
-                                  },
-                                  formController: formController,
-                                ),
-                              ],
-                            ),
-                          ),
-                          floatingActionButton: FloatingActionButton(
-                            onPressed: () async {
-                              if (!formController.onSubmitButton!()) {
-                                showSnakeBar(context, "فرم شما ایراد دارد"); //todo replace with good sentence
-                                return;
-                              }
-                              setState(() => isLoading = true);
-                            },
-                            backgroundColor: Theme.of(context).primaryColor,
-                            foregroundColor: Colors.white,
-                            child: isLoading ? LoadingWidget(size: 16, color: Colors.white) : const Icon(Icons.save),
-                          ),
-                        )
-                      : SingleChildScrollView(
+      body: SafeArea(
+        child: BlocBuilder<GuildCubit, GuildState>(
+          builder: (context, state) {
+            return state.when(
+              loading: () => LoadingWidget(),
+              error: (failure) => Center(child: Text(failure.message)),
+              loaded: (data) {
+                guild ??= data;
+                if (widget.isAddNew) {
+                  isEditable = true;
+                }
+                return isEditable
+                    ? Scaffold(
+                        body: SingleChildScrollView(
                           child: Column(
                             children: [
-                              Opacity(
-                                opacity: isProgressAvatarHide ? 0.0 : 1.0,
-                                child: LinearProgressIndicator(
-                                    valueColor: AlwaysStoppedAnimation<Color>(Theme.of(context).primaryColor), minHeight: 4.0),
-                              ),
                               const SizedBox(height: 10.0),
-                              GestureDetector(
-                                onTap: () async {
-                                  final ImagePicker picker = ImagePicker();
-                                  final XFile? image = await picker.pickImage(source: ImageSource.gallery);
-                                  if (image == null) return;
-                                  setState(() => isProgressAvatarHide = false);
-                                  final response = await BlocProvider.of<GuildCubit>(context).updateAvatar(guild!, image);
-                                  response.fold(
-                                    (l) => showSnakeBar(context, l.message),
-                                    (url) => guild = guild!.copyWith(image: url),
-                                  );
-                                  setState(() => isProgressAvatarHide = true);
+                              GuildFormWidget(
+                                defaultGuild: guild!,
+                                onSubmit: (guildChanged) async {
+                                  setState(() => isLoading = true);
+                                  guild = guildChanged.copyWith(image: guild!.image);
+                                  await widget.isAddNew
+                                      ? BlocProvider.of<GuildCubit>(context).addGuild(guild!)
+                                      : BlocProvider.of<GuildCubit>(context).saveGuild(guild!);
+                                  await Future.delayed(const Duration(seconds: 2), () => "1");
+                                  setState(() => isLoading = false);
+                                  QR.navigator.replaceAll(appMode.initPath);
                                 },
-                                child: avatarWidget(context, guild!),
+                                formController: formController,
                               ),
-                              const SizedBox(height: 10.0),
-                              GuildLabelWidget(guild: guild!, onEditPressed: () => setState(() => isEditable = true)),
-                              posesList(context, guild!),
                             ],
                           ),
-                        );
-                },
-              );
-            },
-          ),
+                        ),
+                        floatingActionButton: FloatingActionButton(
+                          onPressed: () async {
+                            setState(() => isLoading = true);
+                            if (!formController.onSubmitButton!()) {
+                              setState(() => isLoading = false);
+                              showSnakeBar(context, "فرم شما ایراد دارد");
+                              return;
+                            }
+                          },
+                          backgroundColor: Theme.of(context).primaryColor,
+                          foregroundColor: Colors.white,
+                          child: isLoading ? LoadingWidget(size: 16, color: Colors.white) : const Icon(Icons.save),
+                        ),
+                      )
+                    : SingleChildScrollView(
+                        child: Column(
+                          children: [
+                            Opacity(
+                              opacity: isProgressAvatarHide ? 0.0 : 1.0,
+                              child:
+                                  LinearProgressIndicator(valueColor: AlwaysStoppedAnimation<Color>(Theme.of(context).primaryColor), minHeight: 4.0),
+                            ),
+                            const SizedBox(height: 10.0),
+                            GestureDetector(
+                              onTap: () async {
+                                final ImagePicker picker = ImagePicker();
+                                final XFile? image = await picker.pickImage(source: ImageSource.gallery);
+                                if (image == null) return;
+                                setState(() => isProgressAvatarHide = false);
+                                final response = await BlocProvider.of<GuildCubit>(context).updateAvatar(guild!, image);
+                                response.fold(
+                                  (l) => showSnakeBar(context, l.message),
+                                  (url) => guild = guild!.copyWith(image: url),
+                                );
+                                setState(() => isProgressAvatarHide = true);
+                              },
+                              child: avatarWidget(context, guild!),
+                            ),
+                            const SizedBox(height: 10.0),
+                            GuildLabelWidget(guild: guild!, onEditPressed: () => setState(() => isEditable = true)),
+                            posesList(context, guild!),
+                          ],
+                        ),
+                      );
+              },
+            );
+          },
         ),
-      
+      ),
     );
   }
 

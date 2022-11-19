@@ -25,7 +25,7 @@ ThemeData lightThemeData() {
       ),
       enabledBorder: OutlineInputBorder(
         borderRadius: BorderRadius.all(Radius.circular(8)),
-        borderSide: BorderSide(width: 1.2, color: Color(0xd9848484)),
+        borderSide: BorderSide(width: 1.2, color: Color(0xd9a6a6a6)),
       ),
       errorBorder: OutlineInputBorder(
         borderRadius: BorderRadius.all(Radius.circular(8)),

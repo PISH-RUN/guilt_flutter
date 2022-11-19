@@ -3,6 +3,7 @@ import 'package:guilt_flutter/application/colors.dart';
 import 'package:guilt_flutter/application/guild/presentation/pages/guild_form_page.dart';
 import 'package:guilt_flutter/application/guild/presentation/widgets/guild_form_widget.dart';
 import 'package:guilt_flutter/commons/text_style.dart';
+import 'package:guilt_flutter/commons/utils.dart';
 import 'package:guilt_flutter/commons/widgets/our_text_field.dart';
 import 'package:logger/logger.dart';
 
@@ -54,6 +55,7 @@ class _OurItemPickerState extends State<OurItemPicker> {
           context: context,
           barrierDismissible: true,
           builder: (context) {
+            closeKeyboard();
             return WillPopScope(
               onWillPop: () async {
                 isDialogOpen = false;

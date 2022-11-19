@@ -30,7 +30,7 @@ class PspRepositoryImpl implements PspRepository {
         list: JsonParser.listParser(json, ['data', 'results']).map((element) => GuildPspModel.fromJson(element)).toList(),
         currentPage: page,
         perPage: perPageGuildItem,
-        totalPage: (JsonParser.intParser(json, ['data', 'total']) ~/ perPageGuildItem),
+        totalPage: (JsonParser.intParser(json, ['total']) ~/ perPageGuildItem),
       ),
     );
     return output;
@@ -65,7 +65,7 @@ class PspRepositoryImpl implements PspRepository {
           list: JsonParser.listParser(json, ['data', 'results']).map((element) => GuildPspModel.fromJson(element)).toList(),
           currentPage: page,
           perPage: perPageGuildItem,
-          totalPage: (JsonParser.intParser(json, ['data', 'total']) ~/ perPageGuildItem),
+          totalPage: (JsonParser.intParser(json, ['total']) ~/ perPageGuildItem),
         );
       },
     );
@@ -73,10 +73,11 @@ class PspRepositoryImpl implements PspRepository {
   }
 
   @override
-  Future<Either<Failure, UserInfo>> getUserData(int userId) {
+  Future<Either<Failure, UserInfo>> getUserData(int userId, String token) {
     return remoteDataSource.getFromServer<UserInfo>(
-      url: '${BASE_URL_API}users/$userId',
+      url: '$BASE_URL_API${token.isNotEmpty ? 'users' : 'users/$userId'}',
       params: {},
+      customiseToken: token,
       mapSuccess: (Map<String, dynamic> json) => UserInfoModel.fromJson(JsonParser.parser(json, ['data'])),
     );
   }

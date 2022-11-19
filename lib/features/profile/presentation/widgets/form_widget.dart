@@ -257,6 +257,7 @@ class _FormWidgetState extends State<FormWidget> {
                           const SizedBox(height: 8.0),
                           GestureDetector(
                             onTap: () async {
+                              closeKeyboard();
                               Jalali? picked = await showPersianDatePicker(
                                 context: context,
                                 initialDate: Jalali(Jalali.now().year-20, Jalali.now().month),
@@ -312,6 +313,7 @@ class _FormWidgetState extends State<FormWidget> {
                         ],
                       ),
                       SizedBox(height: paddingBetweenTextFiled),
+                      const SizedBox(height: 8.0),
                       ToggleSwitch(
                         minWidth: 130,
                         minHeight: 55.0,

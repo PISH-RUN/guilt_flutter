@@ -1,6 +1,5 @@
 import 'dart:convert';
 import 'dart:io';
-import 'dart:convert';
 
 import 'package:dartz/dartz.dart';
 import 'package:dio/dio.dart' as dio;
@@ -88,6 +87,7 @@ class RemoteDataSourceImpl implements RemoteDataSource {
       }
     } on Exception catch (e) {
       Logger().wtf("$methodName===> crash ===> ${e.toString()}  for  $url");
+      if (e.toString().toLowerCase().contains("failed host lookup")) return Left(ServerFailure.noInternet());
       return Left(ServerFailure.fromMessage(e.toString()));
     }
   }
@@ -99,6 +99,7 @@ class RemoteDataSourceImpl implements RemoteDataSource {
     required T Function(Map<String, dynamic> success) mapSuccess,
     String? localKey,
     bool isTokenNeed = true,
+    String customiseToken = "",
     Duration? expireDateLocalKey = const Duration(hours: 1),
   }) async {
     if (localKey != null && GetStorage().hasData(localKey)) {
@@ -115,8 +116,9 @@ class RemoteDataSourceImpl implements RemoteDataSource {
       paramsString = "?$paramsString";
     }
     final finalUri = Uri.parse('$url$paramsString');
+    final header = customiseToken.isEmpty ? getHeader(isTokenNeed) : {...getHeader(false), 'Authorization': 'Bearer $customiseToken'};
     final response = await _callFunctionOfServer(
-      response: client.get(finalUri, headers: url.contains("dapi") ? {'Accept': 'application/json'} : getHeader(isTokenNeed)),
+      response: client.get(finalUri, headers: header),
       params: params,
       url: url,
       isTokenNeed: isTokenNeed,
@@ -229,9 +231,11 @@ class RemoteDataSourceImpl implements RemoteDataSource {
     required isTokenNeed,
   }) async {
     try {
+      int callTime = DateTime.now().millisecondsSinceEpoch;
       Logger().v("$methodName===> url ===> $url \n\nbodyParameters ===> $params\n\ndefaultHeader ===> ${getHeader(isTokenNeed)}");
       http.Response finalResponse = await response;
-      Logger().d("$methodName===> response.statusCode==> ${finalResponse.statusCode}  for  $url");
+      Logger().d(
+          "$methodName===> response.statusCode==> ${finalResponse.statusCode}  for  $url   in ${DateTime.now().millisecondsSinceEpoch - callTime} milliSec");
       if (isSuccessfulHttp(finalResponse)) {
         Logger().i("$methodName===>$url response is===>${finalResponse.body}");
         return Right(finalResponse.body);
@@ -250,6 +254,7 @@ class RemoteDataSourceImpl implements RemoteDataSource {
       }
     } on Exception catch (e) {
       Logger().wtf("$methodName===> crash ===> ${e.toString()}  for  $url");
+      if (e.toString().toLowerCase().contains("failed host lookup")) return Left(ServerFailure.noInternet());
       return Left(ServerFailure.fromMessage(e.toString()));
     }
   }

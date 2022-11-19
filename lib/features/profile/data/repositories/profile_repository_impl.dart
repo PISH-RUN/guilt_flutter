@@ -1,7 +1,9 @@
 import 'package:dartz/dartz.dart';
 import 'package:get_it/get_it.dart';
+import 'package:guilt_flutter/commons/data/model/json_parser.dart';
 import 'package:guilt_flutter/features/login/api/login_api.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:logger/logger.dart';
 
 import '../../../../application/constants.dart';
 import '../../../../application/get_local_key_of_user.dart';
@@ -24,10 +26,7 @@ class ProfileRepositoryImpl implements ProfileRepository {
       attachName: 'image',
       imageName: 'image',
       imageFile: avatar,
-      localKey: getLocalKeyOfUser(GetIt
-          .instance<LoginApi>()
-          .getUserData()
-          .nationalCode),
+      localKey: getLocalKeyOfUser(GetIt.instance<LoginApi>().getUserData().nationalCode),
       bodyParameters: {},
     );
     return output.fold((l) => Left(l), (json) {
@@ -43,7 +42,7 @@ class ProfileRepositoryImpl implements ProfileRepository {
       url: '${BASE_URL_API}users',
       localKey: getLocalKeyOfUser(nationalCode),
       params: {},
-      mapSuccess: (data) => UserInfoModel.fromJson(data['data']),
+      mapSuccess: (data) => UserInfoModel.fromJson(JsonParser.parser(data, ['data'])),
     );
   }
 
@@ -51,10 +50,7 @@ class ProfileRepositoryImpl implements ProfileRepository {
   Future<RequestResult> updateProfile(UserInfo userInfo) async {
     return RequestResult.fromEither(await remoteDataSource.postToServer(
       url: '${BASE_URL_API}users',
-      localKey: getLocalKeyOfUser(GetIt
-          .instance<LoginApi>()
-          .getUserData()
-          .nationalCode),
+      localKey: getLocalKeyOfUser(GetIt.instance<LoginApi>().getUserData().nationalCode),
       params: UserInfoModel.fromSuper(userInfo).toJson(),
       mapSuccess: (data) => UserInfoModel.fromJson(data['data']),
     ));

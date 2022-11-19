@@ -38,7 +38,7 @@ class _PspFormPageState extends State<PspFormPage> {
   void initState() {
     guildId = int.parse(QR.params['guildId'].toString());
     token = QR.params['token'].toString();
-    guild = BlocProvider.of<FollowUpGuildsCubit>(context).getGuildBuId(guildId);
+    guild = BlocProvider.of<FollowUpGuildsCubit>(context).getGuildById(guildId);
     super.initState();
   }
 

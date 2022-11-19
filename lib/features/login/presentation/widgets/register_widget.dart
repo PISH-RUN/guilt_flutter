@@ -80,6 +80,7 @@ class _RegisterWidgetState extends State<RegisterWidget> {
                                       textDirection: TextDirection.rtl,
                                       child: TextFormField(
                                         textAlign: TextAlign.end,
+                                        readOnly: state is Loading,
                                         decoration: const InputDecoration(
                                           labelText: "شماره تلفن",
                                           helperText: "",
@@ -102,6 +103,7 @@ class _RegisterWidgetState extends State<RegisterWidget> {
                                       textDirection: TextDirection.rtl,
                                       child: TextFormField(
                                         textAlign: TextAlign.end,
+                                        readOnly: state is Loading,
                                         decoration: const InputDecoration(
                                           labelText: "کد ملی",
                                           helperText: "",
@@ -122,7 +124,10 @@ class _RegisterWidgetState extends State<RegisterWidget> {
                                 ),
                                 const SizedBox(height: 14.0),
                                 OurButton(
-                                  onTap: () => onSubmitButton(context),
+                                  onTap: () {
+                                    closeKeyboard();
+                                    onSubmitButton(context);
+                                  },
                                   isLoading: state is Loading,
                                   title: "تایید",
                                 ),

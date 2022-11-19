@@ -26,8 +26,8 @@ class PspMain {
     return repository.updateStateOfSpecialGuild(guildPsp, isJustState: isJustState, token: token);
   }
 
-  Future<Either<Failure, UserInfo>> getUserData(int userId) {
-    return repository.getUserData(userId);
+  Future<Either<Failure, UserInfo>> getUserData(int userId, {String token=""}) {
+    return repository.getUserData(userId, token);
   }
 
   Future<RequestResult> signUpPsp(PspUser pspUser) {

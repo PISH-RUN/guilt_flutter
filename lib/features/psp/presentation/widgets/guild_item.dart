@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:guilt_flutter/application/guild/presentation/pages/guild_form_page.dart';
 import 'package:guilt_flutter/commons/text_style.dart';
+import 'package:guilt_flutter/commons/utils.dart';
+import 'package:guilt_flutter/commons/widgets/loading_widget.dart';
 import 'package:guilt_flutter/commons/widgets/pair_text_row.dart';
 import 'package:guilt_flutter/commons/widgets/simple_snake_bar.dart';
 import 'package:guilt_flutter/features/psp/domain/entities/guild_psp.dart';
@@ -9,7 +11,7 @@ import 'package:guilt_flutter/features/psp/domain/entities/guild_psp_step.dart';
 import 'package:guilt_flutter/features/psp/presentation/manager/update_state_of_guild_cubit.dart';
 import 'package:qlevar_router/qlevar_router.dart';
 
-const paddingSize = 6.0;
+const paddingSize = 8.0;
 
 class GuildItem extends StatefulWidget {
   final GuildPsp guild;
@@ -29,6 +31,8 @@ class _GuildItemState extends State<GuildItem> {
     super.initState();
   }
 
+  bool isLoading = false;
+
   @override
   Widget build(BuildContext context) {
     return Card(
@@ -46,8 +50,9 @@ class _GuildItemState extends State<GuildItem> {
                 const SizedBox(height: paddingSize),
                 Row(
                   children: <Widget>[
-                    Text(guild.guild.title, style: defaultTextStyle(context, headline: 3)),
-                    const SizedBox(width: 16.0),
+                    Expanded(
+                        child:
+                            Text(getFirstWordsOfOneSentence(guild.guild.title, 11, has3Dots: true), style: defaultTextStyle(context, headline: 3))),
                     GestureDetector(
                       onTap: () => showDetailDialog(context),
                       child: Container(
@@ -86,14 +91,16 @@ class _GuildItemState extends State<GuildItem> {
               if (guild.guildPspStep.isEnd) {
                 return;
               }
-              if (guild.guildPspStep.id == 1) {
-                showSnakeBar(context, "این کسب و کار به صفحه موارد پیگیری افزوده شد");
-              }
               guild = guild.copyWith(guildPspStep: GuildPspStep.values.firstWhere((element) => element.id == (guild.guildPspStep.id + 1)));
-              BlocProvider.of<UpdateStateOfGuildCubit>(context).updateStateOfSpecialGuild(guild);
-              setState(() {});
+              setState(() => isLoading = true);
+              await BlocProvider.of<UpdateStateOfGuildCubit>(context).updateStateOfSpecialGuild(guild);
+              setState(() => isLoading = false);
               if (guild.guildPspStep == GuildPspStep.in_location) {
                 _showModalForSubmit();
+              } else if (guild.guildPspStep == GuildPspStep.follow_up) {
+                await Future.delayed(const Duration(milliseconds: 500), () => "1");
+                showSnakeBar(context, "در منو موارد پیگیری شما میتوانید این کسب و کار را بررسی کنید");
+                QR.to('/psp/followGuilds');
               }
             },
             child: Opacity(
@@ -107,8 +114,10 @@ class _GuildItemState extends State<GuildItem> {
                   shape: BoxShape.rectangle,
                   borderRadius: BorderRadius.only(bottomRight: Radius.circular(16), bottomLeft: Radius.circular(16)),
                 ),
-                child: Text(guild.guildPspStep == GuildPspStep.done ? guild.guildPspStep.stateTitle : guild.guildPspStep.actionName,
-                    style: defaultTextStyle(context, headline: 4).w(FontWeight.w400)),
+                child: isLoading
+                    ? LoadingWidget(color: Colors.black, size: 20)
+                    : Text(guild.guildPspStep == GuildPspStep.done ? guild.guildPspStep.stateTitle : guild.guildPspStep.actionName,
+                        style: defaultTextStyle(context, headline: 4).w(FontWeight.w400)),
               ),
             ),
           ),
@@ -148,7 +157,7 @@ class _GuildItemState extends State<GuildItem> {
     isDialogOpen = false;
     if (isOK) {
       final phoneResponse = await BlocProvider.of<UpdateStateOfGuildCubit>(context).getUserPhoneNumber(guild.guild.userId);
-      QR.to('psp/register/${phoneResponse.getOrElse(() => throw UnimplementedError())}/${guild.guild.id}/');
+      QR.to('psp/register/${guild.guild.userId}/${phoneResponse.getOrElse(() => throw UnimplementedError())}/${guild.guild.id}/');
     }
   }
 

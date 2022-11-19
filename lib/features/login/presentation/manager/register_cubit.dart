@@ -1,4 +1,5 @@
 import 'package:bloc/bloc.dart';
+import 'package:guilt_flutter/commons/failures.dart';
 import 'package:guilt_flutter/commons/utils.dart';
 import 'package:guilt_flutter/features/login/presentation/manager/register_state.dart';
 import 'login_cubit.dart';
@@ -9,7 +10,8 @@ class RegisterCubit extends Cubit<RegisterState> {
 
   RegisterCubit({
     required LoginMain loginMain,
-  })  : _loginMain = loginMain,
+  })
+      : _loginMain = loginMain,
         super(const RegisterState.readyToInput());
 
   Future<void> registerWithPhoneNumber(String phoneNumber, String nationalCode) async {

@@ -12,9 +12,9 @@ class PspUpdateUserCubit extends Cubit<PspUpdateUserState> {
   })  : _main = main,
         super(const PspUpdateUserState.loading());
 
-  Future<void> initialPage(int userId) async {
+  Future<void> initialPage(int userId, String token) async {
     emit(const PspUpdateUserState.loading());
-    final response = await _main.getUserData(userId);
+    final response = await _main.getUserData(userId, token: token);
     response.fold(
       (failure) => emit(PspUpdateUserState.error(failure: failure)),
       (userInfo) => emit(PspUpdateUserState.readyToInput(userInfo: userInfo)),

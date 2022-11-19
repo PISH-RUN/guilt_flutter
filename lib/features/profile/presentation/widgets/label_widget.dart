@@ -84,70 +84,74 @@ class _LabelWidgetState extends State<LabelWidget> {
         children: [
           Card(
             margin: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
-            child:  Column(
-                children: <Widget>[
-                  Row(
-                    children: [
-                      const SizedBox(width: 93.0),
-                      const Spacer(),
-                      Text("اطلاعات شخصی", style: defaultTextStyle(context, headline: 3)),
-                      const Spacer(),
-                      GestureDetector(
-                        onTap: () async {
-                          await showDialog(
-                            context: context,
-                            builder: (dialogContext) => WarningDialog(onResult: (isAccess) {
-                              if (isAccess) {
-                                widget.onEditPressed();
-                              }
-                            }),
-                          );
-                        },
-                        child: Container(
-                          padding: EdgeInsets.all(20),
-                          decoration: BoxDecoration(
-                            shape: BoxShape.rectangle,
-                            borderRadius: BorderRadius.only(topLeft: Radius.circular(20)),
-                          ),
-                          child: Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: <Widget>[
-                              const Icon(Icons.edit, color: Colors.blueGrey, size: 15.0),
-                              const SizedBox(width: 4.0),
-                              Text("ویرایش", style: defaultTextStyle(context, headline: 5).c(Colors.blueGrey)),
-                            ],
-                          ),
+            child: Column(
+              children: <Widget>[
+                Row(
+                  children: [
+                    const SizedBox(width: 93.0),
+                    const Spacer(),
+                    Text("اطلاعات شخصی", style: defaultTextStyle(context, headline: 3)),
+                    const Spacer(),
+                    GestureDetector(
+                      onTap: () async {
+                        await showDialog(
+                          context: context,
+                          builder: (dialogContext) => WarningDialog(onResult: (isAccess) {
+                            if (isAccess) {
+                              widget.onEditPressed();
+                            }
+                          }),
+                        );
+                      },
+                      child: Container(
+                        padding: EdgeInsets.all(20),
+                        decoration: BoxDecoration(
+                          shape: BoxShape.rectangle,
+                          borderRadius: BorderRadius.only(topLeft: Radius.circular(20)),
+                        ),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: <Widget>[
+                            const Icon(Icons.edit, color: Colors.blueGrey, size: 15.0),
+                            const SizedBox(width: 4.0),
+                            Text("ویرایش", style: defaultTextStyle(context, headline: 5).c(Colors.blueGrey)),
+                          ],
                         ),
                       ),
+                    ),
+                  ],
+                ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 0.0),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: <Widget>[
+                      labelWidget(Icons.person_outline, "نام", user.firstName),
+                      SizedBox(height: paddingBetweenTextFiled),
+                      labelWidget(Icons.person_outline, "نام خانوادگی", user.lastName),
+                      SizedBox(height: paddingBetweenTextFiled),
+                      labelWidget(Icons.person_outline, "نام پدر", user.fatherName),
+                      user.birthDate == null
+                          ? labelWidget(Icons.calendar_month, "تاریخ تولد", "")
+                          : labelWidgetRow(
+                              Icons.calendar_month,
+                              "تاریخ تولد",
+                              [user.birthDate!.day.toString(), monthNames[user.birthDate!.month - 1], user.birthDate!.year.toString()],
+                            ),
+                      SizedBox(height: paddingBetweenTextFiled),
+                      labelWidget(Icons.pin, "کد ملی", GetIt.instance<LoginApi>().getUserData().nationalCode),
+                      SizedBox(height: paddingBetweenTextFiled),
+                      labelWidget(Icons.pin, "شماره تلفن", GetIt.instance<LoginApi>().getUserData().phoneNumber),
+                      SizedBox(height: paddingBetweenTextFiled),
+                      labelWidget(Icons.male, "جنسیت", user.gender.persianName),
+                      SizedBox(height: paddingBetweenTextFiled),
+                      const SizedBox(height: 16.0),
                     ],
                   ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 0.0),
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: <Widget>[
-                        labelWidget(Icons.person_outline, "نام", user.firstName),
-                        SizedBox(height: paddingBetweenTextFiled),
-                        labelWidget(Icons.person_outline, "نام خانوادگی", user.lastName),
-                        SizedBox(height: paddingBetweenTextFiled),
-                        labelWidget(Icons.person_outline, "نام پدر", user.fatherName),
-                        labelWidgetRow(Icons.calendar_month, "تاریخ تولد",
-                            [user.birthDate!.day.toString(), monthNames[user.birthDate!.month - 1], user.birthDate!.year.toString()]),
-                        SizedBox(height: paddingBetweenTextFiled),
-                        labelWidget(Icons.pin, "کد ملی", GetIt.instance<LoginApi>().getUserData().nationalCode),
-                        SizedBox(height: paddingBetweenTextFiled),
-                        labelWidget(Icons.pin, "شماره تلفن", GetIt.instance<LoginApi>().getUserData().phoneNumber),
-                        SizedBox(height: paddingBetweenTextFiled),
-                        labelWidget(Icons.male, "جنسیت", user.gender.persianName),
-                        SizedBox(height: paddingBetweenTextFiled),
-                        const SizedBox(height: 16.0),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
+                ),
+              ],
             ),
-
+          ),
         ],
       ),
     );

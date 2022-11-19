@@ -10,11 +10,10 @@ class PairTextRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Row(
-      // mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         Text("$title:", style: defaultTextStyle(context, headline: 4).c(Colors.black54).w(FontWeight.w300)),
         const SizedBox(width: 8.0),
-        Text(value, style: defaultTextStyle(context, headline: 4).w(FontWeight.w500)),
+        Expanded(child: Text(value, style: defaultTextStyle(context, headline: 4).w(FontWeight.w500))),
       ],
     );
   }

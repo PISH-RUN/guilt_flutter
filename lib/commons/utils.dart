@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
+import 'dart:math';
 
 import 'package:collection/collection.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
@@ -50,6 +51,10 @@ Future<bool> isInternetEnable() async {
   return connectivityResult == ConnectivityResult.mobile || connectivityResult == ConnectivityResult.wifi;
 }
 
+void closeKeyboard() async {
+  FocusManager.instance.primaryFocus?.unfocus();
+}
+
 String replaceFarsiNumber(String input) {
   const english = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'];
   const farsi = ['۰', '۱', '۲', '۳', '۴', '۵', '۶', '۷', '۸', '۹'];
@@ -86,6 +91,11 @@ String niceShowPhoneNumber(String phoneNumber) {
     }
   }
   return output;
+}
+
+String getFirstWordsOfOneSentence(String input, int numberOfWords, {bool has3Dots = false}) {
+  final output = input.split(' ').sublist(0, min(input.split(' ').length, numberOfWords)).join(' ');
+  return has3Dots && input.split(' ').length > numberOfWords ? "$output ..." : output;
 }
 
 String extractIdFromUrl(String value) {

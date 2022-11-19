@@ -4,6 +4,7 @@ import 'package:guilt_flutter/application/guild/domain/entities/guild.dart';
 import 'package:guilt_flutter/application/guild/presentation/manager/guild_list_cubit.dart';
 import 'package:guilt_flutter/application/guild/presentation/pages/guild_form_page.dart';
 import 'package:guilt_flutter/commons/text_style.dart';
+import 'package:guilt_flutter/commons/utils.dart';
 import 'package:guilt_flutter/commons/widgets/pair_text_row.dart';
 import 'package:qlevar_router/qlevar_router.dart';
 
@@ -31,7 +32,7 @@ class GuildItem extends StatelessWidget {
                 const SizedBox(height: paddingSize),
                 Row(
                   children: <Widget>[
-                    Text(guild.title, style: defaultTextStyle(context, headline: 3)),
+                    Expanded(child: Text(getFirstWordsOfOneSentence(guild.title,7,has3Dots: true), style: defaultTextStyle(context, headline: 3))),
                     const SizedBox(width: 16.0),
                     GestureDetector(
                       onTap: () => QR.to('guild/view/${guild.uuid}'),
@@ -94,7 +95,6 @@ class GuildItem extends StatelessWidget {
               isDialogOpen = false;
               if (isOK) {
                 BlocProvider.of<GuildListCubit>(context).sendRequestForCoupon(context,guild: guild);
-
               }
             },
             child: Container(

@@ -5,6 +5,7 @@ import 'package:guilt_flutter/commons/widgets/loading_widget.dart';
 import 'package:guilt_flutter/features/psp/domain/entities/guild_psp.dart';
 import 'package:guilt_flutter/features/psp/presentation/widgets/guild_item.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
+import 'package:logger/logger.dart';
 
 import '../manager/all_guilds_cubit.dart';
 import '../manager/all_guilds_state.dart';

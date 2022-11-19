@@ -109,6 +109,7 @@ class _LoginWidgetState extends State<LoginWidget> {
                                   textDirection: TextDirection.rtl,
                                   child: TextFormField(
                                     textAlign: TextAlign.end,
+                                    readOnly: state is Loading,
                                     decoration: const InputDecoration(
                                       focusedBorder: OutlineInputBorder(
                                         borderRadius: BorderRadius.all(Radius.circular(4)),
@@ -153,6 +154,7 @@ class _LoginWidgetState extends State<LoginWidget> {
                                 const SizedBox(height: 8.0),
                                 OurButton(
                                   onTap: () {
+                                    closeKeyboard();
                                     if (expireAt > 0) {
                                       onSubmitButton();
                                     } else {

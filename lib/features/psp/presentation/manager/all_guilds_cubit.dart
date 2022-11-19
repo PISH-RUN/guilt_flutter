@@ -1,5 +1,6 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:guilt_flutter/features/psp/domain/entities/guild_psp.dart';
+import 'package:logger/logger.dart';
 
 import '../../domain/use_cases/psp_main.dart';
 import 'all_guilds_state.dart';
@@ -25,8 +26,12 @@ class AllGuildsCubit extends Cubit<AllGuildsState> {
       guildPspList = [];
       currentSearchText = searchText;
     }
-    currentCities = cities;
-    emit(const AllGuildsState.loading());
+    if (currentCities != cities) {
+      emit(const AllGuildsState.loading());
+      currentPage = 1;
+      guildPspList = [];
+      currentCities = cities;
+    }
     final response = await _main.getAllGuildsByCities(cities: cities, page: currentPage, searchText: currentSearchText);
     response.fold((failure) => emit(AllGuildsState.error(failure: failure)), (guildList) {
       totalPage = guildList.totalPage;

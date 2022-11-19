@@ -1,4 +1,5 @@
 import 'package:guilt_flutter/commons/data/model/json_parser.dart';
+import 'package:guilt_flutter/commons/utils.dart';
 import 'package:guilt_flutter/features/psp/domain/entities/psp_user.dart';
 
 class PspUserModel extends PspUser {
@@ -51,7 +52,7 @@ class PspUserModel extends PspUser {
       'last_name': lastName,
       'organ': organ,
       'province': province,
-      'mobile': mobile,
+      'mobile': "0${getPhoneNumber(mobile)}",
       'national_code': nationalCode,
     };
   }

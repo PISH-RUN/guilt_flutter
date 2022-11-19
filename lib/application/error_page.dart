@@ -20,7 +20,6 @@ class ErrorPage extends StatelessWidget {
   }
 
   Widget errorStyle(BuildContext context) {
-    Logger().i("info=> ${failure.message} ");
     switch (failure.failureType) {
       case FailureType.authentication:
         return Column(
@@ -82,7 +81,7 @@ class ErrorPage extends StatelessWidget {
         );
       default:
         return Text(
-          "${failure.message}\n${QR.currentPath}",
+          failure.message,
           textAlign: TextAlign.center,
           style: defaultTextStyle(context, headline: 4),
         );

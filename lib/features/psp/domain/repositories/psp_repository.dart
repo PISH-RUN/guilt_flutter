@@ -13,7 +13,7 @@ abstract class PspRepository {
 
   Future<RequestResult> updateStateOfSpecialGuild(GuildPsp guild, {bool isJustState = true, String token = ""});
 
-  Future<Either<Failure, UserInfo>> getUserData(int userId);
+  Future<Either<Failure, UserInfo>> getUserData(int userId,String token);
 
   Future<RequestResult> signUpPsp(PspUser pspUser);
 

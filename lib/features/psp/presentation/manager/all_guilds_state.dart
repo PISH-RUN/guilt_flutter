@@ -9,6 +9,8 @@ part 'all_guilds_state.freezed.dart';
 class AllGuildsState with _$AllGuildsState {
   const factory AllGuildsState.loading() = Loading;
 
+  // const factory AllGuildsState.loadingPaginate({required PaginateList<GuildPsp> guildList}) = LoadingPaginate;
+
   const factory AllGuildsState.empty() = Empty;
 
   const factory AllGuildsState.error({required Failure failure}) = Error;

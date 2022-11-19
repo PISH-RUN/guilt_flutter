@@ -8,6 +8,7 @@ import 'package:guilt_flutter/features/login/api/login_api.dart';
 import 'package:guilt_flutter/features/profile/presentation/manager/update_user_cubit.dart';
 import 'package:guilt_flutter/features/profile/presentation/widgets/form_widget.dart';
 import 'package:guilt_flutter/features/profile/presentation/widgets/label_widget.dart';
+import 'package:logger/logger.dart';
 import 'package:qlevar_router/qlevar_router.dart';
 
 import '../../../../commons/widgets/loading_widget.dart';
@@ -62,8 +63,8 @@ class _ProfilePageState extends State<ProfilePage> {
                       key: UniqueKey(),
                       defaultUser: user!,
                       formController: formController,
-                      onSubmit: (user) {
-                        BlocProvider.of<UpdateUserCubit>(context).updateUserInfo(user);
+                      onSubmit: (user) async {
+                        await BlocProvider.of<UpdateUserCubit>(context).updateUserInfo(user);
                         if (QR.currentPath.contains('signIn/profile')) {
                           QR.navigator.replaceAll(appMode.initPath);
                         } else {
@@ -76,7 +77,7 @@ class _ProfilePageState extends State<ProfilePage> {
                       onPressed: () => formController.onSubmitButton!(),
                       backgroundColor: Theme.of(context).primaryColor,
                       foregroundColor: Colors.white,
-                      child: const Icon(Icons.save),
+                      child: state is Loading ? LoadingWidget(size: 16, color: Colors.white) : const Icon(Icons.save),
                     ),
                   )
                 : SingleChildScrollView(
