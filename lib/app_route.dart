@@ -137,7 +137,11 @@ class ProfileGuard extends QMiddleware {
   Future<String?> redirectGuard(String path) async {
     final response = await GetIt.instance<ProfileApi>().hasProfile(nationalCode: GetIt.instance<LoginApi>().getUserData().nationalCode);
     return response.fold(
-      (l) => l.failureType == FailureType.authentication ? '/register' :l.failureType == FailureType.forbiddenError ? '/forbidden' : '/error',
+      (l) => l.failureType == FailureType.authentication
+          ? '/register'
+          : l.failureType == FailureType.forbiddenError
+              ? '/forbidden'
+              : '/error',
       (hasProfile) => hasProfile ? null : '/signIn/profile',
     );
   }

@@ -10,17 +10,16 @@ import 'package:guilt_flutter/commons/widgets/our_text_field.dart';
 import 'package:latlong2/latlong.dart' as lat_lng;
 
 class FormController {
-  bool Function()? onSubmitButton;
+  Guild? Function()? onSubmitButton;
 
-  set onSubmit(bool Function() onSubmit) => onSubmitButton = onSubmit;
+  set onSubmit(Guild? Function() onSubmit) => onSubmitButton = onSubmit;
 }
 
 class GuildFormWidget extends StatefulWidget {
   final Guild defaultGuild;
   final FormController formController;
-  final void Function(Guild guild) onSubmit;
 
-  const GuildFormWidget({required this.defaultGuild, required this.onSubmit, required this.formController, Key? key}) : super(key: key);
+  const GuildFormWidget({required this.defaultGuild, required this.formController, Key? key}) : super(key: key);
 
   @override
   State<GuildFormWidget> createState() => _GuildFormWidgetState();
@@ -68,13 +67,12 @@ class _GuildFormWidgetState extends State<GuildFormWidget> {
     pinLocation = guild.location;
   }
 
-  bool onSubmit() {
+  Guild? onSubmit() {
     if (!formKey.currentState!.validate()) {
-      return false;
+      return null;
     }
     formKey.currentState!.save();
-    widget.onSubmit(guild);
-    return true;
+    return guild;
   }
 
   @override
@@ -206,7 +204,6 @@ class _GuildFormWidgetState extends State<GuildFormWidget> {
                                   ),
                                 ),
                               ),
-
                             ],
                           ),
                           SizedBox(height: paddingBetweenTextFiled),

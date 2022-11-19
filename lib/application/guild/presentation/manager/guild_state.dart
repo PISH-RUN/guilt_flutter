@@ -11,4 +11,6 @@ class GuildState with _$GuildState {
   const factory GuildState.loading() = Loading;
 
   const factory GuildState.error({required Failure failure}) = Error;
+
+  const factory GuildState.errorSave({required Failure failure}) = ErrorSave;
 }

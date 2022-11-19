@@ -21,6 +21,7 @@ mixin _$GuildState {
     required TResult Function(Guild guild) loaded,
     required TResult Function() loading,
     required TResult Function(Failure failure) error,
+    required TResult Function(Failure failure) errorSave,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
@@ -28,6 +29,7 @@ mixin _$GuildState {
     TResult Function(Guild guild)? loaded,
     TResult Function()? loading,
     TResult Function(Failure failure)? error,
+    TResult Function(Failure failure)? errorSave,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
@@ -35,6 +37,7 @@ mixin _$GuildState {
     TResult Function(Guild guild)? loaded,
     TResult Function()? loading,
     TResult Function(Failure failure)? error,
+    TResult Function(Failure failure)? errorSave,
     required TResult orElse(),
   }) =>
       throw _privateConstructorUsedError;
@@ -43,6 +46,7 @@ mixin _$GuildState {
     required TResult Function(Loaded value) loaded,
     required TResult Function(Loading value) loading,
     required TResult Function(Error value) error,
+    required TResult Function(ErrorSave value) errorSave,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
@@ -50,6 +54,7 @@ mixin _$GuildState {
     TResult Function(Loaded value)? loaded,
     TResult Function(Loading value)? loading,
     TResult Function(Error value)? error,
+    TResult Function(ErrorSave value)? errorSave,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
@@ -57,6 +62,7 @@ mixin _$GuildState {
     TResult Function(Loaded value)? loaded,
     TResult Function(Loading value)? loading,
     TResult Function(Error value)? error,
+    TResult Function(ErrorSave value)? errorSave,
     required TResult orElse(),
   }) =>
       throw _privateConstructorUsedError;
@@ -143,6 +149,7 @@ class _$Loaded implements Loaded {
     required TResult Function(Guild guild) loaded,
     required TResult Function() loading,
     required TResult Function(Failure failure) error,
+    required TResult Function(Failure failure) errorSave,
   }) {
     return loaded(guild);
   }
@@ -153,6 +160,7 @@ class _$Loaded implements Loaded {
     TResult Function(Guild guild)? loaded,
     TResult Function()? loading,
     TResult Function(Failure failure)? error,
+    TResult Function(Failure failure)? errorSave,
   }) {
     return loaded?.call(guild);
   }
@@ -163,6 +171,7 @@ class _$Loaded implements Loaded {
     TResult Function(Guild guild)? loaded,
     TResult Function()? loading,
     TResult Function(Failure failure)? error,
+    TResult Function(Failure failure)? errorSave,
     required TResult orElse(),
   }) {
     if (loaded != null) {
@@ -177,6 +186,7 @@ class _$Loaded implements Loaded {
     required TResult Function(Loaded value) loaded,
     required TResult Function(Loading value) loading,
     required TResult Function(Error value) error,
+    required TResult Function(ErrorSave value) errorSave,
   }) {
     return loaded(this);
   }
@@ -187,6 +197,7 @@ class _$Loaded implements Loaded {
     TResult Function(Loaded value)? loaded,
     TResult Function(Loading value)? loading,
     TResult Function(Error value)? error,
+    TResult Function(ErrorSave value)? errorSave,
   }) {
     return loaded?.call(this);
   }
@@ -197,6 +208,7 @@ class _$Loaded implements Loaded {
     TResult Function(Loaded value)? loaded,
     TResult Function(Loading value)? loading,
     TResult Function(Error value)? error,
+    TResult Function(ErrorSave value)? errorSave,
     required TResult orElse(),
   }) {
     if (loaded != null) {
@@ -256,6 +268,7 @@ class _$Loading implements Loading {
     required TResult Function(Guild guild) loaded,
     required TResult Function() loading,
     required TResult Function(Failure failure) error,
+    required TResult Function(Failure failure) errorSave,
   }) {
     return loading();
   }
@@ -266,6 +279,7 @@ class _$Loading implements Loading {
     TResult Function(Guild guild)? loaded,
     TResult Function()? loading,
     TResult Function(Failure failure)? error,
+    TResult Function(Failure failure)? errorSave,
   }) {
     return loading?.call();
   }
@@ -276,6 +290,7 @@ class _$Loading implements Loading {
     TResult Function(Guild guild)? loaded,
     TResult Function()? loading,
     TResult Function(Failure failure)? error,
+    TResult Function(Failure failure)? errorSave,
     required TResult orElse(),
   }) {
     if (loading != null) {
@@ -290,6 +305,7 @@ class _$Loading implements Loading {
     required TResult Function(Loaded value) loaded,
     required TResult Function(Loading value) loading,
     required TResult Function(Error value) error,
+    required TResult Function(ErrorSave value) errorSave,
   }) {
     return loading(this);
   }
@@ -300,6 +316,7 @@ class _$Loading implements Loading {
     TResult Function(Loaded value)? loaded,
     TResult Function(Loading value)? loading,
     TResult Function(Error value)? error,
+    TResult Function(ErrorSave value)? errorSave,
   }) {
     return loading?.call(this);
   }
@@ -310,6 +327,7 @@ class _$Loading implements Loading {
     TResult Function(Loaded value)? loaded,
     TResult Function(Loading value)? loading,
     TResult Function(Error value)? error,
+    TResult Function(ErrorSave value)? errorSave,
     required TResult orElse(),
   }) {
     if (loading != null) {
@@ -388,6 +406,7 @@ class _$Error implements Error {
     required TResult Function(Guild guild) loaded,
     required TResult Function() loading,
     required TResult Function(Failure failure) error,
+    required TResult Function(Failure failure) errorSave,
   }) {
     return error(failure);
   }
@@ -398,6 +417,7 @@ class _$Error implements Error {
     TResult Function(Guild guild)? loaded,
     TResult Function()? loading,
     TResult Function(Failure failure)? error,
+    TResult Function(Failure failure)? errorSave,
   }) {
     return error?.call(failure);
   }
@@ -408,6 +428,7 @@ class _$Error implements Error {
     TResult Function(Guild guild)? loaded,
     TResult Function()? loading,
     TResult Function(Failure failure)? error,
+    TResult Function(Failure failure)? errorSave,
     required TResult orElse(),
   }) {
     if (error != null) {
@@ -422,6 +443,7 @@ class _$Error implements Error {
     required TResult Function(Loaded value) loaded,
     required TResult Function(Loading value) loading,
     required TResult Function(Error value) error,
+    required TResult Function(ErrorSave value) errorSave,
   }) {
     return error(this);
   }
@@ -432,6 +454,7 @@ class _$Error implements Error {
     TResult Function(Loaded value)? loaded,
     TResult Function(Loading value)? loading,
     TResult Function(Error value)? error,
+    TResult Function(ErrorSave value)? errorSave,
   }) {
     return error?.call(this);
   }
@@ -442,6 +465,7 @@ class _$Error implements Error {
     TResult Function(Loaded value)? loaded,
     TResult Function(Loading value)? loading,
     TResult Function(Error value)? error,
+    TResult Function(ErrorSave value)? errorSave,
     required TResult orElse(),
   }) {
     if (error != null) {
@@ -457,4 +481,149 @@ abstract class Error implements GuildState {
   Failure get failure;
   @JsonKey(ignore: true)
   _$$ErrorCopyWith<_$Error> get copyWith => throw _privateConstructorUsedError;
+}
+
+/// @nodoc
+abstract class _$$ErrorSaveCopyWith<$Res> {
+  factory _$$ErrorSaveCopyWith(
+          _$ErrorSave value, $Res Function(_$ErrorSave) then) =
+      __$$ErrorSaveCopyWithImpl<$Res>;
+  $Res call({Failure failure});
+}
+
+/// @nodoc
+class __$$ErrorSaveCopyWithImpl<$Res> extends _$GuildStateCopyWithImpl<$Res>
+    implements _$$ErrorSaveCopyWith<$Res> {
+  __$$ErrorSaveCopyWithImpl(
+      _$ErrorSave _value, $Res Function(_$ErrorSave) _then)
+      : super(_value, (v) => _then(v as _$ErrorSave));
+
+  @override
+  _$ErrorSave get _value => super._value as _$ErrorSave;
+
+  @override
+  $Res call({
+    Object? failure = freezed,
+  }) {
+    return _then(_$ErrorSave(
+      failure: failure == freezed
+          ? _value.failure
+          : failure // ignore: cast_nullable_to_non_nullable
+              as Failure,
+    ));
+  }
+}
+
+/// @nodoc
+
+class _$ErrorSave implements ErrorSave {
+  const _$ErrorSave({required this.failure});
+
+  @override
+  final Failure failure;
+
+  @override
+  String toString() {
+    return 'GuildState.errorSave(failure: $failure)';
+  }
+
+  @override
+  bool operator ==(dynamic other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _$ErrorSave &&
+            const DeepCollectionEquality().equals(other.failure, failure));
+  }
+
+  @override
+  int get hashCode =>
+      Object.hash(runtimeType, const DeepCollectionEquality().hash(failure));
+
+  @JsonKey(ignore: true)
+  @override
+  _$$ErrorSaveCopyWith<_$ErrorSave> get copyWith =>
+      __$$ErrorSaveCopyWithImpl<_$ErrorSave>(this, _$identity);
+
+  @override
+  @optionalTypeArgs
+  TResult when<TResult extends Object?>({
+    required TResult Function(Guild guild) loaded,
+    required TResult Function() loading,
+    required TResult Function(Failure failure) error,
+    required TResult Function(Failure failure) errorSave,
+  }) {
+    return errorSave(failure);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? whenOrNull<TResult extends Object?>({
+    TResult Function(Guild guild)? loaded,
+    TResult Function()? loading,
+    TResult Function(Failure failure)? error,
+    TResult Function(Failure failure)? errorSave,
+  }) {
+    return errorSave?.call(failure);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeWhen<TResult extends Object?>({
+    TResult Function(Guild guild)? loaded,
+    TResult Function()? loading,
+    TResult Function(Failure failure)? error,
+    TResult Function(Failure failure)? errorSave,
+    required TResult orElse(),
+  }) {
+    if (errorSave != null) {
+      return errorSave(failure);
+    }
+    return orElse();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult map<TResult extends Object?>({
+    required TResult Function(Loaded value) loaded,
+    required TResult Function(Loading value) loading,
+    required TResult Function(Error value) error,
+    required TResult Function(ErrorSave value) errorSave,
+  }) {
+    return errorSave(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? mapOrNull<TResult extends Object?>({
+    TResult Function(Loaded value)? loaded,
+    TResult Function(Loading value)? loading,
+    TResult Function(Error value)? error,
+    TResult Function(ErrorSave value)? errorSave,
+  }) {
+    return errorSave?.call(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeMap<TResult extends Object?>({
+    TResult Function(Loaded value)? loaded,
+    TResult Function(Loading value)? loading,
+    TResult Function(Error value)? error,
+    TResult Function(ErrorSave value)? errorSave,
+    required TResult orElse(),
+  }) {
+    if (errorSave != null) {
+      return errorSave(this);
+    }
+    return orElse();
+  }
+}
+
+abstract class ErrorSave implements GuildState {
+  const factory ErrorSave({required final Failure failure}) = _$ErrorSave;
+
+  Failure get failure;
+  @JsonKey(ignore: true)
+  _$$ErrorSaveCopyWith<_$ErrorSave> get copyWith =>
+      throw _privateConstructorUsedError;
 }

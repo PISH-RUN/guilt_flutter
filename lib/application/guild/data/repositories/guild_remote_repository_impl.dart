@@ -14,6 +14,7 @@ import 'package:guilt_flutter/commons/request_result.dart';
 import 'package:guilt_flutter/features/login/api/login_api.dart';
 import 'package:http/http.dart' as http;
 import 'package:image_picker/image_picker.dart';
+import 'package:logger/logger.dart';
 
 class GuildRemoteRepositoryImpl implements GuildRemoteRepository {
   final RemoteDataSource remoteDataSource;
@@ -44,7 +45,7 @@ class GuildRemoteRepositoryImpl implements GuildRemoteRepository {
 
   @override
   Future<RequestResult> updateSpecialGuild(Guild guildItem) async {
-    return RequestResult.fromEither(await remoteDataSource.putToServer(
+    final output= RequestResult.fromEither(await remoteDataSource.putToServer(
       url: '${BASE_URL_API}guilds/${guildItem.uuid}',
       params: GuildModel.fromSuper(guildItem).toJson(),
       mapSuccess: (guildJson) {
@@ -55,6 +56,8 @@ class GuildRemoteRepositoryImpl implements GuildRemoteRepository {
         return true;
       },
     ));
+    Logger().i("info=> ${output.isSuccess} ");
+    return output;
   }
 
   @override

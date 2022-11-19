@@ -4,11 +4,12 @@ import 'package:get_it/get_it.dart';
 import 'package:guilt_flutter/commons/failures.dart';
 import 'package:guilt_flutter/features/login/api/login_api.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:logger/logger.dart';
 import '../../domain/entities/guild.dart';
 import '../../domain/usecases/guild_main.dart';
 import 'guild_state.dart';
 
-class GuildCubit extends Cubit<GuildState> {
+class  GuildCubit extends Cubit<GuildState> {
   final GuildMain main;
 
   GuildCubit({
@@ -30,8 +31,9 @@ class GuildCubit extends Cubit<GuildState> {
 
   Future<void> saveGuild(Guild guild) async {
     final response = await main.updateGuild(guild: guild);
+    Logger().i("info=> ${response.isSuccess}  ${response.failure} ");
     response.fold(
-      (failure) => emit(GuildState.error(failure: failure)),
+      (failure) => emit(GuildState.errorSave(failure: failure)),
       () => emit(GuildState.loaded(guild: guild)),
     );
   }
@@ -39,7 +41,7 @@ class GuildCubit extends Cubit<GuildState> {
   Future<void> addGuild(Guild guild) async {
     final response = await main.addGuild(nationalCode: GetIt.instance<LoginApi>().getUserData().nationalCode, guild: guild);
     response.fold(
-      (failure) => emit(GuildState.error(failure: failure)),
+      (failure) => emit(GuildState.errorSave(failure: failure)),
       () => emit(GuildState.loaded(guild: guild)),
     );
   }

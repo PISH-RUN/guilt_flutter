@@ -29,12 +29,12 @@ class PspProfileEditPage extends StatefulWidget {
 }
 
 class _PspProfileEditPageState extends State<PspProfileEditPage> {
-  late FormController formController;
+  late FormProfileController formController;
   bool isLoadingSubmit = false;
 
   @override
   void initState() {
-    formController = FormController();
+    formController = FormProfileController();
     isLoadingSubmit = false;
     BlocProvider.of<PspUpdateUserCubit>(context).initialPage(int.parse(QR.params['userId'].toString()), QR.params['token'].toString());
     super.initState();
@@ -66,11 +66,14 @@ class _PspProfileEditPageState extends State<PspProfileEditPage> {
                   defaultUser: userInfo,
                   isAvatarVisible: false,
                   formController: formController,
-                  onSubmit: (user) => BlocProvider.of<PspUpdateUserCubit>(context).updateUser(user, QR.params['token'].toString()),
                 ),
                 const SizedBox(height: 16.0),
                 GestureDetector(
-                  onTap: () => formController.onSubmitButton!(),
+                  onTap: () {
+                    final user = formController.onSubmitButton!();
+                    if (user == null) return;
+                    BlocProvider.of<PspUpdateUserCubit>(context).updateUser(user, QR.params['token'].toString());
+                  },
                   child: Container(
                     width: double.infinity,
                     margin: const EdgeInsets.symmetric(horizontal: 20.0),

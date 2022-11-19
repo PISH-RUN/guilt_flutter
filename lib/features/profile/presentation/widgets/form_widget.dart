@@ -22,13 +22,18 @@ import '../../domain/entities/gender_type.dart';
 import '../../domain/entities/user_info.dart';
 import '../manager/update_user_cubit.dart';
 
+class FormProfileController {
+  UserInfo? Function()? onSubmitButton;
+
+  set onSubmit(UserInfo? Function() onSubmit) => onSubmitButton = onSubmit;
+}
+
 class FormWidget extends StatefulWidget {
   final UserInfo defaultUser;
   final bool isAvatarVisible;
-  final FormController formController;
-  final void Function(UserInfo user) onSubmit;
+  final FormProfileController formController;
 
-  const FormWidget({required this.defaultUser, required this.formController, required this.onSubmit, this.isAvatarVisible = true, Key? key})
+  const FormWidget({required this.defaultUser, required this.formController,  this.isAvatarVisible = true, Key? key})
       : super(key: key);
 
   @override
@@ -76,13 +81,12 @@ class _FormWidgetState extends State<FormWidget> {
     );
   }
 
-  bool onSubmit() {
+  UserInfo? onSubmit() {
     if (!formKey.currentState!.validate()) {
-      return false;
+      return null;
     }
     formKey.currentState!.save();
-    widget.onSubmit(user);
-    return true;
+    return user;
   }
 
   bool isProgressAvatarHide = true;
@@ -260,9 +264,9 @@ class _FormWidgetState extends State<FormWidget> {
                               closeKeyboard();
                               Jalali? picked = await showPersianDatePicker(
                                 context: context,
-                                initialDate: Jalali(Jalali.now().year-20, Jalali.now().month),
+                                initialDate: Jalali(Jalali.now().year - 20, Jalali.now().month),
                                 firstDate: Jalali(1300, 1),
-                                lastDate: Jalali(Jalali.now().year-12, 1),
+                                lastDate: Jalali(Jalali.now().year - 12, 1),
                               );
                               if (picked == null) return;
                               user = user.copyWith(birthDate: picked);

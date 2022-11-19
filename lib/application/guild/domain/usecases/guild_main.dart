@@ -11,8 +11,7 @@ class GuildMain {
   GuildMain(this.guildRemoteRepository);
 
   Future<RequestResult> updateGuild({required Guild guild}) async {
-    await guildRemoteRepository.updateSpecialGuild(guild);
-    return RequestResult.success();
+    return guildRemoteRepository.updateSpecialGuild(guild);
   }
 
   Future<RequestResult> addGuild({required String nationalCode, required Guild guild}) async {

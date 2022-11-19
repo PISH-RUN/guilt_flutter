@@ -2,13 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
 import 'package:guilt_flutter/application/constants.dart';
-import 'package:guilt_flutter/application/guild/presentation/widgets/guild_form_widget.dart';
 import 'package:guilt_flutter/commons/text_style.dart';
 import 'package:guilt_flutter/features/login/api/login_api.dart';
 import 'package:guilt_flutter/features/profile/presentation/manager/update_user_cubit.dart';
 import 'package:guilt_flutter/features/profile/presentation/widgets/form_widget.dart';
 import 'package:guilt_flutter/features/profile/presentation/widgets/label_widget.dart';
-import 'package:logger/logger.dart';
 import 'package:qlevar_router/qlevar_router.dart';
 
 import '../../../../commons/widgets/loading_widget.dart';
@@ -38,11 +36,11 @@ class ProfilePage extends StatefulWidget {
 class _ProfilePageState extends State<ProfilePage> {
   UserInfo? user;
   late bool isEditable;
-  late FormController formController;
+  late FormProfileController formController;
 
   @override
   void initState() {
-    formController = FormController();
+    formController = FormProfileController();
     isEditable = widget.isEditable;
     BlocProvider.of<GetUserCubit>(context).initialPage();
     super.initState();
@@ -63,7 +61,11 @@ class _ProfilePageState extends State<ProfilePage> {
                       key: UniqueKey(),
                       defaultUser: user!,
                       formController: formController,
-                      onSubmit: (user) async {
+                    ),
+                    floatingActionButton: FloatingActionButton(
+                      onPressed: () async {
+                        final user = formController.onSubmitButton!();
+                        if (user == null) return;
                         await BlocProvider.of<UpdateUserCubit>(context).updateUserInfo(user);
                         if (QR.currentPath.contains('signIn/profile')) {
                           QR.navigator.replaceAll(appMode.initPath);
@@ -72,9 +74,6 @@ class _ProfilePageState extends State<ProfilePage> {
                           setState(() => isEditable = false);
                         }
                       },
-                    ),
-                    floatingActionButton: FloatingActionButton(
-                      onPressed: () => formController.onSubmitButton!(),
                       backgroundColor: Theme.of(context).primaryColor,
                       foregroundColor: Colors.white,
                       child: state is Loading ? LoadingWidget(size: 16, color: Colors.white) : const Icon(Icons.save),
