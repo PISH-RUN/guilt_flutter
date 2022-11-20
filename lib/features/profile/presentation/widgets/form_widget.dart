@@ -33,8 +33,7 @@ class FormWidget extends StatefulWidget {
   final bool isAvatarVisible;
   final FormProfileController formController;
 
-  const FormWidget({required this.defaultUser, required this.formController,  this.isAvatarVisible = true, Key? key})
-      : super(key: key);
+  const FormWidget({required this.defaultUser, required this.formController, this.isAvatarVisible = true, Key? key}) : super(key: key);
 
   @override
   _FormWidgetState createState() => _FormWidgetState();
@@ -81,10 +80,17 @@ class _FormWidgetState extends State<FormWidget> {
     );
   }
 
+  bool isAlarmBirthDate = false;
+
   UserInfo? onSubmit() {
     if (!formKey.currentState!.validate()) {
       return null;
     }
+    if (user.birthDate == null) {
+      setState(() => isAlarmBirthDate = true);
+      return null;
+    }
+    setState(() => isAlarmBirthDate = false);
     formKey.currentState!.save();
     return user;
   }
@@ -276,10 +282,11 @@ class _FormWidgetState extends State<FormWidget> {
                               child: Container(
                                 width: double.infinity,
                                 height: 60,
-                                decoration: const BoxDecoration(
-                                  color: Color(0xffF2F4F5),
+                                decoration: BoxDecoration(
+                                  color: const Color(0xffF2F4F5),
                                   shape: BoxShape.rectangle,
-                                  borderRadius: BorderRadius.all(Radius.circular(8)),
+                                  borderRadius: const BorderRadius.all(Radius.circular(8)),
+                                  border: isAlarmBirthDate ? Border.all(color: Colors.red, width: 1.5) : null,
                                 ),
                                 child: Row(
                                   children: <Widget>[
@@ -314,6 +321,7 @@ class _FormWidgetState extends State<FormWidget> {
                               ),
                             ),
                           ),
+                          if (isAlarmBirthDate) Text("تاریخ تولد نباید خالی باشد", style: defaultTextStyle(context, headline: 5).c(Colors.red))
                         ],
                       ),
                       SizedBox(height: paddingBetweenTextFiled),

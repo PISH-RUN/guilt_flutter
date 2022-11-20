@@ -23,8 +23,10 @@ class UpdateUserCubit extends Cubit<UpdateUserState> {
     );
   }
 
-  Future<Either<Failure,String>> changeAvatar(UserInfo user, XFile avatar) async {
+  Future<Either<Failure, String>> changeAvatar(UserInfo user, XFile avatar) async {
     emit(const UpdateUserState.loading());
-    return (await _main.changeAvatar(avatar));
+    final output = (await _main.changeAvatar(avatar));
+    emit(const UpdateUserState.readyToInput());
+    return output;
   }
 }

@@ -5,6 +5,7 @@ import 'package:guilt_flutter/application/constants.dart';
 import 'package:guilt_flutter/commons/text_style.dart';
 import 'package:guilt_flutter/features/login/api/login_api.dart';
 import 'package:guilt_flutter/features/profile/presentation/manager/update_user_cubit.dart';
+import 'package:guilt_flutter/features/profile/presentation/manager/update_user_state.dart' as update_user_state;
 import 'package:guilt_flutter/features/profile/presentation/widgets/form_widget.dart';
 import 'package:guilt_flutter/features/profile/presentation/widgets/label_widget.dart';
 import 'package:qlevar_router/qlevar_router.dart';
@@ -62,21 +63,25 @@ class _ProfilePageState extends State<ProfilePage> {
                       defaultUser: user!,
                       formController: formController,
                     ),
-                    floatingActionButton: FloatingActionButton(
-                      onPressed: () async {
-                        final user = formController.onSubmitButton!();
-                        if (user == null) return;
-                        await BlocProvider.of<UpdateUserCubit>(context).updateUserInfo(user);
-                        if (QR.currentPath.contains('signIn/profile')) {
-                          QR.navigator.replaceAll(appMode.initPath);
-                        } else {
-                          this.user = user;
-                          setState(() => isEditable = false);
-                        }
+                    floatingActionButton: BlocBuilder<UpdateUserCubit, update_user_state.UpdateUserState>(
+                      builder: (context, state) {
+                        return FloatingActionButton(
+                          onPressed: () async {
+                            final user = formController.onSubmitButton!();
+                            if (user == null) return;
+                            await BlocProvider.of<UpdateUserCubit>(context).updateUserInfo(user);
+                            if (QR.currentPath.contains('signIn/profile')) {
+                              QR.navigator.replaceAll(appMode.initPath);
+                            } else {
+                              this.user = user;
+                              setState(() => isEditable = false);
+                            }
+                          },
+                          backgroundColor: Theme.of(context).primaryColor,
+                          foregroundColor: Colors.white,
+                          child: state is update_user_state.Loading ? LoadingWidget(size: 16, color: Colors.white) : const Icon(Icons.save),
+                        );
                       },
-                      backgroundColor: Theme.of(context).primaryColor,
-                      foregroundColor: Colors.white,
-                      child: state is Loading ? LoadingWidget(size: 16, color: Colors.white) : const Icon(Icons.save),
                     ),
                   )
                 : SingleChildScrollView(
