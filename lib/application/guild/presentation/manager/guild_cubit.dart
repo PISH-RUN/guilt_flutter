@@ -31,7 +31,6 @@ class  GuildCubit extends Cubit<GuildState> {
 
   Future<void> saveGuild(Guild guild) async {
     final response = await main.updateGuild(guild: guild);
-    Logger().i("info=> ${response.isSuccess}  ${response.failure} ");
     response.fold(
       (failure) => emit(GuildState.errorSave(failure: failure)),
       () => emit(GuildState.loaded(guild: guild)),

@@ -2,6 +2,8 @@ import 'package:get_it/get_it.dart';
 import 'package:guilt_flutter/application/constants.dart';
 import 'package:guilt_flutter/application/error_page.dart';
 import 'package:guilt_flutter/application/forbidden_page.dart';
+import 'package:guilt_flutter/application/guild/api/guild_api.dart';
+import 'package:guilt_flutter/application/guild/presentation/pages/guilds_form_first_time.dart';
 import 'package:guilt_flutter/features/psp/presentation/pages/all_guild_list_page.dart';
 import 'package:guilt_flutter/features/psp/presentation/pages/follow_up_guilds.dart';
 import 'package:guilt_flutter/features/psp/presentation/pages/login_via_user_page.dart';
@@ -10,6 +12,7 @@ import 'package:guilt_flutter/features/psp/presentation/pages/psp_panel.dart';
 import 'package:guilt_flutter/features/psp/presentation/pages/psp_profile_edit_page.dart';
 import 'package:guilt_flutter/features/psp/presentation/pages/register_via_user_page.dart';
 import 'package:guilt_flutter/features/psp/presentation/pages/sign_up_psp.dart';
+import 'package:logger/logger.dart';
 import 'package:qlevar_router/qlevar_router.dart';
 import 'application/faq.dart';
 import 'application/guild/presentation/pages/guild_form_page.dart';
@@ -111,6 +114,11 @@ class AppRoutes {
         ),
       ],
     ),
+    QRoute(
+      path: '/guildViewer',
+      builder: () => AuthenticatedPage(child: GuildsFormFirstTime.wrappedRoute()),
+      middleware: [AuthGuard()],
+    ),
     QRoute(path: '/signIn/profile', builder: () => ProfilePage.wrappedRoute(true), middleware: [AuthGuard()]),
     QRoute(path: '/error', builder: () => BasePage(child: ErrorPage(failure: Failure('بروز خطای ناشناخته')))),
     QRoute(path: '/forbidden', builder: () => BasePage(child: const ForbiddenPage())),
@@ -142,7 +150,22 @@ class ProfileGuard extends QMiddleware {
           : l.failureType == FailureType.forbiddenError
               ? '/forbidden'
               : '/error',
-      (hasProfile) => hasProfile ? null : '/signIn/profile',
+      (hasProfile) async {
+        if (!hasProfile) return '/signIn/profile';
+        final responseGuild = await GetIt.instance<GuildApi>().getMyGuildList(nationalCode: GetIt.instance<LoginApi>().getUserData().nationalCode);
+        return responseGuild.fold(
+          (l) => l.failureType == FailureType.authentication
+              ? '/register'
+              : l.failureType == FailureType.forbiddenError
+                  ? '/forbidden'
+                  : '/error',
+          (guilds) {
+            if (guilds.isEmpty) return null;
+            if (guilds.every((element) => element.location != null)) return null;
+            return '/guildViewer';
+          },
+        );
+      },
     );
   }
 }

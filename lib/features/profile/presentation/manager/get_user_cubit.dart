@@ -18,6 +18,7 @@ class GetUserCubit extends Cubit<GetUserState> {
     emit(const GetUserState.loading());
     await Future.delayed(const Duration(milliseconds: 400), () => "1");
     final response = await _main.getProfile(GetIt.instance<LoginApi>().getUserData().nationalCode);
+    Logger().i("info=> after call http ${response}");
     response.fold(
       (failure) => emit(GetUserState.error(failure: failure)),
       (user) => emit(GetUserState.loaded(user: user)),

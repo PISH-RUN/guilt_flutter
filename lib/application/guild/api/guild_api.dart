@@ -13,7 +13,7 @@ class GuildApi {
     return guildRemoteRepository.getListOfMyGuilds(nationalCode);
   }
 
-  Future<RequestResult> updateGuildList({required String nationalCode, required Guild guildItem}) async {
+  Future<RequestResult> updateGuild({required String nationalCode, required Guild guildItem}) async {
     return guildRemoteRepository.updateSpecialGuild(guildItem);
   }
 }

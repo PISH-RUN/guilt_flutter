@@ -67,8 +67,15 @@ class _GuildFormWidgetState extends State<GuildFormWidget> {
     pinLocation = guild.location;
   }
 
+  bool isLocationAlarmActive = false;
+
   Guild? onSubmit() {
+    setState(() => isLocationAlarmActive = false);
     if (!formKey.currentState!.validate()) {
+      return null;
+    }
+    if (pinLocation == null) {
+      setState(() => isLocationAlarmActive = true);
       return null;
     }
     formKey.currentState!.save();
@@ -239,17 +246,16 @@ class _GuildFormWidgetState extends State<GuildFormWidget> {
                               SizedBox(width: paddingBetweenTextFiled),
                               Expanded(
                                 child: OurItemPicker(
-                                  key: UniqueKey(),
                                   hint: "شهرستان",
                                   headlineSize: 6,
                                   icon: Icons.pin_drop_outlined,
                                   items: null,
+                                  onFillParams: () => getCitiesOfOneProvince(context, provinceController.text.trim()),
                                   onChanged: (value) async {
                                     final province = await getProvinceOfOneCity(context, value);
                                     provinceController.text = province;
                                     guild = guild.copyWith(city: value, province: province);
                                   },
-                                  onFillParams: () => getCitiesOfOneProvince(context, provinceController.text.trim()),
                                   currentText: cityController.text,
                                   controller: cityController,
                                 ),
@@ -292,6 +298,12 @@ class _GuildFormWidgetState extends State<GuildFormWidget> {
                                 contentPadding: const EdgeInsets.symmetric(vertical: 16.0),
                                 prefixIcon: const Icon(Icons.pin_drop_outlined, color: Color(0xffA0A8B1), size: 25.0),
                               ),
+                              validator: (value) {
+                                if (value == null) return null;
+                                if (value.isEmpty) return "وارد کردن نشانی ضروری است";
+                                if (value.length < 10) return "نشانی کوتاه است";
+                                return null;
+                              },
                               onSaved: (value) => guild = guild.copyWith(address: value),
                               minLines: 4,
                               maxLines: 4,
@@ -329,7 +341,7 @@ class _GuildFormWidgetState extends State<GuildFormWidget> {
                                 width: double.infinity,
                                 height: 180,
                                 decoration: BoxDecoration(
-                                  color: Colors.blueGrey.withOpacity(0.4),
+                                  color: isLocationAlarmActive ? Colors.red.withOpacity(0.6) : Colors.blueGrey.withOpacity(0.4),
                                   shape: BoxShape.rectangle,
                                   borderRadius: const BorderRadius.all(Radius.circular(16)),
                                 ),

@@ -56,7 +56,6 @@ class GuildRemoteRepositoryImpl implements GuildRemoteRepository {
         return true;
       },
     ));
-    Logger().i("info=> ${output.isSuccess} ");
     return output;
   }
 
@@ -85,6 +84,7 @@ class GuildRemoteRepositoryImpl implements GuildRemoteRepository {
   }
 
   @override
+
   Future<Either<Failure, Guild>> addGuild(String nationalCode, Guild guild) async {
     final response = await remoteDataSource.postToServer(
       url: '${BASE_URL_API}guilds/insert',

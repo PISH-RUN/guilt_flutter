@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
 import 'package:guilt_flutter/application/colors.dart';
+import 'package:guilt_flutter/application/constants.dart';
 import 'package:guilt_flutter/application/guild/domain/entities/pos.dart';
 import 'package:guilt_flutter/application/guild/presentation/widgets/guild_form_widget.dart';
 import 'package:guilt_flutter/application/guild/presentation/widgets/poses_list_widget.dart';
@@ -154,7 +155,7 @@ class _PspFormPageState extends State<PspFormPage> {
                     isConfirmed = false;
                     final guildChanged = formController.onSubmitButton!();
                     if (guildChanged == null) {
-                      showSnakeBar(context, "فرم شما ایراد دارد"); //todo replace with good sentence
+                      showSnakeBar(context, FORM_HAS_ERROR);
                       return;
                     }
                     guild = guild.copyWith(
@@ -191,7 +192,7 @@ class _PspFormPageState extends State<PspFormPage> {
                   onTap: () async {
                     final guildChanged = formController.onSubmitButton!();
                     if (guildChanged == null) {
-                      showSnakeBar(context, "فرم شما ایراد دارد");
+                      showSnakeBar(context, FORM_HAS_ERROR);
                       return;
                     }
                     guild = guild.copyWith(guild: guildChanged.copyWith(status: 'confirmed', isCouponRequested: isCouponRequested, poses: posList));

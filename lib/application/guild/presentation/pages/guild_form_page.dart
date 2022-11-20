@@ -57,7 +57,6 @@ class _GuildFormPageState extends State<GuildFormPage> {
       body: SafeArea(
         child: BlocConsumer<GuildCubit, GuildState>(
           listener: (context, state) {
-            Logger().i("info=> ${state} ");
             state.maybeWhen(errorSave: (failure) => showSnakeBar(context, failure.message), orElse: () {});
           },
           listenWhen: (previous, current) {
@@ -95,7 +94,7 @@ class _GuildFormPageState extends State<GuildFormPage> {
                       final guildChanged = formController.onSubmitButton!();
                       if (guildChanged==null) {
                         setState(() => isLoading = false);
-                        showSnakeBar(context, "فرم شما ایراد دارد");
+                        showSnakeBar(context, FORM_HAS_ERROR);
                         return;
                       }
                       setState(() => isLoading = true);
