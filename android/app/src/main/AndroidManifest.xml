@@ -1,12 +1,12 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="af.pish.run">
+    package="psp.af.pish.run">
 
     <uses-permission android:name="android.permission.INTERNET"/>
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-feature android:name="android.hardware.camera" />
 
    <application
-        android:label="کالابرگ"
+        android:label="پرداخت یار"
         android:name="${applicationName}"
         android:icon="@mipmap/launcher_icon">
         <activity

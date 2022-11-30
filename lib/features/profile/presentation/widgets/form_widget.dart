@@ -204,12 +204,7 @@ class _FormWidgetState extends State<FormWidget> {
                             hintText: "نام",
                             prefixIcon: const Icon(Icons.person_outline, color: Color(0xffA0A8B1), size: 25.0),
                           ),
-                          validator: (value) {
-                            if (value == null) return null;
-                            if (value.isEmpty) return "این فیلد الزامی است";
-                            if (value.length < 2) return "نام کوتاه است";
-                            return null;
-                          },
+                          validator: (value) => validateFirstName(value, 'نام'),
                           onSaved: (value) => user = user.copyWith(firstName: value),
                         ),
                       ),
@@ -225,12 +220,7 @@ class _FormWidgetState extends State<FormWidget> {
                             hintText: "نام خانوادگی",
                             prefixIcon: const Icon(Icons.person_outline, color: Color(0xffA0A8B1), size: 25.0),
                           ),
-                          validator: (value) {
-                            if (value == null) return null;
-                            if (value.isEmpty) return "این فیلد الزامی است";
-                            if (value.length < 2) return "نام خانوادگی کوتاه است";
-                            return null;
-                          },
+                          validator: (value) => validateLastName(value, "نام خانوادگی"),
                           onSaved: (value) => user = user.copyWith(lastName: value),
                         ),
                       ),
@@ -246,12 +236,7 @@ class _FormWidgetState extends State<FormWidget> {
                             hintText: "نام پدر",
                             prefixIcon: const Icon(Icons.person_outline, color: Color(0xffA0A8B1), size: 25.0),
                           ),
-                          validator: (value) {
-                            if (value == null) return null;
-                            if (value.isEmpty) return "این فیلد الزامی است";
-                            if (value.length < 2) return "نام پدر کوتاه است";
-                            return null;
-                          },
+                          validator: (value) => validateFirstName(value, 'نام پدر'),
                           onSaved: (value) => user = user.copyWith(fatherName: value),
                         ),
                       ),

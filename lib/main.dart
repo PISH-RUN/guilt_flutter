@@ -27,14 +27,6 @@ void main() async {
   prepareGetIt();
   await getProvinceOfPsp();
 
-  // final ImagePicker picker = ImagePicker();
-  // final XFile? image = await picker.pickImage(source: ImageSource.camera);
-  // final InputImage inputImage = InputImage.fromFilePath(image!.path);
-  // final textRecognizer = TextRecognizer(script: TextRecognitionScript.latin);
-  // final RecognizedText recognizedText = await textRecognizer.processImage(inputImage);
-  // String text = recognizedText.text;
-  // Logger().i("info=> ${text} ");
-
   runApp(MyApp());
 }
 
@@ -83,6 +75,6 @@ class MyApp extends StatelessWidget {
 class MyHttpOverrides extends HttpOverrides {
   @override
   HttpClient createHttpClient(SecurityContext? context) {
-    return super.createHttpClient(context)..badCertificateCallback = (X509Certificate cert, String host, int port) => false;
+    return super.createHttpClient(context)..badCertificateCallback = (X509Certificate cert, String host, int port) => true;
   }
 }

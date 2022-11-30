@@ -62,7 +62,7 @@ class _GuildLabelWidgetState extends State<GuildLabelWidget> {
                       children: <Widget>[
                         labelWidget(context, Icons.store, "نام کسب و کار", widget.guild.title),
                         SizedBox(height: paddingBetweenTextFiled),
-                        labelWidget(context, Icons.store, "نام ارگان", widget.guild.organName),
+                        labelWidget(context, Icons.store, "نام سازمان", widget.guild.organName),
                         SizedBox(height: paddingBetweenTextFiled),
                         labelWidget(context, Icons.phone, "شماره تلفن کسب و کار", widget.guild.homeTelephone),
                         SizedBox(height: paddingBetweenTextFiled),

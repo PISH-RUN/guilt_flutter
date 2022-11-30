@@ -87,7 +87,7 @@ class _LoginWidgetState extends State<LoginWidget> {
                             child: Column(
                               children: <Widget>[
                                 const SizedBox(height: 10.0),
-                                Text("لطفا کد تایید را وارد کنید", style: Theme.of(context).textTheme.headline4),
+                                Text("لطفا کد ورود را وارد کنید", style: Theme.of(context).textTheme.headline4),
                                 const SizedBox(height: 16.0),
                                 GestureDetector(
                                   onTap: () {
@@ -127,7 +127,7 @@ class _LoginWidgetState extends State<LoginWidget> {
                                         borderRadius: BorderRadius.all(Radius.circular(4)),
                                         borderSide: BorderSide(width: 2, color: Colors.red),
                                       ),
-                                      labelText: "کد تایید",
+                                      labelText: "کد ورود",
                                       helperText: "",
                                       prefixIcon: Icon(Icons.lock, color: AppColor.blue, size: 22.0),
                                     ),
@@ -136,8 +136,8 @@ class _LoginWidgetState extends State<LoginWidget> {
                                     controller: verifyController,
                                     validator: (value) {
                                       if (value == null) return null;
-                                      if (value.isEmpty) return "وارد کردن کد تایید ضروری است";
-                                      if (value.length != ONE_TIME_PASSWORD_LENGTH) return "کد تایید معتبر نمی باشد";
+                                      if (value.isEmpty) return "وارد کردن کد ورود ضروری است";
+                                      if (value.length != ONE_TIME_PASSWORD_LENGTH) return "کد ورود معتبر نمی باشد";
                                       return null;
                                     },
                                   ),
@@ -145,7 +145,7 @@ class _LoginWidgetState extends State<LoginWidget> {
                                 const SizedBox(height: 6.0),
                                 Text(
                                   state.maybeWhen(
-                                    error: (failure) => failure.failureType == FailureType.authentication ? "کد تایید نادرست است" : failure.message,
+                                    error: (failure) => failure.failureType == FailureType.authentication ? "کد ورود نادرست است" : failure.message,
                                     orElse: () => "",
                                   ),
                                   textAlign: TextAlign.center,
@@ -164,7 +164,7 @@ class _LoginWidgetState extends State<LoginWidget> {
                                   },
                                   isLoading: state is Loading,
                                   color: expireAt > 0 ? null : Colors.green,
-                                  title: expireAt > 0 ? "تایید" : "ارسال مجدد کد تایید",
+                                  title: expireAt > 0 ? "تایید" : "ارسال مجدد کد ورود",
                                 ),
                                 const SizedBox(height: 16.0),
                                 expireAt > 0

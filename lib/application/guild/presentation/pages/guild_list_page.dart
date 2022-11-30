@@ -150,7 +150,7 @@ class IntroduceWidget extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.all(6.0),
             child: Text(
-              "به صنفینو خوش آمدید",
+              "به سامانه دیتا خوش آمدید",
               style: defaultTextStyle(context, headline: 3).w(FontWeight.w900),
             ),
           ),
@@ -170,7 +170,7 @@ class IntroduceWidget extends StatelessWidget {
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 16.0),
                   child: Text(
-                    "سامانه صنفینو، با هدف تکمیل و ویرایش اطلاعات اصناف محترم جمهوری اسلامی ایران طراحی و پیاده سازی گردیده است",
+                    "سامانه دیتا، با هدف ثبت، تکمیل و ویرایش اطلاعات اصناف محترم کشور طراحی و پیاده سازی شده است",
                     textAlign: TextAlign.justify,
                     style: defaultTextStyle(context, headline: 5).h(1.9).w(FontWeight.w900),
                   ),
@@ -179,7 +179,7 @@ class IntroduceWidget extends StatelessWidget {
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 16.0),
                   child: Text(
-                    "متقاضیان ثبت نام کالابرگ، می توانند با مراجعه به سایت یا اپلیکشین صنفینو، اقدام به ثبت درخواست خود نمایند. ثبت نام و ویرایش اطلاعات در این سامانه از طریق وارد کردن شماره صنفی و کد ملی است و برای پیگیری درخواست،می توانید از قسمت پیگیری سایت، اقدام نمایید.",
+                    "متقاضیان ثبت نام در طرح ملی کالابرگ، می توانند با مراجعه به سامانه یا اپلیکیشن دیتا، اقدام به ثبت درخواست خود نمایند، ثبت نام و ویرایش اطلاعات در این سامانه از طریق وارد کردن شماره صنفی و کدملی بوده و به منظور پیگیری درخواست می توانید از قسمت پیگیری سامانه اقدام نمایید.",
                     textAlign: TextAlign.justify,
                     style: defaultTextStyle(context, headline: 5).h(1.9).w(FontWeight.w400),
                   ),

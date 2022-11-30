@@ -18,6 +18,7 @@ class RegisterPage extends StatelessWidget {
     return RegisterWidget(
       phoneNumber: "",
       nationalCode: "",
+      description: "شماره ملی وارد شده در فیلد کد ملی، می بایستی مالکیت تلفن همراه وارد شده را داشته باشد",
       onSuccessful: () => QR.to('otp'),
       title: "لطفا اطلاعات خود را وارد کنید",
       isRegisterPspVisible: appMode == AppMode.psp,

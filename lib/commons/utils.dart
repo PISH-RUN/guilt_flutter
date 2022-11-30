@@ -55,6 +55,18 @@ void closeKeyboard() async {
   FocusManager.instance.primaryFocus?.unfocus();
 }
 
+bool validateNationalCode(String nationalCode) {
+  if (nationalCode.length != 10) return false;
+  final array = nationalCode.split('');
+  int sum = 0;
+  for (int i = 0; i < 9; i++) {
+    sum += int.parse(array[i]) * (10 - i);
+  }
+  int mod = sum % 11;
+  int controlNum = mod >= 2 ? 11 - mod : mod;
+  return controlNum.toString() == array[9];
+}
+
 String replaceFarsiNumber(String input) {
   const english = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'];
   const farsi = ['۰', '۱', '۲', '۳', '۴', '۵', '۶', '۷', '۸', '۹'];
@@ -62,6 +74,50 @@ String replaceFarsiNumber(String input) {
     input = input.replaceAll(farsi[i], english[i]);
   }
   return input;
+}
+
+bool hasEnglishCharOrNumber(String input) {
+  final array = input.split('');
+  for (int i = 0; i < array.length; i++) {
+    if (RegExp(r'^[A-Za-z0-9_.]+$').hasMatch(array[i].toString())) return true;
+  }
+  return false;
+}
+
+String? validateFirstName(String? value, String name) {
+  if (value == null) return null;
+  if (value.isEmpty) return "این فیلد الزامی است";
+  if (value.length < 2) return "$name کوتاه است";
+  if (value.length > 25) return "$name طولانی است";
+  if (hasEnglishCharOrNumber(value)) return "$name حروف غیر فارسی دارد";
+  return null;
+}
+
+String? validateGuildName(String? value) {
+  if (value == null) return null;
+  if (value.isEmpty) return "این فیلد الزامی است";
+  if (value.length < 2) return "نام صنف کوتاه است";
+  if (value.length > 60) return "نام صنف طولانی است";
+  if (hasEnglishCharOrNumber(value)) return "نام صنف حروف غیر فارسی دارد";
+  return null;
+}
+
+String? validateOrganName(String? value) {
+  if (value == null) return null;
+  if (value.isEmpty) return "این فیلد الزامی است";
+  if (value.length < 2) return "نام سازمان کوتاه است";
+  if (value.length > 60) return "نام سازمان طولانی است";
+  if (hasEnglishCharOrNumber(value)) return "نام سازمان حروف غیر فارسی دارد";
+  return null;
+}
+
+String? validateLastName(String? value, String name) {
+  if (value == null) return null;
+  if (value.isEmpty) return "این فیلد الزامی است";
+  if (value.length < 2) return "$name  کوتاه است";
+  if (value.length > 40) return "$name طولانی است";
+  if (hasEnglishCharOrNumber(value)) return "$name حروف غیر فارسی دارد";
+  return null;
 }
 
 String? getPhoneNumber(String phoneNumber) {

@@ -34,7 +34,8 @@ class LoginRepositoryImpl implements LoginRepository {
       params: {'mobile': "0$phoneNumber", 'national_code': nationalCode},
       mapSuccess: (Map<String, dynamic> data) => true,
     );
-    return result.fold((l) => l.message == "mobile and national_code mismatch" ? Left(Failure("شماره موبایل متعلق به این کد ملی نمی باشد")) : Left(l), (r) => const Right(true));
+
+    return result.fold((l) => l.message == "mobile and national_code mismatch" ? Left(Failure("شماره تلفن وارد شده، متعلق به کدملی دریافتی نمی باشد")) : Left(l), (r) => const Right(true));
   }
 
   @override
@@ -46,7 +47,7 @@ class LoginRepositoryImpl implements LoginRepository {
       mapSuccess: (Map<String, dynamic> data) =>
           UserDataModel.fromJson(nationalCode: nationalCode, phoneNumber: globalPhoneNumber, json: data['data']),
     );
-    return result.fold((l) => l.statusCode == 400 ? Left(ServerFailure.fromMessage("کد تایید وارد شده اشتباه است")) : Left(l),
+    return result.fold((l) => l.statusCode == 400 ? Left(ServerFailure.fromMessage("کد ورود به سامانه اصناف صحیح نمی باشد")) : Left(l),
         (r) => Right(result.getOrElse(() => throw UnimplementedError())));
   }
 

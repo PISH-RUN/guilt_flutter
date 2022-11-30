@@ -117,41 +117,33 @@ class _GuildFormWidgetState extends State<GuildFormWidget> {
                         mainAxisSize: MainAxisSize.min,
                         children: <Widget>[
                           OurTextField(
-                            title: "نام کسب و کار",
+                            title: "نام صنف",
                             textFormField: TextFormField(
                               style: defaultTextStyle(context).c(const Color(0xff2F3135)),
                               controller: guildNameController,
                               keyboardType: TextInputType.name,
                               onTap: () => setState(() => fixRtlFlutterBug(guildNameController)),
                               decoration: defaultInputDecoration(context).copyWith(
-                                hintText: 'نام کسب و کار',
+                                hintText: 'مثال: فروشندگان مواد پروتئینی',
                                 prefixIcon: const Icon(Icons.store, color: Color(0xffA0A8B1), size: 25.0),
                               ),
-                              validator: (value) {
-                                if (value == null) return null;
-                                if (value.isEmpty) return "این فیلد الزامی است";
-                                return null;
-                              },
+                              validator: (value) => validateGuildName(value),
                               onSaved: (value) => guild = guild.copyWith(title: value),
                             ),
                           ),
                           SizedBox(height: paddingBetweenTextFiled),
                           OurTextField(
-                            title: "نام ارگان",
+                            title: "نام سازمان",
                             textFormField: TextFormField(
                               style: defaultTextStyle(context).c(const Color(0xff2F3135)),
                               controller: organController,
                               keyboardType: TextInputType.name,
                               onTap: () => setState(() => fixRtlFlutterBug(organController)),
                               decoration: defaultInputDecoration(context).copyWith(
-                                hintText: 'نام ارگان',
+                                hintText: 'مثال:سازمان،معدن و تجارت زنجان',
                                 prefixIcon: const Icon(Icons.store, color: Color(0xffA0A8B1), size: 25.0),
                               ),
-                              validator: (value) {
-                                if (value == null) return null;
-                                if (value.isEmpty) return "این فیلد الزامی است";
-                                return null;
-                              },
+                              validator: (value) => validateOrganName(value),
                               onSaved: (value) => guild = guild.copyWith(organName: value),
                             ),
                           ),

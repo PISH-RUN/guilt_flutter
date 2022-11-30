@@ -51,7 +51,7 @@ class _AllGuildsListPageState extends State<AllGuildsListPage> {
         builder: (context, state) {
           return state.maybeWhen(
             loading: () => _basePage(LoadingWidget()),
-            error: (failure) => ErrorPage(failure: failure),
+            error: (failure) => ErrorPage(failure: failure, tryAgain: () => BlocProvider.of<AllGuildsCubit>(context).initialPage(selectedCity, searchText: "")),
             orElse: () => _basePage(AllGuildsListWidget(cities: selectedCity.isNotEmpty ? selectedCity : [], searchText: controller.text)),
           );
         },

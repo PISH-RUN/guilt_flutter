@@ -18,6 +18,7 @@ class RegisterWidget extends StatefulWidget {
   final bool isRegisterPspVisible;
   final bool isIconLogoVisible;
   final String title;
+  final String description;
 
   const RegisterWidget({
     required this.phoneNumber,
@@ -25,6 +26,7 @@ class RegisterWidget extends StatefulWidget {
     required this.onSuccessful,
     required this.isRegisterPspVisible,
     required this.title,
+    this.description = "",
     this.isIconLogoVisible = true,
     Key? key,
   }) : super(key: key);
@@ -72,6 +74,18 @@ class _RegisterWidgetState extends State<RegisterWidget> {
                               children: <Widget>[
                                 const SizedBox(height: 10.0),
                                 Text(widget.title, style: Theme.of(context).textTheme.headline4, textAlign: TextAlign.center),
+                                if (widget.description.isNotEmpty)
+                                  Column(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      const SizedBox(height: 10.0),
+                                      Text(
+                                        widget.description,
+                                        style: defaultTextStyle(context, headline: 6).c(Colors.black87),
+                                        textAlign: TextAlign.center,
+                                      ),
+                                    ],
+                                  ),
                                 const SizedBox(height: 26.0),
                                 Column(
                                   mainAxisSize: MainAxisSize.min,
@@ -115,7 +129,7 @@ class _RegisterWidgetState extends State<RegisterWidget> {
                                         validator: (value) {
                                           if (value == null) return null;
                                           if (value.isEmpty) return "وارد کردن کد ملی ضروری است";
-                                          if (value.length != 10) return "کد ملی نامعتبر نیست";
+                                          if (!validateNationalCode(value)) return "کد ملی نامعتبر نیست";
                                           return null;
                                         },
                                       ),

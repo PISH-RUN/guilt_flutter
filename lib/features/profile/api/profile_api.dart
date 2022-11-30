@@ -9,10 +9,6 @@ class ProfileApi {
 
   ProfileApi(this.main);
 
-  Future<Either<Failure, UserInfo>> getProfile({required String nationalCode}) async {
-    return main.getProfile(nationalCode);
-  }
-
   Future<Either<Failure, bool>> hasProfile({required String nationalCode}) async {
     if (appMode == AppMode.psp) {
       return const Right(true);

@@ -11,8 +11,9 @@ import 'package:qlevar_router/qlevar_router.dart';
 
 class ErrorPage extends StatelessWidget {
   final Failure failure;
+  final void Function()? tryAgain;
 
-  const ErrorPage({required this.failure, Key? key}) : super(key: key);
+  const ErrorPage({required this.failure, this.tryAgain, Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -77,6 +78,44 @@ class ErrorPage extends StatelessWidget {
                 ),
               ),
             ),
+          ],
+        );
+      case FailureType.noInternet:
+        return Column(
+          mainAxisSize: MainAxisSize.min,
+          children: <Widget>[
+            Text(failure.message, style: defaultTextStyle(context, headline: 4)),
+            const SizedBox(height: 36.0),
+            if (tryAgain != null)
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 60.0),
+                child: GestureDetector(
+                  onTap: () => tryAgain!(),
+                  child: Container(
+                    width: double.infinity,
+                    height: 50,
+                    alignment: Alignment.center,
+                    margin: const EdgeInsets.symmetric(vertical: 12, horizontal: 18),
+                    decoration: BoxDecoration(
+                      color: Theme.of(context).primaryColor,
+                      shape: BoxShape.rectangle,
+                      borderRadius: const BorderRadius.all(Radius.circular(10)),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Theme.of(context).primaryColor.withOpacity(0.3),
+                          spreadRadius: 3,
+                          blurRadius: 7,
+                          offset: const Offset(1, 1),
+                        )
+                      ],
+                    ),
+                    child: Text(
+                      "تلاش مجدد",
+                      style: defaultTextStyle(context, headline: 4).c(Colors.white),
+                    ),
+                  ),
+                ),
+              ),
           ],
         );
       default:

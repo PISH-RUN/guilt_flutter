@@ -109,7 +109,7 @@ class _PspFormPageState extends State<PspFormPage> {
   Widget submitButton(BuildContext context) {
     return GestureDetector(
       onTap: () async {
-        await _showModalForSubmit();
+        await _showModalForSubmit(context);
       },
       child: Container(
         width: double.infinity,
@@ -124,101 +124,114 @@ class _PspFormPageState extends State<PspFormPage> {
 
   bool isConfirmed = false;
 
-  Future<void> _showModalForSubmit() async {
+  Future<void> _showModalForSubmit(BuildContext outerContext) async {
     await showModalBottomSheet<void>(
-      context: context,
+      context: outerContext,
       shape: const RoundedRectangleBorder(borderRadius: BorderRadius.only(topRight: Radius.circular(18.0), topLeft: Radius.circular(18.0))),
-      builder: (BuildContext context) {
-        return Padding(
-          padding: const EdgeInsets.only(bottom: 0.0),
-          child: Container(
-            height: 200.0,
-            alignment: Alignment.center,
-            decoration: BoxDecoration(
-              color: Colors.white,
-              shape: BoxShape.rectangle,
-              borderRadius: const BorderRadius.all(Radius.circular(18)),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.grey.withOpacity(0.5),
-                  spreadRadius: 5,
-                  blurRadius: 7,
-                  offset: const Offset(3, 3),
-                )
-              ],
-            ),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                GestureDetector(
-                  onTap: () async {
-                    isConfirmed = false;
-                    final guildChanged = formController.onSubmitButton!();
-                    if (guildChanged == null) {
-                      showSnakeBar(context, FORM_HAS_ERROR);
-                      return;
+      builder: (BuildContext _) {
+        return BlocProvider(
+          create: (_) => GetIt.instance<UpdateStateOfGuildCubit>(),
+          child: Padding(
+            padding: const EdgeInsets.only(bottom: 0.0),
+            child: Container(
+              height: 200.0,
+              alignment: Alignment.center,
+              decoration: BoxDecoration(
+                color: Colors.white,
+                shape: BoxShape.rectangle,
+                borderRadius: const BorderRadius.all(Radius.circular(18)),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.grey.withOpacity(0.5),
+                    spreadRadius: 5,
+                    blurRadius: 7,
+                    offset: const Offset(3, 3),
+                  )
+                ],
+              ),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  StatefulBuilder(
+                    builder: (context,setState) {
+                      return GestureDetector(
+                        onTap: () async {
+                          isConfirmed = false;
+                          final guildChanged = formController.onSubmitButton!();
+                          if (guildChanged == null) {
+                            showSnakeBar(context, FORM_HAS_ERROR);
+                            return;
+                          }
+                          setState(() => isLoadingSubmitWithOutConfirmed = true);
+                          guild = guild.copyWith(
+                              guild: guildChanged.copyWith(status: 'waiting_confirmation', isCouponRequested: isCouponRequested, poses: posList));
+                          await BlocProvider.of<UpdateStateOfGuildCubit>(context).updateStateOfSpecialGuild(guild, isJustState: false, token: token);
+                          BlocProvider.of<UpdateStateOfGuildCubit>(context).state.maybeWhen(
+                                orElse: () {},
+                                error: (failure) => showSnakeBar(context, failure.message),
+                                success: () {
+                                  showSnakeBar(context, "تغییرات با موفقیت اعمال شد");
+                                  QR.navigator.replaceAll('psp/followGuilds');
+                                },
+                              );
+                          setState(() => isLoadingSubmitWithOutConfirmed = false);
+                        },
+                        child: Container(
+                          width: double.infinity,
+                          margin: const EdgeInsets.symmetric(horizontal: 20.0),
+                          padding: const EdgeInsets.all(18),
+                          alignment: Alignment.center,
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            shape: BoxShape.rectangle,
+                            border: Border.all(color: AppColor.blue, width: 2.0),
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          child: isLoadingSubmitWithOutConfirmed
+                              ? LoadingWidget(color: AppColor.blue, size: 20)
+                              : Text("اعمال تغییرات بدون تایید نهایی", style: defaultTextStyle(context, headline: 4).c(AppColor.blue)),
+                        ),
+                      );
                     }
-                    guild = guild.copyWith(
-                        guild: guildChanged.copyWith(status: 'waiting_confirmation', isCouponRequested: isCouponRequested, poses: posList));
-                    await BlocProvider.of<UpdateStateOfGuildCubit>(context).updateStateOfSpecialGuild(guild, isJustState: false, token: token);
-                    BlocProvider.of<UpdateStateOfGuildCubit>(context).state.maybeWhen(
-                          orElse: () {},
-                          error: (failure) => showSnakeBar(context, failure.message),
-                          success: () {
-                            showSnakeBar(context, "تغییرات با موفقیت اعمال شد");
-                            return QR.navigator.replaceAll('psp/followGuilds');
-                          },
-                        );
-                    setState(() => isLoadingSubmitWithOutConfirmed = true);
-                  },
-                  child: Container(
-                    width: double.infinity,
-                    margin: const EdgeInsets.symmetric(horizontal: 20.0),
-                    padding: const EdgeInsets.all(18),
-                    alignment: Alignment.center,
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      shape: BoxShape.rectangle,
-                      border: Border.all(color: AppColor.blue, width: 2.0),
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    child: isLoadingSubmitWithOutConfirmed
-                        ? LoadingWidget(color: Colors.white, size: 20)
-                        : Text("اعمال تغییرات بدون تایید نهایی", style: defaultTextStyle(context, headline: 4).c(AppColor.blue)),
                   ),
-                ),
-                const SizedBox(height: 25.0),
-                GestureDetector(
-                  onTap: () async {
-                    final guildChanged = formController.onSubmitButton!();
-                    if (guildChanged == null) {
-                      showSnakeBar(context, FORM_HAS_ERROR);
-                      return;
+                  const SizedBox(height: 25.0),
+                  StatefulBuilder(
+                      builder: (context,setState) {
+                      return GestureDetector(
+                        onTap: () async {
+                          final guildChanged = formController.onSubmitButton!();
+                          if (guildChanged == null) {
+                            showSnakeBar(context, FORM_HAS_ERROR);
+                            return;
+                          }
+                          setState(() => isLoadingSubmitWithConfirmed = true);
+                          guild = guild.copyWith(guild: guildChanged.copyWith(status: 'confirmed', isCouponRequested: isCouponRequested, poses: posList));
+                          await BlocProvider.of<UpdateStateOfGuildCubit>(context).updateStateOfSpecialGuild(guild, isJustState: false, token: token);
+                          BlocProvider.of<UpdateStateOfGuildCubit>(context).state.maybeWhen(
+                                orElse: () {},
+                                error: (failure) => showSnakeBar(context, failure.message),
+                                success: () {
+                                  showSnakeBar(context, "تغییرات با موفقیت اعمال شد");
+                                  return QR.navigator.replaceAll('psp/followGuilds');
+                                },
+                              );
+                          setState(() => isLoadingSubmitWithConfirmed = false);
+                        },
+                        child: Container(
+                          width: double.infinity,
+                          margin: const EdgeInsets.symmetric(horizontal: 20.0),
+                          padding: const EdgeInsets.all(18),
+                          alignment: Alignment.center,
+                          decoration: BoxDecoration(color: AppColor.blue, shape: BoxShape.rectangle, borderRadius: BorderRadius.circular(10)),
+                          child: isLoadingSubmitWithConfirmed
+                              ? LoadingWidget(color: Colors.white, size: 20)
+                              : Text("اعمال تغییرات و تایید نهایی", style: defaultTextStyle(context, headline: 4).c(Colors.white)),
+                        ),
+                      );
                     }
-                    guild = guild.copyWith(guild: guildChanged.copyWith(status: 'confirmed', isCouponRequested: isCouponRequested, poses: posList));
-                    await BlocProvider.of<UpdateStateOfGuildCubit>(context).updateStateOfSpecialGuild(guild, isJustState: false, token: token);
-                    BlocProvider.of<UpdateStateOfGuildCubit>(context).state.maybeWhen(
-                          orElse: () {},
-                          error: (failure) => showSnakeBar(context, failure.message),
-                          success: () {
-                            showSnakeBar(context, "تغییرات با موفقیت اعمال شد");
-                            return QR.navigator.replaceAll('psp/followGuilds');
-                          },
-                        );
-                    setState(() => isLoadingSubmitWithConfirmed = true);
-                  },
-                  child: Container(
-                    width: double.infinity,
-                    margin: const EdgeInsets.symmetric(horizontal: 20.0),
-                    padding: const EdgeInsets.all(18),
-                    alignment: Alignment.center,
-                    decoration: BoxDecoration(color: AppColor.blue, shape: BoxShape.rectangle, borderRadius: BorderRadius.circular(10)),
-                    child: isLoadingSubmitWithConfirmed
-                        ? LoadingWidget(color: Colors.white, size: 20)
-                        : Text("اعمال تغییرات و تایید نهایی", style: defaultTextStyle(context, headline: 4).c(Colors.white)),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
         );

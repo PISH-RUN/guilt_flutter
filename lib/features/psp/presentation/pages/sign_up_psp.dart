@@ -148,11 +148,7 @@ class _SignUpPspState extends State<SignUpPsp> {
                             hintText: 'نام',
                             prefixIcon: const Icon(Icons.person, color: Color(0xffA0A8B1), size: 25.0),
                           ),
-                          validator: (value) {
-                            if (value == null) return null;
-                            if (value.isEmpty) return "این فیلد الزامی است";
-                            return null;
-                          },
+                          validator: (value) => validateFirstName(value, 'نام'),
                           onSaved: (value) => pspUser = pspUser.copyWith(firstName: value),
                         ),
                       ),
@@ -168,24 +164,20 @@ class _SignUpPspState extends State<SignUpPsp> {
                             hintText: 'نام خانوادگی',
                             prefixIcon: const Icon(Icons.person, color: Color(0xffA0A8B1), size: 25.0),
                           ),
-                          validator: (value) {
-                            if (value == null) return null;
-                            if (value.isEmpty) return "این فیلد الزامی است";
-                            return null;
-                          },
+                          validator: (value) =>validateLastName(value, 'نام خانوادگی'),
                           onSaved: (value) => pspUser = pspUser.copyWith(lastName: value),
                         ),
                       ),
                       SizedBox(height: paddingBetweenTextFiled),
                       OurTextField(
-                        title: "نام ارگان",
+                        title: "نام سازمان",
                         textFormField: TextFormField(
                           style: defaultTextStyle(context).c(const Color(0xff2F3135)),
                           controller: organController,
                           keyboardType: TextInputType.name,
                           onTap: () => setState(() => fixRtlFlutterBug(organController)),
                           decoration: defaultInputDecoration(context).copyWith(
-                            hintText: 'نام ارگان',
+                            hintText: 'نام سازمان',
                             prefixIcon: const Icon(Icons.store, color: Color(0xffA0A8B1), size: 25.0),
                           ),
                           validator: (value) {
@@ -234,7 +226,7 @@ class _SignUpPspState extends State<SignUpPsp> {
                           ),
                           validator: (value) {
                             if (value == null) return null;
-                            if (value.length != 10) return "کد ملی معتبر نیست";
+                            if (!validateNationalCode(value)) return "کد ملی معتبر نیست";
                             return null;
                           },
                           onSaved: (value) => pspUser = pspUser.copyWith(nationalCode: value),

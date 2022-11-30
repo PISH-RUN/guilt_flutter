@@ -42,7 +42,9 @@ class ProfileRepositoryImpl implements ProfileRepository {
       url: '${BASE_URL_API}users',
       localKey: getLocalKeyOfUser(nationalCode),
       params: {},
-      mapSuccess: (data) => UserInfoModel.fromJson(JsonParser.parser(data, ['data'])),
+      mapSuccess: (data) => JsonParser.parser(data, ['data']) == null
+          ? UserInfo.empty().copyWith(nationalCode: nationalCode, phoneNumber: GetIt.instance<LoginApi>().getUserData().phoneNumber)
+          : UserInfoModel.fromJson(JsonParser.parser(data, ['data'])),
     );
   }
 
