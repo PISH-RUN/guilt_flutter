@@ -2,11 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:guilt_flutter/application/colors.dart';
 import 'package:guilt_flutter/application/constants.dart';
+import 'package:guilt_flutter/commons/TextFieldConfig.dart';
 import 'package:guilt_flutter/commons/failures.dart';
 import 'package:guilt_flutter/commons/text_style.dart';
 import 'package:guilt_flutter/commons/utils.dart';
 import 'package:guilt_flutter/commons/widgets/icon_name_widget.dart';
 import 'package:guilt_flutter/commons/widgets/our_button.dart';
+import 'package:guilt_flutter/commons/widgets/text_form_field_wrapper.dart';
 import 'package:guilt_flutter/features/login/domain/entities/user_data.dart';
 import 'package:guilt_flutter/features/login/presentation/manager/login_cubit.dart';
 import 'package:guilt_flutter/features/login/presentation/manager/login_state.dart';
@@ -107,7 +109,8 @@ class _LoginWidgetState extends State<LoginWidget> {
                                 const SizedBox(height: 26.0),
                                 Directionality(
                                   textDirection: TextDirection.rtl,
-                                  child: TextFormField(
+                                  child: TextFormFieldWrapper(
+                                    inputFormatters: TextFieldConfig.inputFormattersOTP(),
                                     textAlign: TextAlign.end,
                                     readOnly: state is Loading,
                                     decoration: const InputDecoration(
@@ -134,12 +137,7 @@ class _LoginWidgetState extends State<LoginWidget> {
                                     onFieldSubmitted: (value) => onSubmitButton(),
                                     keyboardType: TextInputType.number,
                                     controller: verifyController,
-                                    validator: (value) {
-                                      if (value == null) return null;
-                                      if (value.isEmpty) return "وارد کردن کد ورود ضروری است";
-                                      if (value.length != ONE_TIME_PASSWORD_LENGTH) return "کد ورود معتبر نمی باشد";
-                                      return null;
-                                    },
+                                    validator: (value) => TextFieldConfig.validateOTP(value),
                                   ),
                                 ),
                                 const SizedBox(height: 6.0),

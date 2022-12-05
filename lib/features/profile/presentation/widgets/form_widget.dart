@@ -6,7 +6,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
 import 'package:guilt_flutter/application/constants.dart';
 import 'package:guilt_flutter/application/guild/presentation/widgets/guild_form_widget.dart';
+import 'package:guilt_flutter/commons/TextFieldConfig.dart';
 import 'package:guilt_flutter/commons/widgets/our_text_field.dart';
+import 'package:guilt_flutter/commons/widgets/text_form_field_wrapper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:persian_datetime_picker/persian_datetime_picker.dart';
 import 'package:toggle_switch/toggle_switch.dart';
@@ -195,7 +197,8 @@ class _FormWidgetState extends State<FormWidget> {
                     children: <Widget>[
                       OurTextField(
                         title: "نام",
-                        textFormField: TextFormField(
+                        textFormField: TextFormFieldWrapper(
+                          inputFormatters: TextFieldConfig.inputFormattersFirstName(),
                           style: defaultTextStyle(context).c(const Color(0xff2F3135)),
                           controller: firstNameController,
                           keyboardType: TextInputType.name,
@@ -204,14 +207,15 @@ class _FormWidgetState extends State<FormWidget> {
                             hintText: "نام",
                             prefixIcon: const Icon(Icons.person_outline, color: Color(0xffA0A8B1), size: 25.0),
                           ),
-                          validator: (value) => validateFirstName(value, 'نام'),
+                          validator: (value) => TextFieldConfig.validateFirstName(value, 'نام'),
                           onSaved: (value) => user = user.copyWith(firstName: value),
                         ),
                       ),
                       SizedBox(height: paddingBetweenTextFiled),
                       OurTextField(
                         title: "نام خانوادگی",
-                        textFormField: TextFormField(
+                        textFormField: TextFormFieldWrapper(
+                          inputFormatters: TextFieldConfig.inputFormattersLastName(),
                           style: defaultTextStyle(context).c(const Color(0xff2F3135)),
                           controller: lastNameController,
                           keyboardType: TextInputType.name,
@@ -220,14 +224,15 @@ class _FormWidgetState extends State<FormWidget> {
                             hintText: "نام خانوادگی",
                             prefixIcon: const Icon(Icons.person_outline, color: Color(0xffA0A8B1), size: 25.0),
                           ),
-                          validator: (value) => validateLastName(value, "نام خانوادگی"),
+                          validator: (value) => TextFieldConfig.validateLastName(value, "نام خانوادگی"),
                           onSaved: (value) => user = user.copyWith(lastName: value),
                         ),
                       ),
                       SizedBox(height: paddingBetweenTextFiled),
                       OurTextField(
                         title: "نام پدر",
-                        textFormField: TextFormField(
+                        textFormField: TextFormFieldWrapper(
+                          inputFormatters: TextFieldConfig.inputFormattersFirstName(),
                           style: defaultTextStyle(context).c(const Color(0xff2F3135)),
                           controller: fatherNameController,
                           keyboardType: TextInputType.name,
@@ -236,7 +241,7 @@ class _FormWidgetState extends State<FormWidget> {
                             hintText: "نام پدر",
                             prefixIcon: const Icon(Icons.person_outline, color: Color(0xffA0A8B1), size: 25.0),
                           ),
-                          validator: (value) => validateFirstName(value, 'نام پدر'),
+                          validator: (value) => TextFieldConfig.validateFirstName(value, 'نام پدر'),
                           onSaved: (value) => user = user.copyWith(fatherName: value),
                         ),
                       ),

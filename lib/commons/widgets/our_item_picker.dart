@@ -2,9 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:guilt_flutter/application/colors.dart';
 import 'package:guilt_flutter/application/guild/presentation/pages/guild_form_page.dart';
 import 'package:guilt_flutter/application/guild/presentation/widgets/guild_form_widget.dart';
+import 'package:guilt_flutter/commons/TextFieldConfig.dart';
 import 'package:guilt_flutter/commons/text_style.dart';
 import 'package:guilt_flutter/commons/utils.dart';
 import 'package:guilt_flutter/commons/widgets/our_text_field.dart';
+import 'package:guilt_flutter/commons/widgets/text_form_field_wrapper.dart';
 import 'package:logger/logger.dart';
 
 class OurItemPicker extends StatefulWidget {
@@ -78,7 +80,8 @@ class _OurItemPickerState extends State<OurItemPicker> {
       child: AbsorbPointer(
           child: OurTextField(
         title: widget.hint,
-        textFormField: TextFormField(
+        textFormField: TextFormFieldWrapper(
+          inputFormatters: TextFieldConfig.inputFormattersEmpty(),
           style: defaultTextStyle(context, headline: widget.headlineSize).c(const Color(0xff2F3135)),
           controller: widget.controller,
           keyboardType: TextInputType.number,

@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 import 'package:get_it/get_it.dart';
 import 'package:guilt_flutter/application/colors.dart';
+import 'package:guilt_flutter/commons/TextFieldConfig.dart';
 import 'package:guilt_flutter/commons/fix_rtl_flutter_bug.dart';
 import 'package:guilt_flutter/commons/text_style.dart';
 import 'package:guilt_flutter/commons/utils.dart';
@@ -10,6 +11,7 @@ import 'package:guilt_flutter/commons/widgets/loading_widget.dart';
 import 'package:guilt_flutter/commons/widgets/our_item_picker.dart';
 import 'package:guilt_flutter/commons/widgets/our_text_field.dart';
 import 'package:guilt_flutter/commons/widgets/simple_snake_bar.dart';
+import 'package:guilt_flutter/commons/widgets/text_form_field_wrapper.dart';
 import 'package:guilt_flutter/features/psp/domain/entities/psp_user.dart';
 import 'package:guilt_flutter/features/psp/presentation/manager/sign_up_psp_cubit.dart';
 import 'package:guilt_flutter/features/psp/presentation/manager/sign_up_psp_state.dart';
@@ -139,39 +141,42 @@ class _SignUpPspState extends State<SignUpPsp> {
                       SizedBox(height: paddingBetweenTextFiled),
                       OurTextField(
                         title: "نام",
-                        textFormField: TextFormField(
+                        textFormField: TextFormFieldWrapper(
+                          inputFormatters: TextFieldConfig.inputFormattersFirstName(),
                           style: defaultTextStyle(context).c(const Color(0xff2F3135)),
                           controller: firstNameController,
                           keyboardType: TextInputType.name,
                           onTap: () => setState(() => fixRtlFlutterBug(firstNameController)),
                           decoration: defaultInputDecoration(context).copyWith(
-                            hintText: 'نام',
+                            hintText: "نام",
                             prefixIcon: const Icon(Icons.person, color: Color(0xffA0A8B1), size: 25.0),
                           ),
-                          validator: (value) => validateFirstName(value, 'نام'),
+                          validator: (value) => TextFieldConfig.validateFirstName(value, 'نام'),
                           onSaved: (value) => pspUser = pspUser.copyWith(firstName: value),
                         ),
                       ),
                       SizedBox(height: paddingBetweenTextFiled),
                       OurTextField(
                         title: "نام خانوادگی",
-                        textFormField: TextFormField(
+                        textFormField: TextFormFieldWrapper(
+                          inputFormatters: TextFieldConfig.inputFormattersLastName(),
                           style: defaultTextStyle(context).c(const Color(0xff2F3135)),
                           controller: lastNameController,
                           keyboardType: TextInputType.name,
                           onTap: () => setState(() => fixRtlFlutterBug(lastNameController)),
                           decoration: defaultInputDecoration(context).copyWith(
-                            hintText: 'نام خانوادگی',
+                            hintText: "نام خانوادگی",
                             prefixIcon: const Icon(Icons.person, color: Color(0xffA0A8B1), size: 25.0),
                           ),
-                          validator: (value) =>validateLastName(value, 'نام خانوادگی'),
+                          validator: (value) => TextFieldConfig.validateLastName(value, 'نام خانوادگی'),
                           onSaved: (value) => pspUser = pspUser.copyWith(lastName: value),
                         ),
                       ),
                       SizedBox(height: paddingBetweenTextFiled),
                       OurTextField(
                         title: "نام سازمان",
-                        textFormField: TextFormField(
+                        textFormField: TextFormFieldWrapper(
+                          inputFormatters: TextFieldConfig.inputFormattersOrganName(),
                           style: defaultTextStyle(context).c(const Color(0xff2F3135)),
                           controller: organController,
                           keyboardType: TextInputType.name,
@@ -180,18 +185,15 @@ class _SignUpPspState extends State<SignUpPsp> {
                             hintText: 'نام سازمان',
                             prefixIcon: const Icon(Icons.store, color: Color(0xffA0A8B1), size: 25.0),
                           ),
-                          validator: (value) {
-                            if (value == null) return null;
-                            if (value.isEmpty) return "این فیلد الزامی است";
-                            return null;
-                          },
+                          validator: (value) => TextFieldConfig.validateOrganName(value),
                           onSaved: (value) => pspUser = pspUser.copyWith(organ: value),
                         ),
                       ),
                       SizedBox(height: paddingBetweenTextFiled),
                       OurTextField(
                         title: "شماره موبایل",
-                        textFormField: TextFormField(
+                        textFormField: TextFormFieldWrapper(
+                          inputFormatters: TextFieldConfig.inputFormattersEmpty(),
                           style: defaultTextStyle(context).c(const Color(0xff2F3135)),
                           controller: mobileController,
                           keyboardType: TextInputType.number,
@@ -202,33 +204,26 @@ class _SignUpPspState extends State<SignUpPsp> {
                             prefixIcon: const Icon(Icons.phone, color: Color(0xffA0A8B1), size: 25.0),
                             hintTextDirection: TextDirection.ltr,
                           ),
-                          validator: (value) {
-                            if (value == null) return null;
-                            if (value.isEmpty) return "وارد کردن شماره موبایل ضروری است";
-                            return null;
-                          },
+                          validator: (value) => TextFieldConfig.validatePhoneNumber(value),
                           onSaved: (value) => pspUser = pspUser.copyWith(mobile: value),
                         ),
                       ),
                       SizedBox(height: paddingBetweenTextFiled),
                       OurTextField(
                         title: "کد ملی",
-                        textFormField: TextFormField(
+                        textFormField: TextFormFieldWrapper(
+                          inputFormatters: TextFieldConfig.inputFormattersNationalCode(),
                           style: defaultTextStyle(context).c(const Color(0xff2F3135)),
                           controller: nationalCodeController,
                           keyboardType: TextInputType.number,
                           textAlign: TextAlign.end,
                           decoration: defaultInputDecoration(context).copyWith(
-                            hintText: 'کد ملی',
+                            hintText: "کد ملی",
                             contentPadding: const EdgeInsets.only(left: 8.0, right: 8.0, top: 20.0, bottom: 20.0),
                             prefixIcon: const Icon(Icons.pin, color: Color(0xffA0A8B1), size: 25.0),
                             hintTextDirection: TextDirection.ltr,
                           ),
-                          validator: (value) {
-                            if (value == null) return null;
-                            if (!validateNationalCode(value)) return "کد ملی معتبر نیست";
-                            return null;
-                          },
+                          validator: (value) => TextFieldConfig.validateNationalCode(value),
                           onSaved: (value) => pspUser = pspUser.copyWith(nationalCode: value),
                         ),
                       ),

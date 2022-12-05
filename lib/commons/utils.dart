@@ -7,6 +7,7 @@ import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:guilt_flutter/application/constants.dart';
 import 'package:guilt_flutter/application/guild/domain/entities/icis.dart';
 import 'package:guilt_flutter/application/isic.dart';
 import 'package:http/http.dart';
@@ -67,6 +68,10 @@ bool validateNationalCode(String nationalCode) {
   return controlNum.toString() == array[9];
 }
 
+
+
+
+
 String replaceFarsiNumber(String input) {
   const english = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'];
   const farsi = ['۰', '۱', '۲', '۳', '۴', '۵', '۶', '۷', '۸', '۹'];
@@ -84,41 +89,17 @@ bool hasEnglishCharOrNumber(String input) {
   return false;
 }
 
-String? validateFirstName(String? value, String name) {
-  if (value == null) return null;
-  if (value.isEmpty) return "این فیلد الزامی است";
-  if (value.length < 2) return "$name کوتاه است";
-  if (value.length > 25) return "$name طولانی است";
-  if (hasEnglishCharOrNumber(value)) return "$name حروف غیر فارسی دارد";
-  return null;
-}
 
-String? validateGuildName(String? value) {
-  if (value == null) return null;
-  if (value.isEmpty) return "این فیلد الزامی است";
-  if (value.length < 2) return "نام صنف کوتاه است";
-  if (value.length > 60) return "نام صنف طولانی است";
-  if (hasEnglishCharOrNumber(value)) return "نام صنف حروف غیر فارسی دارد";
-  return null;
-}
 
-String? validateOrganName(String? value) {
-  if (value == null) return null;
-  if (value.isEmpty) return "این فیلد الزامی است";
-  if (value.length < 2) return "نام سازمان کوتاه است";
-  if (value.length > 60) return "نام سازمان طولانی است";
-  if (hasEnglishCharOrNumber(value)) return "نام سازمان حروف غیر فارسی دارد";
-  return null;
-}
 
-String? validateLastName(String? value, String name) {
-  if (value == null) return null;
-  if (value.isEmpty) return "این فیلد الزامی است";
-  if (value.length < 2) return "$name  کوتاه است";
-  if (value.length > 40) return "$name طولانی است";
-  if (hasEnglishCharOrNumber(value)) return "$name حروف غیر فارسی دارد";
-  return null;
-}
+
+
+
+
+
+
+
+
 
 String? getPhoneNumber(String phoneNumber) {
   phoneNumber = replaceFarsiNumber(phoneNumber.trim().replaceAll(" ", ""));

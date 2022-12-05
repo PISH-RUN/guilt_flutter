@@ -9,7 +9,7 @@ class Failure extends Equatable {
   Failure(String message, {this.failureType = FailureType.other}) : message = convertMessageToPersian(message);
 
   factory Failure.notRegistered() {
-    return Failure("لطفا ابتدا وراد شوید", failureType: FailureType.authentication);
+    return Failure("لطفا ابتدا وارد شوید", failureType: FailureType.authentication);
   }
 
   factory Failure.build(String message, {FailureType failureType = FailureType.authentication}) {

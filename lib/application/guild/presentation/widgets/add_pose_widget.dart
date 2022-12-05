@@ -3,8 +3,11 @@ import 'package:flutter/material.dart';
 import 'package:guilt_flutter/application/guild/domain/entities/pos.dart';
 import 'package:guilt_flutter/application/guild/presentation/pages/guild_form_page.dart';
 import 'package:guilt_flutter/application/guild/presentation/widgets/guild_form_widget.dart';
+import 'package:guilt_flutter/commons/TextFieldConfig.dart';
 import 'package:guilt_flutter/commons/text_style.dart';
+import 'package:guilt_flutter/commons/utils.dart';
 import 'package:guilt_flutter/commons/widgets/our_button.dart';
+import 'package:guilt_flutter/commons/widgets/text_form_field_wrapper.dart';
 
 class AddPoseWidget extends StatelessWidget {
   final void Function(Pos pos) addedPose;
@@ -28,6 +31,7 @@ class AddPoseWidget extends StatelessWidget {
             TextEditingController pspController = TextEditingController();
             TextEditingController terminalController = TextEditingController();
             TextEditingController accountController = TextEditingController();
+            TextEditingController shebaController = TextEditingController();
             isDialogOpen = true;
             await showDialog(
               context: context,
@@ -41,7 +45,7 @@ class AddPoseWidget extends StatelessWidget {
                       child: Column(
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          TextFormField(
+                          TextFormFieldWrapper(
                             style: defaultTextStyle(context),
                             controller: terminalController,
                             keyboardType: TextInputType.name,
@@ -51,11 +55,12 @@ class AddPoseWidget extends StatelessWidget {
                               hintTextDirection: TextDirection.ltr,
                               contentPadding: const EdgeInsets.only(left: 8.0, right: 8.0, top: 20.0, bottom: 20.0),
                             ),
-                            validator: (value) => posValidatorCheck(value),
+                            validator: (value) => TextFieldConfig.validatePos(value),
+                            inputFormatters: TextFieldConfig.inputFormattersEmpty(),
                             maxLines: 1,
                           ),
                           const SizedBox(height: 10.0),
-                          TextFormField(
+                          TextFormFieldWrapper(
                             style: defaultTextStyle(context),
                             controller: pspController,
                             keyboardType: TextInputType.name,
@@ -65,11 +70,12 @@ class AddPoseWidget extends StatelessWidget {
                               hintTextDirection: TextDirection.ltr,
                               contentPadding: const EdgeInsets.only(left: 8.0, right: 8.0, top: 20.0, bottom: 20.0),
                             ),
-                            validator: (value) => posValidatorCheck(value),
+                            validator: (value) => TextFieldConfig.validatePos(value),
+                            inputFormatters: TextFieldConfig.inputFormattersEmpty(),
                             maxLines: 1,
                           ),
                           const SizedBox(height: 10.0),
-                          TextFormField(
+                          TextFormFieldWrapper(
                             style: defaultTextStyle(context),
                             controller: accountController,
                             keyboardType: TextInputType.name,
@@ -79,7 +85,23 @@ class AddPoseWidget extends StatelessWidget {
                               hintTextDirection: TextDirection.ltr,
                               contentPadding: const EdgeInsets.only(left: 8.0, right: 8.0, top: 20.0, bottom: 20.0),
                             ),
-                            validator: (value) => posValidatorCheck(value),
+                            validator: (value) => TextFieldConfig.validatePos(value),
+                            inputFormatters: TextFieldConfig.inputFormattersEmpty(),
+                            maxLines: 1,
+                          ),
+                          const SizedBox(height: 10.0),
+                          TextFormFieldWrapper(
+                            style: defaultTextStyle(context),
+                            controller: shebaController,
+                            keyboardType: TextInputType.name,
+                            textAlign: TextAlign.end,
+                            decoration: defaultInputDecoration(context).copyWith(
+                              labelText: "شماره شبا:",
+                              hintTextDirection: TextDirection.ltr,
+                              contentPadding: const EdgeInsets.only(left: 8.0, right: 8.0, top: 20.0, bottom: 20.0),
+                            ),
+                            validator: (value) => TextFieldConfig.validateSheba(value),
+                            inputFormatters: TextFieldConfig.inputFormattersShebaCode(),
                             maxLines: 1,
                           ),
                           const SizedBox(height: 16.0),
@@ -107,6 +129,7 @@ class AddPoseWidget extends StatelessWidget {
                                     terminalId: terminalController.text,
                                     accountNumber: accountController.text,
                                     psp: pspController.text,
+                                    shebaCode: shebaController.text,
                                   );
                                   addedPose(pos);
                                   Navigator.pop(context);
@@ -146,11 +169,5 @@ class AddPoseWidget extends StatelessWidget {
         ),
       ),
     );
-  }
-
-  String? posValidatorCheck(String? value) {
-    if (value == null) return null;
-    if (value.isEmpty) return 'این فیلد خالی است';
-    return null;
   }
 }

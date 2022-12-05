@@ -2,11 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:guilt_flutter/application/guild/domain/entities/guild.dart';
 import 'package:guilt_flutter/application/guild/presentation/pages/guild_form_page.dart';
 import 'package:guilt_flutter/application/guild/presentation/widgets/map_widget.dart';
+import 'package:guilt_flutter/commons/TextFieldConfig.dart';
 import 'package:guilt_flutter/commons/fix_rtl_flutter_bug.dart';
 import 'package:guilt_flutter/commons/text_style.dart';
 import 'package:guilt_flutter/commons/utils.dart';
 import 'package:guilt_flutter/commons/widgets/our_item_picker.dart';
 import 'package:guilt_flutter/commons/widgets/our_text_field.dart';
+import 'package:guilt_flutter/commons/widgets/text_form_field_wrapper.dart';
 import 'package:latlong2/latlong.dart' as lat_lng;
 
 class FormController {
@@ -118,7 +120,8 @@ class _GuildFormWidgetState extends State<GuildFormWidget> {
                         children: <Widget>[
                           OurTextField(
                             title: "نام صنف",
-                            textFormField: TextFormField(
+                            textFormField: TextFormFieldWrapper(
+                              inputFormatters: TextFieldConfig.inputFormattersGuildName(),
                               style: defaultTextStyle(context).c(const Color(0xff2F3135)),
                               controller: guildNameController,
                               keyboardType: TextInputType.name,
@@ -127,14 +130,15 @@ class _GuildFormWidgetState extends State<GuildFormWidget> {
                                 hintText: 'مثال: فروشندگان مواد پروتئینی',
                                 prefixIcon: const Icon(Icons.store, color: Color(0xffA0A8B1), size: 25.0),
                               ),
-                              validator: (value) => validateGuildName(value),
+                              validator: (value) => TextFieldConfig.validateGuildName(value),
                               onSaved: (value) => guild = guild.copyWith(title: value),
                             ),
                           ),
                           SizedBox(height: paddingBetweenTextFiled),
                           OurTextField(
                             title: "نام سازمان",
-                            textFormField: TextFormField(
+                            textFormField: TextFormFieldWrapper(
+                              inputFormatters: TextFieldConfig.inputFormattersOrganName(),
                               style: defaultTextStyle(context).c(const Color(0xff2F3135)),
                               controller: organController,
                               keyboardType: TextInputType.name,
@@ -143,7 +147,7 @@ class _GuildFormWidgetState extends State<GuildFormWidget> {
                                 hintText: 'مثال:سازمان،معدن و تجارت زنجان',
                                 prefixIcon: const Icon(Icons.store, color: Color(0xffA0A8B1), size: 25.0),
                               ),
-                              validator: (value) => validateOrganName(value),
+                              validator: (value) => TextFieldConfig.validateOrganName(value),
                               onSaved: (value) => guild = guild.copyWith(organName: value),
                             ),
                           ),
@@ -154,7 +158,8 @@ class _GuildFormWidgetState extends State<GuildFormWidget> {
                                 flex: 3,
                                 child: OurTextField(
                                   title: "شماره تلفن",
-                                  textFormField: TextFormField(
+                                  textFormField: TextFormFieldWrapper(
+                                    inputFormatters: TextFieldConfig.inputFormattersHomeTelephone(),
                                     style: defaultTextStyle(context).c(const Color(0xff2F3135)),
                                     controller: homeTelephoneController,
                                     keyboardType: TextInputType.number,
@@ -183,7 +188,8 @@ class _GuildFormWidgetState extends State<GuildFormWidget> {
                                 flex: 1,
                                 child: OurTextField(
                                   title: "کد استان",
-                                  textFormField: TextFormField(
+                                  textFormField: TextFormFieldWrapper(
+                                    inputFormatters: TextFieldConfig.inputFormattersProvinceCode(),
                                     style: defaultTextStyle(context).c(const Color(0xff2F3135)),
                                     controller: provinceCodeController,
                                     keyboardType: TextInputType.number,
@@ -257,7 +263,8 @@ class _GuildFormWidgetState extends State<GuildFormWidget> {
                           SizedBox(height: paddingBetweenTextFiled),
                           OurTextField(
                             title: "کد پستی",
-                            textFormField: TextFormField(
+                            textFormField: TextFormFieldWrapper(
+                              inputFormatters: TextFieldConfig.inputFormattersNationalCode(),
                               style: defaultTextStyle(context).c(const Color(0xff2F3135)),
                               controller: postalCodeController,
                               keyboardType: TextInputType.number,
@@ -268,19 +275,15 @@ class _GuildFormWidgetState extends State<GuildFormWidget> {
                                 contentPadding: const EdgeInsets.only(left: 8.0, right: 8.0, top: 20.0, bottom: 20.0),
                                 prefixIcon: const Icon(Icons.map, color: Color(0xffA0A8B1), size: 25.0),
                               ),
-                              validator: (value) {
-                                if (value == null) return null;
-                                if (value.isEmpty) return "وارد کردن کد پستی ضروری است";
-                                if (value.length != 10) return "کد پستی باید ده رقم باشد";
-                                return null;
-                              },
+                              validator: (value) => TextFieldConfig.validateNationalCode(value),
                               onSaved: (value) => guild = guild.copyWith(postalCode: value),
                             ),
                           ),
                           SizedBox(height: paddingBetweenTextFiled),
                           OurTextField(
                             title: "نشانی کامل",
-                            textFormField: TextFormField(
+                            textFormField: TextFormFieldWrapper(
+                              inputFormatters: TextFieldConfig.inputFormattersEmpty(),
                               style: defaultTextStyle(context).c(const Color(0xff2F3135)),
                               controller: addressController,
                               keyboardType: TextInputType.streetAddress,
@@ -290,12 +293,7 @@ class _GuildFormWidgetState extends State<GuildFormWidget> {
                                 contentPadding: const EdgeInsets.symmetric(vertical: 16.0),
                                 prefixIcon: const Icon(Icons.pin_drop_outlined, color: Color(0xffA0A8B1), size: 25.0),
                               ),
-                              validator: (value) {
-                                if (value == null) return null;
-                                if (value.isEmpty) return "وارد کردن نشانی ضروری است";
-                                if (value.length < 10) return "نشانی کوتاه است";
-                                return null;
-                              },
+                              validator: (value) => TextFieldConfig.validateAddress(value),
                               onSaved: (value) => guild = guild.copyWith(address: value),
                               minLines: 4,
                               maxLines: 4,

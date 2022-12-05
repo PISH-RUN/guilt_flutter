@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:guilt_flutter/application/colors.dart';
 import 'package:guilt_flutter/application/constants.dart';
+import 'package:guilt_flutter/commons/TextFieldConfig.dart';
 import 'package:guilt_flutter/commons/failures.dart';
 import 'package:guilt_flutter/commons/text_style.dart';
 import 'package:guilt_flutter/commons/utils.dart';
 import 'package:guilt_flutter/commons/widgets/icon_name_widget.dart';
 import 'package:guilt_flutter/commons/widgets/our_button.dart';
+import 'package:guilt_flutter/commons/widgets/text_form_field_wrapper.dart';
 import 'package:guilt_flutter/features/login/presentation/manager/register_cubit.dart';
 import 'package:guilt_flutter/features/login/presentation/manager/register_state.dart';
 import 'package:qlevar_router/qlevar_router.dart';
@@ -92,7 +95,8 @@ class _RegisterWidgetState extends State<RegisterWidget> {
                                   children: [
                                     Directionality(
                                       textDirection: TextDirection.rtl,
-                                      child: TextFormField(
+                                      child: TextFormFieldWrapper(
+                                        inputFormatters: TextFieldConfig.inputFormattersEmpty(),
                                         textAlign: TextAlign.end,
                                         readOnly: state is Loading,
                                         decoration: const InputDecoration(
@@ -104,18 +108,14 @@ class _RegisterWidgetState extends State<RegisterWidget> {
                                         onFieldSubmitted: (value) => onSubmitButton(context),
                                         keyboardType: TextInputType.number,
                                         controller: phoneController,
-                                        validator: (value) {
-                                          if (value == null) return null;
-                                          if (value.isEmpty) return "وارد کردن شماره تلفن ضروری است";
-                                          if (!validatePhoneNumber(value)) return "شماره تلفن معتبر نیست";
-                                          return null;
-                                        },
+                                        validator: (value) => TextFieldConfig.validatePhoneNumber(value),
                                       ),
                                     ),
                                     const SizedBox(height: 16.0),
                                     Directionality(
                                       textDirection: TextDirection.rtl,
-                                      child: TextFormField(
+                                      child: TextFormFieldWrapper(
+                                        inputFormatters: TextFieldConfig.inputFormattersNationalCode(),
                                         textAlign: TextAlign.end,
                                         readOnly: state is Loading,
                                         decoration: const InputDecoration(
@@ -126,12 +126,7 @@ class _RegisterWidgetState extends State<RegisterWidget> {
                                         onFieldSubmitted: (value) => onSubmitButton(context),
                                         keyboardType: TextInputType.number,
                                         controller: nationalCodeController,
-                                        validator: (value) {
-                                          if (value == null) return null;
-                                          if (value.isEmpty) return "وارد کردن کد ملی ضروری است";
-                                          if (!validateNationalCode(value)) return "کد ملی نامعتبر نیست";
-                                          return null;
-                                        },
+                                        validator: (value) => TextFieldConfig.validateNationalCode(value),
                                       ),
                                     ),
                                   ],
