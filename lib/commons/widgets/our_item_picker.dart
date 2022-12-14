@@ -80,7 +80,7 @@ class _OurItemPickerState extends State<OurItemPicker> {
       child: AbsorbPointer(
           child: OurTextField(
         title: widget.hint,
-        textFormField: TextFormFieldWrapper(
+        textFormField: TextFormField(
           inputFormatters: TextFieldConfig.inputFormattersEmpty(),
           style: defaultTextStyle(context, headline: widget.headlineSize).c(const Color(0xff2F3135)),
           controller: widget.controller,

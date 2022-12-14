@@ -1,5 +1,5 @@
 import 'package:equatable/equatable.dart';
-import 'package:guilt_flutter/application/guild/domain/entities/icis.dart';
+import 'package:guilt_flutter/application/guild/domain/entities/isic.dart';
 import 'package:guilt_flutter/application/guild/domain/entities/pos.dart';
 import 'package:latlong2/latlong.dart' as lat_lng;
 
@@ -99,7 +99,7 @@ class Guild extends Equatable {
   }
 
   factory Guild.fromEmpty() {
-    return Guild(
+    return const Guild(
       city: '',
       boardTitle: '',
       corporateId: '',
@@ -112,11 +112,11 @@ class Guild extends Equatable {
       zoneCode: '',
       province: '',
       title: '',
-      poses: const [],
+      poses: [],
       isCouponRequested: false,
       address: '',
       homeTelephone: '',
-      isic: const Isic(code: "", name: ""),
+      isic: Isic(code: "", name: ""),
       location: null,
       organName: '',
       postalCode: '',

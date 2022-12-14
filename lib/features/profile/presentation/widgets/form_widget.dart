@@ -197,7 +197,7 @@ class _FormWidgetState extends State<FormWidget> {
                     children: <Widget>[
                       OurTextField(
                         title: "نام",
-                        textFormField: TextFormFieldWrapper(
+                        textFormField: TextFormField(
                           inputFormatters: TextFieldConfig.inputFormattersFirstName(),
                           style: defaultTextStyle(context).c(const Color(0xff2F3135)),
                           controller: firstNameController,
@@ -214,7 +214,7 @@ class _FormWidgetState extends State<FormWidget> {
                       SizedBox(height: paddingBetweenTextFiled),
                       OurTextField(
                         title: "نام خانوادگی",
-                        textFormField: TextFormFieldWrapper(
+                        textFormField: TextFormField(
                           inputFormatters: TextFieldConfig.inputFormattersLastName(),
                           style: defaultTextStyle(context).c(const Color(0xff2F3135)),
                           controller: lastNameController,
@@ -231,7 +231,7 @@ class _FormWidgetState extends State<FormWidget> {
                       SizedBox(height: paddingBetweenTextFiled),
                       OurTextField(
                         title: "نام پدر",
-                        textFormField: TextFormFieldWrapper(
+                        textFormField: TextFormField(
                           inputFormatters: TextFieldConfig.inputFormattersFirstName(),
                           style: defaultTextStyle(context).c(const Color(0xff2F3135)),
                           controller: fatherNameController,

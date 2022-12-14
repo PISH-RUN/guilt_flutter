@@ -4,7 +4,7 @@ import 'package:guilt_flutter/commons/widgets/text_form_field_wrapper.dart';
 
 class OurTextField extends StatelessWidget {
   final String title;
-  final TextFormFieldWrapper textFormField;
+  final TextFormField textFormField;
 
   const OurTextField({required this.title, required this.textFormField, Key? key}) : super(key: key);
 

@@ -45,7 +45,7 @@ class AddPoseWidget extends StatelessWidget {
                       child: Column(
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          TextFormFieldWrapper(
+                          TextFormField(
                             style: defaultTextStyle(context),
                             controller: terminalController,
                             keyboardType: TextInputType.name,
@@ -60,7 +60,7 @@ class AddPoseWidget extends StatelessWidget {
                             maxLines: 1,
                           ),
                           const SizedBox(height: 10.0),
-                          TextFormFieldWrapper(
+                          TextFormField(
                             style: defaultTextStyle(context),
                             controller: pspController,
                             keyboardType: TextInputType.name,
@@ -75,7 +75,7 @@ class AddPoseWidget extends StatelessWidget {
                             maxLines: 1,
                           ),
                           const SizedBox(height: 10.0),
-                          TextFormFieldWrapper(
+                          TextFormField(
                             style: defaultTextStyle(context),
                             controller: accountController,
                             keyboardType: TextInputType.name,
@@ -90,7 +90,7 @@ class AddPoseWidget extends StatelessWidget {
                             maxLines: 1,
                           ),
                           const SizedBox(height: 10.0),
-                          TextFormFieldWrapper(
+                          TextFormField(
                             style: defaultTextStyle(context),
                             controller: shebaController,
                             keyboardType: TextInputType.name,

@@ -95,7 +95,7 @@ class _RegisterWidgetState extends State<RegisterWidget> {
                                   children: [
                                     Directionality(
                                       textDirection: TextDirection.rtl,
-                                      child: TextFormFieldWrapper(
+                                      child: TextFormField(
                                         inputFormatters: TextFieldConfig.inputFormattersEmpty(),
                                         textAlign: TextAlign.end,
                                         readOnly: state is Loading,
@@ -114,7 +114,7 @@ class _RegisterWidgetState extends State<RegisterWidget> {
                                     const SizedBox(height: 16.0),
                                     Directionality(
                                       textDirection: TextDirection.rtl,
-                                      child: TextFormFieldWrapper(
+                                      child: TextFormField(
                                         inputFormatters: TextFieldConfig.inputFormattersNationalCode(),
                                         textAlign: TextAlign.end,
                                         readOnly: state is Loading,

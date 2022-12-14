@@ -1,13 +1,18 @@
 import 'package:flutter/services.dart';
 import 'package:guilt_flutter/application/constants.dart';
 import 'package:guilt_flutter/commons/utils.dart' as utils;
+import 'package:logger/logger.dart';
 import 'package:persian_utils/persian_utils.dart';
 
 class TextFieldConfig {
   static String? validateNationalCode(String? value) {
+    Logger().i("info=>4 ");
     if (value == null) return null;
+    Logger().i("info=>3 ");
     if (value.isEmpty) return "وارد کردن کد ملی ضروری است";
+    Logger().i("info=>2 ");
     if (!utils.validateNationalCode(value)) return "کد ملی نامعتبر نیست";
+    Logger().i("info=>1 ");
     return null;
   }
 

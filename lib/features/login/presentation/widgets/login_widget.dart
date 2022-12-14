@@ -109,7 +109,7 @@ class _LoginWidgetState extends State<LoginWidget> {
                                 const SizedBox(height: 26.0),
                                 Directionality(
                                   textDirection: TextDirection.rtl,
-                                  child: TextFormFieldWrapper(
+                                  child: TextFormField(
                                     inputFormatters: TextFieldConfig.inputFormattersOTP(),
                                     textAlign: TextAlign.end,
                                     readOnly: state is Loading,

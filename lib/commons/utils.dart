@@ -8,7 +8,7 @@ import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:guilt_flutter/application/constants.dart';
-import 'package:guilt_flutter/application/guild/domain/entities/icis.dart';
+import 'package:guilt_flutter/application/guild/domain/entities/isic.dart';
 import 'package:guilt_flutter/application/isic.dart';
 import 'package:http/http.dart';
 import 'package:persian_utils/persian_utils.dart';

@@ -141,7 +141,7 @@ class _SignUpPspState extends State<SignUpPsp> {
                       SizedBox(height: paddingBetweenTextFiled),
                       OurTextField(
                         title: "نام",
-                        textFormField: TextFormFieldWrapper(
+                        textFormField: TextFormField(
                           inputFormatters: TextFieldConfig.inputFormattersFirstName(),
                           style: defaultTextStyle(context).c(const Color(0xff2F3135)),
                           controller: firstNameController,
@@ -158,7 +158,7 @@ class _SignUpPspState extends State<SignUpPsp> {
                       SizedBox(height: paddingBetweenTextFiled),
                       OurTextField(
                         title: "نام خانوادگی",
-                        textFormField: TextFormFieldWrapper(
+                        textFormField: TextFormField(
                           inputFormatters: TextFieldConfig.inputFormattersLastName(),
                           style: defaultTextStyle(context).c(const Color(0xff2F3135)),
                           controller: lastNameController,
@@ -175,7 +175,7 @@ class _SignUpPspState extends State<SignUpPsp> {
                       SizedBox(height: paddingBetweenTextFiled),
                       OurTextField(
                         title: "نام سازمان",
-                        textFormField: TextFormFieldWrapper(
+                        textFormField: TextFormField(
                           inputFormatters: TextFieldConfig.inputFormattersOrganName(),
                           style: defaultTextStyle(context).c(const Color(0xff2F3135)),
                           controller: organController,
@@ -192,7 +192,7 @@ class _SignUpPspState extends State<SignUpPsp> {
                       SizedBox(height: paddingBetweenTextFiled),
                       OurTextField(
                         title: "شماره موبایل",
-                        textFormField: TextFormFieldWrapper(
+                        textFormField: TextFormField(
                           inputFormatters: TextFieldConfig.inputFormattersEmpty(),
                           style: defaultTextStyle(context).c(const Color(0xff2F3135)),
                           controller: mobileController,
@@ -211,7 +211,7 @@ class _SignUpPspState extends State<SignUpPsp> {
                       SizedBox(height: paddingBetweenTextFiled),
                       OurTextField(
                         title: "کد ملی",
-                        textFormField: TextFormFieldWrapper(
+                        textFormField: TextFormField(
                           inputFormatters: TextFieldConfig.inputFormattersNationalCode(),
                           style: defaultTextStyle(context).c(const Color(0xff2F3135)),
                           controller: nationalCodeController,

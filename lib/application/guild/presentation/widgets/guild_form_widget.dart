@@ -120,7 +120,7 @@ class _GuildFormWidgetState extends State<GuildFormWidget> {
                         children: <Widget>[
                           OurTextField(
                             title: "نام صنف",
-                            textFormField: TextFormFieldWrapper(
+                            textFormField: TextFormField(
                               inputFormatters: TextFieldConfig.inputFormattersGuildName(),
                               style: defaultTextStyle(context).c(const Color(0xff2F3135)),
                               controller: guildNameController,
@@ -137,7 +137,7 @@ class _GuildFormWidgetState extends State<GuildFormWidget> {
                           SizedBox(height: paddingBetweenTextFiled),
                           OurTextField(
                             title: "نام سازمان",
-                            textFormField: TextFormFieldWrapper(
+                            textFormField: TextFormField(
                               inputFormatters: TextFieldConfig.inputFormattersOrganName(),
                               style: defaultTextStyle(context).c(const Color(0xff2F3135)),
                               controller: organController,
@@ -158,7 +158,7 @@ class _GuildFormWidgetState extends State<GuildFormWidget> {
                                 flex: 3,
                                 child: OurTextField(
                                   title: "شماره تلفن",
-                                  textFormField: TextFormFieldWrapper(
+                                  textFormField: TextFormField(
                                     inputFormatters: TextFieldConfig.inputFormattersHomeTelephone(),
                                     style: defaultTextStyle(context).c(const Color(0xff2F3135)),
                                     controller: homeTelephoneController,
@@ -188,7 +188,7 @@ class _GuildFormWidgetState extends State<GuildFormWidget> {
                                 flex: 1,
                                 child: OurTextField(
                                   title: "کد استان",
-                                  textFormField: TextFormFieldWrapper(
+                                  textFormField: TextFormField(
                                     inputFormatters: TextFieldConfig.inputFormattersProvinceCode(),
                                     style: defaultTextStyle(context).c(const Color(0xff2F3135)),
                                     controller: provinceCodeController,
@@ -263,7 +263,7 @@ class _GuildFormWidgetState extends State<GuildFormWidget> {
                           SizedBox(height: paddingBetweenTextFiled),
                           OurTextField(
                             title: "کد پستی",
-                            textFormField: TextFormFieldWrapper(
+                            textFormField: TextFormField(
                               inputFormatters: TextFieldConfig.inputFormattersNationalCode(),
                               style: defaultTextStyle(context).c(const Color(0xff2F3135)),
                               controller: postalCodeController,
@@ -282,7 +282,7 @@ class _GuildFormWidgetState extends State<GuildFormWidget> {
                           SizedBox(height: paddingBetweenTextFiled),
                           OurTextField(
                             title: "نشانی کامل",
-                            textFormField: TextFormFieldWrapper(
+                            textFormField: TextFormField(
                               inputFormatters: TextFieldConfig.inputFormattersEmpty(),
                               style: defaultTextStyle(context).c(const Color(0xff2F3135)),
                               controller: addressController,

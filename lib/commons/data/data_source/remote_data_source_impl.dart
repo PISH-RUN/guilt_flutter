@@ -79,16 +79,12 @@ class RemoteDataSourceImpl implements RemoteDataSource {
       } else {
         Logger().e("$methodName===> response.error ===> ${finalResponse.body}");
         handleGlobalErrorInServer(finalResponse);
-        return Left(finalResponse.statusCode == AUTHENTICATION_IS_WRONG_STATUS_CODE
-            ? ServerFailure.notLoggedInYet()
-            : finalResponse.statusCode == FORBIDDEN_STATUS_CODE
-                ? ServerFailure.notBuyAccountYet()
-                : ServerFailure(finalResponse));
+        return Left(ServerFailure.fromServer(finalResponse));
       }
     } on Exception catch (e) {
       Logger().wtf("$methodName===> crash ===> ${e.toString()}  for  $url");
       if (e.toString().toLowerCase().contains("failed host lookup")) return Left(ServerFailure.noInternet());
-      return Left(ServerFailure.fromMessage(e.toString()));
+      return Left(ServerFailure.crash());
     }
   }
 
@@ -243,19 +239,13 @@ class RemoteDataSourceImpl implements RemoteDataSource {
         Logger().e("$methodName===> response.error ===> ${finalResponse.statusCode}  ${finalResponse.body}");
         handleGlobalErrorInServer(finalResponse);
         return Left(
-          finalResponse.statusCode == AUTHENTICATION_IS_WRONG_STATUS_CODE
-              ? ServerFailure.notLoggedInYet()
-              : finalResponse.statusCode == FORBIDDEN_STATUS_CODE
-                  ? ServerFailure.notBuyAccountYet()
-                  : finalResponse.body.toLowerCase().contains("not user")
-                      ? ServerFailure.forbiddenError()
-                      : ServerFailure(finalResponse),
+          finalResponse.body.toLowerCase().contains("not user") ? ServerFailure.notPermission() : ServerFailure.fromServer(finalResponse),
         );
       }
     } on Exception catch (e) {
       Logger().wtf("$methodName===> crash ===> ${e.toString()}  for  $url");
       if (e.toString().toLowerCase().contains("failed host lookup")) return Left(ServerFailure.noInternet());
-      return Left(ServerFailure.fromMessage(e.toString()));
+      return Left(ServerFailure.crash());
     }
   }
 

@@ -1,7 +1,7 @@
 import 'dart:convert';
 
 import 'package:guilt_flutter/application/guild/data/models/pos_model.dart';
-import 'package:guilt_flutter/application/guild/domain/entities/icis.dart';
+import 'package:guilt_flutter/application/guild/domain/entities/isic.dart';
 import 'package:guilt_flutter/application/guild/domain/entities/pos.dart';
 import 'package:guilt_flutter/commons/data/model/json_parser.dart';
 import 'package:guilt_flutter/commons/utils.dart';
